@@ -1,0 +1,4737 @@
+// // import React, { useState, useEffect, useCallback } from "react";
+// // import { toast } from "react-toastify";
+// // import "react-toastify/dist/ReactToastify.css";
+// // import Icon from "../../../components/AppIcon";
+// // import Button from "../../../components/ui/Button";
+// // import { createProperty } from "../../../lib/mongo/services/propertyService";
+// // import { getAvailableAgents } from "../../../lib/mongo/services/propertyService";
+
+// // // Memoized input components to prevent unnecessary re-renders
+// // const InputField = React.memo(
+// //   ({
+// //     label,
+// //     type = "text",
+// //     value,
+// //     onChange,
+// //     placeholder,
+// //     required = false,
+// //     icon,
+// //     ...props
+// //   }) => (
+// //     <div className="space-y-2">
+// //       <label className="text-sm font-medium text-foreground flex items-center">
+// //         {icon && (
+// //           <Icon name={icon} size={16} className="mr-2 text-muted-foreground" />
+// //         )}
+// //         {label}
+// //         {required && <span className="text-error ml-1">*</span>}
+// //       </label>
+// //       <input
+// //         type={type}
+// //         value={value}
+// //         onChange={onChange}
+// //         placeholder={placeholder}
+// //         required={required}
+// //         className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+// //         {...props}
+// //       />
+// //     </div>
+// //   )
+// // );
+
+// // const SelectField = React.memo(
+// //   ({ label, options, value, onChange, required = false, icon, ...props }) => (
+// //     <div className="space-y-2">
+// //       <label className="text-sm font-medium text-foreground flex items-center">
+// //         {icon && (
+// //           <Icon name={icon} size={16} className="mr-2 text-muted-foreground" />
+// //         )}
+// //         {label}
+// //         {required && <span className="text-error ml-1">*</span>}
+// //       </label>
+// //       <select
+// //         value={value}
+// //         onChange={onChange}
+// //         required={required}
+// //         className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+// //         {...props}
+// //       >
+// //         <option value="">Select {label}</option>
+// //         {options.map((option) => (
+// //           <option key={option.value} value={option.value}>
+// //             {option.label}
+// //           </option>
+// //         ))}
+// //       </select>
+// //     </div>
+// //   )
+// // );
+
+// // const TextareaField = React.memo(
+// //   ({
+// //     label,
+// //     value,
+// //     onChange,
+// //     placeholder,
+// //     required = false,
+// //     rows = 4,
+// //     ...props
+// //   }) => (
+// //     <div className="space-y-2">
+// //       <label className="text-sm font-medium text-foreground">
+// //         {label}
+// //         {required && <span className="text-error ml-1">*</span>}
+// //       </label>
+// //       <textarea
+// //         value={value}
+// //         onChange={onChange}
+// //         placeholder={placeholder}
+// //         required={required}
+// //         rows={rows}
+// //         className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-vertical"
+// //         {...props}
+// //       />
+// //     </div>
+// //   )
+// // );
+
+// // const PostProperty = () => {
+// //   const [formData, setFormData] = useState({
+// //     title: "",
+// //     description: "",
+// //     price: "",
+// //     type: "",
+// //     category: "",
+// //     location: {
+// //       address: "",
+// //       city: "",
+// //       state: "",
+// //       pincode: "",
+// //     },
+// //     specifications: {
+// //       bedrooms: "",
+// //       bathrooms: "",
+// //       area: "",
+// //       areaUnit: "sqft",
+// //     },
+// //     amenities: [],
+// //     features: [],
+// //     images: [],
+// //     assignedAgent: "",
+// //     manualAgentInfo: {
+// //       name: "",
+// //       email: "",
+// //       phone: "",
+// //       designation: "",
+// //     },
+// //   });
+
+// //   const [loading, setLoading] = useState(false);
+// //   const [availableAgents, setAvailableAgents] = useState([]);
+// //   const [userRole, setUserRole] = useState("");
+// //   const [loadingAgents, setLoadingAgents] = useState(false);
+// //   const [agentSelectionMethod, setAgentSelectionMethod] = useState("select");
+
+// //   // Fetch user role and available agents on component mount only
+// //   useEffect(() => {
+// //     fetchUserData();
+// //   }, []); // Empty dependency array - runs only once
+
+// //   const fetchUserData = useCallback(async () => {
+// //     try {
+// //       const userData = JSON.parse(localStorage.getItem("user") || "{}");
+// //       const currentUserRole = userData.role || "customer";
+// //       setUserRole(currentUserRole);
+
+// //       // Set default agent based on role
+// //       if (currentUserRole === "employee" || currentUserRole === "admin") {
+// //         setFormData((prev) => ({
+// //           ...prev,
+// //           assignedAgent: userData.id,
+// //         }));
+// //       }
+
+// //       // Fetch available agents for admin and customer
+// //       if (currentUserRole === "admin" || currentUserRole === "customer") {
+// //         setLoadingAgents(true);
+// //         const agentsResponse = await getAvailableAgents();
+// //         setAvailableAgents(agentsResponse.agents || []);
+// //         setLoadingAgents(false);
+// //       }
+// //     } catch (error) {
+// //       console.error("Error fetching user data:", error);
+// //       toast.error("Error loading agent data");
+// //     }
+// //   }, []);
+
+// //   // Optimized handlers with useCallback
+// //   const handleInputChange = useCallback((field, value) => {
+// //     setFormData((prev) => ({
+// //       ...prev,
+// //       [field]: value,
+// //     }));
+// //   }, []);
+
+// //   const handleNestedChange = useCallback((parent, field, value) => {
+// //     setFormData((prev) => ({
+// //       ...prev,
+// //       [parent]: {
+// //         ...prev[parent],
+// //         [field]: value,
+// //       },
+// //     }));
+// //   }, []);
+
+// //   const handleManualAgentChange = useCallback((field, value) => {
+// //     setFormData((prev) => ({
+// //       ...prev,
+// //       manualAgentInfo: {
+// //         ...prev.manualAgentInfo,
+// //         [field]: value,
+// //       },
+// //     }));
+// //   }, []);
+
+// //   const handleArrayToggle = useCallback((arrayName, value) => {
+// //     setFormData((prev) => ({
+// //       ...prev,
+// //       [arrayName]: prev[arrayName].includes(value)
+// //         ? prev[arrayName].filter((item) => item !== value)
+// //         : [...prev[arrayName], value],
+// //     }));
+// //   }, []);
+
+// //   const handleAgentSelectionChange = useCallback((method) => {
+// //     setAgentSelectionMethod(method);
+// //     setFormData((prev) => ({
+// //       ...prev,
+// //       assignedAgent: "",
+// //       manualAgentInfo: {
+// //         name: "",
+// //         email: "",
+// //         phone: "",
+// //         designation: "",
+// //       },
+// //     }));
+// //   }, []);
+
+// //   const handleAgentSelect = useCallback((agentId) => {
+// //     setFormData((prev) => ({
+// //       ...prev,
+// //       assignedAgent: agentId,
+// //       manualAgentInfo: {
+// //         name: "",
+// //         email: "",
+// //         phone: "",
+// //         designation: "",
+// //       },
+// //     }));
+// //   }, []);
+
+// //   const handleImageUpload = useCallback(
+// //     (e) => {
+// //       const files = Array.from(e.target.files);
+// //       if (files.length + formData.images.length > 10) {
+// //         toast.warning("Maximum 10 images allowed");
+// //         return;
+// //       }
+// //       setFormData((prev) => ({
+// //         ...prev,
+// //         images: [...prev.images, ...files],
+// //       }));
+// //       toast.success(`${files.length} image(s) added`);
+// //     },
+// //     [formData.images.length]
+// //   );
+
+// //   const removeImage = useCallback((index) => {
+// //     setFormData((prev) => ({
+// //       ...prev,
+// //       images: prev.images.filter((_, i) => i !== index),
+// //     }));
+// //     toast.info("Image removed");
+// //   }, []);
+
+// //   const propertyTypes = [
+// //     { value: "apartment", label: "Apartment" },
+// //     { value: "villa", label: "Villa" },
+// //     { value: "house", label: "House" },
+// //     { value: "commercial", label: "Commercial" },
+// //     { value: "plot", label: "Plot" },
+// //   ];
+
+// //   const categories = [
+// //     { value: "sale", label: "For Sale" },
+// //     { value: "rent", label: "For Rent" },
+// //   ];
+
+// //   const areaUnits = [
+// //     { value: "sqft", label: "Square Feet" },
+// //     { value: "sqm", label: "Square Meters" },
+// //     { value: "acre", label: "Acre" },
+// //     { value: "hectare", label: "Hectare" },
+// //   ];
+
+// //   const commonAmenities = [
+// //     "Swimming Pool",
+// //     "Gym",
+// //     "Park",
+// //     "Security",
+// //     "Power Backup",
+// //     "Water Supply",
+// //     "Clubhouse",
+// //     "Playground",
+// //     "Garden",
+// //     "Parking",
+// //   ];
+
+// //   const commonFeatures = [
+// //     "Sea View",
+// //     "Mountain View",
+// //     "Fully Furnished",
+// //     "Modular Kitchen",
+// //     "Wooden Flooring",
+// //     "Balcony",
+// //     "Study Room",
+// //     "Home Theater",
+// //     "Smart Home",
+// //   ];
+
+// //   const handleSubmit = async (e) => {
+// //     e.preventDefault();
+// //     setLoading(true);
+
+// //     // Basic validation
+// //     if (
+// //       !formData.title ||
+// //       !formData.price ||
+// //       !formData.type ||
+// //       !formData.category
+// //     ) {
+// //       toast.error("Please fill all required fields");
+// //       setLoading(false);
+// //       return;
+// //     }
+
+// //     if (formData.images.length === 0) {
+// //       toast.warning("Please add at least one property image");
+// //       setLoading(false);
+// //       return;
+// //     }
+
+// //     // Agent assignment validation based on user role
+// //     if (
+// //       userRole === "customer" &&
+// //       !formData.assignedAgent &&
+// //       !formData.manualAgentInfo.name
+// //     ) {
+// //       toast.error("Please assign an agent for the property");
+// //       setLoading(false);
+// //       return;
+// //     }
+
+// //     // Manual agent validation
+// //     if (agentSelectionMethod === "manual" && !formData.manualAgentInfo.name) {
+// //       toast.error("Please enter agent name");
+// //       setLoading(false);
+// //       return;
+// //     }
+
+// //     const toastId = toast.loading("Posting your property...");
+
+// //     try {
+// //       // Prepare data for API
+// //       const propertyData = {
+// //         title: formData.title,
+// //         description: formData.description,
+// //         price: Number(formData.price),
+// //         type: formData.type,
+// //         category: formData.category,
+// //         location: formData.location,
+// //         specifications: {
+// //           ...formData.specifications,
+// //           bedrooms: Number(formData.specifications.bedrooms),
+// //           bathrooms: Number(formData.specifications.bathrooms),
+// //           area: Number(formData.specifications.area),
+// //         },
+// //         amenities: formData.amenities,
+// //         features: formData.features,
+// //         images: formData.images,
+// //       };
+
+// //       // Add agent assignment based on selection method
+// //       if (agentSelectionMethod === "select" && formData.assignedAgent) {
+// //         propertyData.assignedAgent = formData.assignedAgent;
+// //       } else if (
+// //         agentSelectionMethod === "manual" &&
+// //         formData.manualAgentInfo.name
+// //       ) {
+// //         // Send manual agent info to be stored in property schema
+// //         propertyData.manualAgent = formData.manualAgentInfo;
+// //       }
+
+// //       // Use the imported createProperty function
+// //       const result = await createProperty(propertyData);
+
+// //       toast.update(toastId, {
+// //         render:
+// //           result.agentType === "manual"
+// //             ? "Property posted successfully with manual agent information! 🎉"
+// //             : "Property posted successfully! 🎉",
+// //         type: "success",
+// //         isLoading: false,
+// //         autoClose: 3000,
+// //       });
+
+// //       // Reset form
+// //       setFormData({
+// //         title: "",
+// //         description: "",
+// //         price: "",
+// //         type: "",
+// //         category: "",
+// //         location: { address: "", city: "", state: "", pincode: "" },
+// //         specifications: {
+// //           bedrooms: "",
+// //           bathrooms: "",
+// //           area: "",
+// //           areaUnit: "sqft",
+// //         },
+// //         amenities: [],
+// //         features: [],
+// //         images: [],
+// //         assignedAgent: "",
+// //         manualAgentInfo: {
+// //           name: "",
+// //           email: "",
+// //           phone: "",
+// //           designation: "",
+// //         },
+// //       });
+
+// //       // Reset agent selection method
+// //       setAgentSelectionMethod("select");
+// //     } catch (error) {
+// //       console.error("Error creating property:", error);
+// //       toast.update(toastId, {
+// //         render: error.message || "Error posting property. Please try again.",
+// //         type: "error",
+// //         isLoading: false,
+// //         autoClose: 4000,
+// //       });
+// //     } finally {
+// //       setLoading(false);
+// //     }
+// //   };
+
+// //   // Agent Selection Component - memoized
+// //   const AgentSelectionField = React.memo(() => {
+// //     if (userRole === "employee") {
+// //       return (
+// //         <div className="bg-success/10 border border-success/20 rounded-lg p-4">
+// //           <div className="flex items-center space-x-2">
+// //             <Icon name="UserCheck" size={20} className="text-success" />
+// //             <span className="text-success font-medium">
+// //               You are assigned as the agent for this property
+// //             </span>
+// //           </div>
+// //         </div>
+// //       );
+// //     }
+
+// //     return (
+// //       <div className="space-y-4">
+// //         <div className="flex items-center justify-between">
+// //           <label className="text-sm font-medium text-foreground">
+// //             Assign Agent
+// //             {userRole === "customer" && (
+// //               <span className="text-error ml-1">*</span>
+// //             )}
+// //           </label>
+
+// //           {/* Selection Method Toggle */}
+// //           <div className="flex space-x-2">
+// //             <button
+// //               type="button"
+// //               onClick={() => handleAgentSelectionChange("select")}
+// //               className={`px-3 py-1 text-xs rounded-full border transition-all ${
+// //                 agentSelectionMethod === "select"
+// //                   ? "bg-primary text-primary-foreground border-primary"
+// //                   : "bg-background text-foreground border-border"
+// //               }`}
+// //             >
+// //               Select from List
+// //             </button>
+// //             <button
+// //               type="button"
+// //               onClick={() => handleAgentSelectionChange("manual")}
+// //               className={`px-3 py-1 text-xs rounded-full border transition-all ${
+// //                 agentSelectionMethod === "manual"
+// //                   ? "bg-primary text-primary-foreground border-primary"
+// //                   : "bg-background text-foreground border-border"
+// //               }`}
+// //             >
+// //               Manual Agent Info
+// //             </button>
+// //           </div>
+// //         </div>
+
+// //         {/* Agent Selection Method */}
+// //         {agentSelectionMethod === "select" ? (
+// //           <div className="space-y-3">
+// //             {loadingAgents ? (
+// //               <div className="flex items-center space-x-2 text-muted-foreground">
+// //                 <Icon name="Loader" size={16} className="animate-spin" />
+// //                 <span>Loading available agents...</span>
+// //               </div>
+// //             ) : availableAgents.length > 0 ? (
+// //               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto">
+// //                 {availableAgents.map((agent) => (
+// //                   <div
+// //                     key={agent._id}
+// //                     onClick={() => handleAgentSelect(agent._id)}
+// //                     className={`p-3 border rounded-lg cursor-pointer transition-all ${
+// //                       formData.assignedAgent === agent._id
+// //                         ? "border-primary bg-primary/5"
+// //                         : "border-border hover:border-primary/50"
+// //                     }`}
+// //                   >
+// //                     <div className="flex items-center space-x-3">
+// //                       {agent.avatar ? (
+// //                         <img
+// //                           src={agent.avatar}
+// //                           alt={agent.name}
+// //                           className="w-10 h-10 rounded-full object-cover"
+// //                         />
+// //                       ) : (
+// //                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+// //                           <Icon
+// //                             name="User"
+// //                             size={16}
+// //                             className="text-primary"
+// //                           />
+// //                         </div>
+// //                       )}
+// //                       <div className="flex-1">
+// //                         <h4 className="font-medium text-foreground">
+// //                           {agent.name}
+// //                         </h4>
+// //                         <p className="text-sm text-muted-foreground">
+// //                           {agent.designation} • {agent.experience || "0"}+ years
+// //                         </p>
+// //                         <div className="flex items-center space-x-2 mt-1">
+// //                           <div className="flex items-center space-x-1">
+// //                             <Icon
+// //                               name="Star"
+// //                               size={12}
+// //                               className="text-warning"
+// //                             />
+// //                             <span className="text-xs">
+// //                               {agent.rating?.average || 0}
+// //                             </span>
+// //                           </div>
+// //                           <span className="text-xs text-muted-foreground">
+// //                             ({agent.rating?.totalReviews || 0} reviews)
+// //                           </span>
+// //                         </div>
+// //                       </div>
+// //                       {formData.assignedAgent === agent._id && (
+// //                         <Icon name="Check" size={16} className="text-primary" />
+// //                       )}
+// //                     </div>
+// //                   </div>
+// //                 ))}
+// //               </div>
+// //             ) : (
+// //               <div className="text-center py-4 text-muted-foreground">
+// //                 <Icon name="Users" size={24} className="mx-auto mb-2" />
+// //                 <p>No agents available</p>
+// //               </div>
+// //             )}
+// //           </div>
+// //         ) : (
+// //           <div className="space-y-4">
+// //             <div className="bg-info/10 border border-info/20 rounded-lg p-4">
+// //               <div className="flex items-center space-x-2">
+// //                 <Icon name="Info" size={16} className="text-info" />
+// //                 <span className="text-sm text-info">
+// //                   Enter agent details. This information will be stored directly
+// //                   with the property.
+// //                 </span>
+// //               </div>
+// //             </div>
+
+// //             <InputField
+// //               label="Agent Name"
+// //               placeholder="Enter agent full name"
+// //               value={formData.manualAgentInfo.name}
+// //               onChange={(e) => handleManualAgentChange("name", e.target.value)}
+// //               required={userRole === "customer"}
+// //               icon="UserPlus"
+// //             />
+
+// //             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+// //               <InputField
+// //                 label="Agent Email"
+// //                 type="email"
+// //                 placeholder="agent@example.com"
+// //                 value={formData.manualAgentInfo.email}
+// //                 onChange={(e) =>
+// //                   handleManualAgentChange("email", e.target.value)
+// //                 }
+// //                 icon="Mail"
+// //               />
+// //               <InputField
+// //                 label="Agent Phone"
+// //                 placeholder="+91 00000 00000"
+// //                 value={formData.manualAgentInfo.phone}
+// //                 onChange={(e) =>
+// //                   handleManualAgentChange("phone", e.target.value)
+// //                 }
+// //                 icon="Phone"
+// //               />
+// //             </div>
+
+// //             <InputField
+// //               label="Designation (Optional)"
+// //               placeholder="e.g., Senior Property Consultant"
+// //               value={formData.manualAgentInfo.designation}
+// //               onChange={(e) =>
+// //                 handleManualAgentChange("designation", e.target.value)
+// //               }
+// //               icon="Briefcase"
+// //             />
+// //           </div>
+// //         )}
+
+// //         {/* Current Selection Display */}
+// //         {(formData.assignedAgent || formData.manualAgentInfo.name) && (
+// //           <div className="bg-primary/5 border border-primary/20 rounded-lg p-3">
+// //             <div className="flex items-center justify-between">
+// //               <div className="flex items-center space-x-2">
+// //                 <Icon name="UserCheck" size={16} className="text-primary" />
+// //                 <span className="text-sm font-medium text-foreground">
+// //                   Assigned Agent:
+// //                 </span>
+// //                 <span className="text-sm text-muted-foreground">
+// //                   {formData.assignedAgent
+// //                     ? availableAgents.find(
+// //                         (a) => a._id === formData.assignedAgent
+// //                       )?.name
+// //                     : formData.manualAgentInfo.name}
+// //                 </span>
+// //               </div>
+// //               <button
+// //                 type="button"
+// //                 onClick={() => {
+// //                   setFormData((prev) => ({
+// //                     ...prev,
+// //                     assignedAgent: "",
+// //                     manualAgentInfo: {
+// //                       name: "",
+// //                       email: "",
+// //                       phone: "",
+// //                       designation: "",
+// //                     },
+// //                   }));
+// //                 }}
+// //                 className="text-error hover:text-error/80 transition-colors"
+// //               >
+// //                 <Icon name="X" size={16} />
+// //               </button>
+// //             </div>
+// //           </div>
+// //         )}
+// //       </div>
+// //     );
+// //   });
+
+// //   return (
+// //     <div className="min-h-screen bg-background p-6">
+// //       <div className="max-w-4xl mx-auto">
+// //         {/* Header */}
+// //         <div className="mb-8">
+// //           <div className="flex items-center space-x-3 mb-2">
+// //             <Icon name="Home" size={24} className="text-primary" />
+// //             <h1 className="text-3xl font-bold text-foreground">
+// //               Post New Property
+// //             </h1>
+// //           </div>
+// //           <p className="text-muted-foreground">
+// //             List your property and reach potential buyers or tenants
+// //           </p>
+// //         </div>
+
+// //         <form onSubmit={handleSubmit} className="space-y-8">
+// //           {/* Basic Information Card */}
+// //           <div className="bg-card border border-border rounded-lg p-6">
+// //             <div className="flex items-center space-x-2 mb-6">
+// //               <Icon name="Info" size={20} className="text-primary" />
+// //               <h2 className="text-xl font-semibold text-foreground">
+// //                 Basic Information
+// //               </h2>
+// //             </div>
+
+// //             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+// //               <InputField
+// //                 label="Property Title"
+// //                 placeholder="e.g., Luxury 3BHK Apartment with Sea View"
+// //                 value={formData.title}
+// //                 onChange={(e) => handleInputChange("title", e.target.value)}
+// //                 required
+// //                 icon="Tag"
+// //               />
+
+// //               <InputField
+// //                 label="Price"
+// //                 type="number"
+// //                 placeholder="Enter price"
+// //                 value={formData.price}
+// //                 onChange={(e) => handleInputChange("price", e.target.value)}
+// //                 required
+// //                 icon="DollarSign"
+// //               />
+
+// //               <SelectField
+// //                 label="Property Type"
+// //                 options={propertyTypes}
+// //                 value={formData.type}
+// //                 onChange={(e) => handleInputChange("type", e.target.value)}
+// //                 required
+// //                 icon="Building"
+// //               />
+
+// //               <SelectField
+// //                 label="Category"
+// //                 options={categories}
+// //                 value={formData.category}
+// //                 onChange={(e) => handleInputChange("category", e.target.value)}
+// //                 required
+// //                 icon="Briefcase"
+// //               />
+// //             </div>
+
+// //             <div className="mt-6">
+// //               <TextareaField
+// //                 label="Description"
+// //                 placeholder="Describe your property in detail..."
+// //                 value={formData.description}
+// //                 onChange={(e) =>
+// //                   handleInputChange("description", e.target.value)
+// //                 }
+// //                 required
+// //               />
+// //             </div>
+// //           </div>
+
+// //           {/* Agent Assignment Card - Only show for admin and customer */}
+// //           {(userRole === "admin" || userRole === "customer") && (
+// //             <div className="bg-card border border-border rounded-lg p-6">
+// //               <div className="flex items-center space-x-2 mb-6">
+// //                 <Icon name="User" size={20} className="text-primary" />
+// //                 <h2 className="text-xl font-semibold text-foreground">
+// //                   Agent Assignment
+// //                 </h2>
+// //               </div>
+// //               <AgentSelectionField />
+// //             </div>
+// //           )}
+
+// //           {/* Location Card */}
+// //           <div className="bg-card border border-border rounded-lg p-6">
+// //             <div className="flex items-center space-x-2 mb-6">
+// //               <Icon name="MapPin" size={20} className="text-primary" />
+// //               <h2 className="text-xl font-semibold text-foreground">
+// //                 Location Details
+// //               </h2>
+// //             </div>
+
+// //             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+// //               <InputField
+// //                 label="Address"
+// //                 placeholder="Street address"
+// //                 value={formData.location.address}
+// //                 onChange={(e) =>
+// //                   handleNestedChange("location", "address", e.target.value)
+// //                 }
+// //                 required
+// //                 icon="Navigation"
+// //               />
+
+// //               <InputField
+// //                 label="City"
+// //                 placeholder="City"
+// //                 value={formData.location.city}
+// //                 onChange={(e) =>
+// //                   handleNestedChange("location", "city", e.target.value)
+// //                 }
+// //                 required
+// //                 icon="Map"
+// //               />
+
+// //               <InputField
+// //                 label="State"
+// //                 placeholder="State"
+// //                 value={formData.location.state}
+// //                 onChange={(e) =>
+// //                   handleNestedChange("location", "state", e.target.value)
+// //                 }
+// //                 required
+// //               />
+
+// //               <InputField
+// //                 label="Pincode"
+// //                 placeholder="Pincode"
+// //                 value={formData.location.pincode}
+// //                 onChange={(e) =>
+// //                   handleNestedChange("location", "pincode", e.target.value)
+// //                 }
+// //                 required
+// //               />
+// //             </div>
+// //           </div>
+
+// //           {/* Specifications Card */}
+// //           <div className="bg-card border border-border rounded-lg p-6">
+// //             <div className="flex items-center space-x-2 mb-6">
+// //               <Icon name="Ruler" size={20} className="text-primary" />
+// //               <h2 className="text-xl font-semibold text-foreground">
+// //                 Specifications
+// //               </h2>
+// //             </div>
+
+// //             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+// //               <InputField
+// //                 label="Bedrooms"
+// //                 type="number"
+// //                 placeholder="0"
+// //                 value={formData.specifications.bedrooms}
+// //                 onChange={(e) =>
+// //                   handleNestedChange(
+// //                     "specifications",
+// //                     "bedrooms",
+// //                     e.target.value
+// //                   )
+// //                 }
+// //                 required
+// //                 icon="Bed"
+// //               />
+
+// //               <InputField
+// //                 label="Bathrooms"
+// //                 type="number"
+// //                 placeholder="0"
+// //                 value={formData.specifications.bathrooms}
+// //                 onChange={(e) =>
+// //                   handleNestedChange(
+// //                     "specifications",
+// //                     "bathrooms",
+// //                     e.target.value
+// //                   )
+// //                 }
+// //                 required
+// //                 icon="Bath"
+// //               />
+
+// //               <InputField
+// //                 label="Area"
+// //                 type="number"
+// //                 placeholder="Area size"
+// //                 value={formData.specifications.area}
+// //                 onChange={(e) =>
+// //                   handleNestedChange("specifications", "area", e.target.value)
+// //                 }
+// //                 required
+// //                 icon="Square"
+// //               />
+
+// //               <SelectField
+// //                 label="Area Unit"
+// //                 options={areaUnits}
+// //                 value={formData.specifications.areaUnit}
+// //                 onChange={(e) =>
+// //                   handleNestedChange(
+// //                     "specifications",
+// //                     "areaUnit",
+// //                     e.target.value
+// //                   )
+// //                 }
+// //                 required
+// //               />
+// //             </div>
+// //           </div>
+
+// //           {/* Amenities & Features Cards */}
+// //           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+// //             {/* Amenities */}
+// //             <div className="bg-card border border-border rounded-lg p-6">
+// //               <div className="flex items-center space-x-2 mb-6">
+// //                 <Icon name="Wifi" size={20} className="text-primary" />
+// //                 <h2 className="text-xl font-semibold text-foreground">
+// //                   Amenities
+// //                 </h2>
+// //               </div>
+
+// //               <div className="grid grid-cols-2 gap-3">
+// //                 {commonAmenities.map((amenity) => (
+// //                   <label
+// //                     key={amenity}
+// //                     className="flex items-center space-x-2 cursor-pointer"
+// //                   >
+// //                     <input
+// //                       type="checkbox"
+// //                       checked={formData.amenities.includes(amenity)}
+// //                       onChange={() => handleArrayToggle("amenities", amenity)}
+// //                       className="rounded border-border text-primary focus:ring-primary"
+// //                     />
+// //                     <span className="text-sm text-foreground">{amenity}</span>
+// //                   </label>
+// //                 ))}
+// //               </div>
+// //             </div>
+
+// //             {/* Features */}
+// //             <div className="bg-card border border-border rounded-lg p-6">
+// //               <div className="flex items-center space-x-2 mb-6">
+// //                 <Icon name="Star" size={20} className="text-primary" />
+// //                 <h2 className="text-xl font-semibold text-foreground">
+// //                   Features
+// //                 </h2>
+// //               </div>
+
+// //               <div className="grid grid-cols-2 gap-3">
+// //                 {commonFeatures.map((feature) => (
+// //                   <label
+// //                     key={feature}
+// //                     className="flex items-center space-x-2 cursor-pointer"
+// //                   >
+// //                     <input
+// //                       type="checkbox"
+// //                       checked={formData.features.includes(feature)}
+// //                       onChange={() => handleArrayToggle("features", feature)}
+// //                       className="rounded border-border text-primary focus:ring-primary"
+// //                     />
+// //                     <span className="text-sm text-foreground">{feature}</span>
+// //                   </label>
+// //                 ))}
+// //               </div>
+// //             </div>
+// //           </div>
+
+// //           {/* Images Upload */}
+// //           <div className="bg-card border border-border rounded-lg p-6">
+// //             <div className="flex items-center space-x-2 mb-6">
+// //               <Icon name="Image" size={20} className="text-primary" />
+// //               <h2 className="text-xl font-semibold text-foreground">
+// //                 Property Images
+// //               </h2>
+// //             </div>
+
+// //             <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+// //               <input
+// //                 type="file"
+// //                 multiple
+// //                 accept="image/*"
+// //                 onChange={handleImageUpload}
+// //                 className="hidden"
+// //                 id="image-upload"
+// //               />
+// //               <label
+// //                 htmlFor="image-upload"
+// //                 className="cursor-pointer flex flex-col items-center justify-center space-y-3"
+// //               >
+// //                 <Icon
+// //                   name="Upload"
+// //                   size={32}
+// //                   className="text-muted-foreground"
+// //                 />
+// //                 <div>
+// //                   <p className="text-foreground font-medium">
+// //                     Click to upload images
+// //                   </p>
+// //                   <p className="text-sm text-muted-foreground">
+// //                     PNG, JPG, WEBP up to 10MB (Max 10 images)
+// //                   </p>
+// //                 </div>
+// //                 <Button type="button" variant="outline">
+// //                   Choose Files
+// //                 </Button>
+// //               </label>
+// //             </div>
+
+// //             {formData.images.length > 0 && (
+// //               <div className="mt-4">
+// //                 <h3 className="text-sm font-medium text-foreground mb-3">
+// //                   Selected Images ({formData.images.length}/10)
+// //                 </h3>
+// //                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+// //                   {formData.images.map((image, index) => (
+// //                     <div key={index} className="relative group">
+// //                       <img
+// //                         src={URL.createObjectURL(image)}
+// //                         alt={`Property ${index + 1}`}
+// //                         className="w-full h-24 object-cover rounded-lg"
+// //                       />
+// //                       <button
+// //                         type="button"
+// //                         onClick={() => removeImage(index)}
+// //                         className="absolute -top-2 -right-2 bg-error text-error-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+// //                       >
+// //                         <Icon name="X" size={12} />
+// //                       </button>
+// //                     </div>
+// //                   ))}
+// //                 </div>
+// //               </div>
+// //             )}
+// //           </div>
+
+// //           {/* Submit Button */}
+// //           <div className="flex justify-end space-x-4 pt-6 border-t border-border">
+// //             <Button
+// //               type="button"
+// //               variant="outline"
+// //               onClick={() => window.history.back()}
+// //             >
+// //               Cancel
+// //             </Button>
+// //             <Button
+// //               type="submit"
+// //               disabled={loading}
+// //               iconName="Upload"
+// //               iconPosition="left"
+// //             >
+// //               {loading ? "Posting Property..." : "Post Property"}
+// //             </Button>
+// //           </div>
+// //         </form>
+// //       </div>
+// //     </div>
+// //   );
+// // };
+
+// // export default PostProperty;
+
+// import React, { useState, useEffect, useCallback } from "react";
+// import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import Icon from "../../../components/AppIcon";
+// import Button from "../../../components/ui/Button";
+// import { createProperty } from "../../../lib/mongo/services/propertyService";
+// import { getAvailableAgents } from "../../../lib/mongo/services/propertyService";
+
+// // Memoized input components
+// const InputField = React.memo(
+//   ({
+//     label,
+//     type = "text",
+//     value,
+//     onChange,
+//     placeholder,
+//     required = false,
+//     icon,
+//     ...props
+//   }) => (
+//     <div className="space-y-2">
+//       <label className="text-sm font-medium text-foreground flex items-center">
+//         {icon && (
+//           <Icon name={icon} size={16} className="mr-2 text-muted-foreground" />
+//         )}
+//         {label}
+//         {required && <span className="text-error ml-1">*</span>}
+//       </label>
+//       <input
+//         type={type}
+//         value={value}
+//         onChange={onChange}
+//         placeholder={placeholder}
+//         required={required}
+//         className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+//         {...props}
+//       />
+//     </div>
+//   )
+// );
+
+// const SelectField = React.memo(
+//   ({ label, options, value, onChange, required = false, icon, ...props }) => (
+//     <div className="space-y-2">
+//       <label className="text-sm font-medium text-foreground flex items-center">
+//         {icon && (
+//           <Icon name={icon} size={16} className="mr-2 text-muted-foreground" />
+//         )}
+//         {label}
+//         {required && <span className="text-error ml-1">*</span>}
+//       </label>
+//       <select
+//         value={value}
+//         onChange={onChange}
+//         required={required}
+//         className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+//         {...props}
+//       >
+//         <option value="">Select {label}</option>
+//         {options.map((option) => (
+//           <option key={option.value} value={option.value}>
+//             {option.label}
+//           </option>
+//         ))}
+//       </select>
+//     </div>
+//   )
+// );
+
+// const TextareaField = React.memo(
+//   ({
+//     label,
+//     value,
+//     onChange,
+//     placeholder,
+//     required = false,
+//     rows = 4,
+//     ...props
+//   }) => (
+//     <div className="space-y-2">
+//       <label className="text-sm font-medium text-foreground">
+//         {label}
+//         {required && <span className="text-error ml-1">*</span>}
+//       </label>
+//       <textarea
+//         value={value}
+//         onChange={onChange}
+//         placeholder={placeholder}
+//         required={required}
+//         rows={rows}
+//         className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-vertical"
+//         {...props}
+//       />
+//     </div>
+//   )
+// );
+
+// const CheckboxField = React.memo(({ label, checked, onChange, ...props }) => (
+//   <label className="flex items-center space-x-2 cursor-pointer">
+//     <input
+//       type="checkbox"
+//       checked={checked}
+//       onChange={onChange}
+//       className="rounded border-border text-primary focus:ring-primary"
+//       {...props}
+//     />
+//     <span className="text-sm text-foreground">{label}</span>
+//   </label>
+// ));
+
+// const PostProperty = () => {
+//   const [formData, setFormData] = useState({
+//     // Basic Information
+//     title: "",
+//     description: "",
+//     price: "",
+//     type: "",
+//     category: "",
+
+//     // Location
+//     location: {
+//       address: "",
+//       city: "",
+//       state: "",
+//       pincode: "",
+//       locality: "",
+//       landmark: "",
+//       coordinates: { lat: "", lng: "" },
+//       googlePlaceId: "",
+//     },
+
+//     // Enhanced Specifications
+//     specifications: {
+//       bedrooms: "",
+//       bathrooms: "",
+//       balconies: "",
+//       area: "",
+//       areaUnit: "sqft",
+//       carpetArea: "",
+//       builtUpArea: "",
+//       superBuiltUpArea: "",
+//       builtYear: "",
+//       ageOfConstruction: "",
+//       constructionStatus: "ready-to-move",
+//       possessionDate: "",
+//       floor: "",
+//       totalFloors: "",
+//       facing: "north",
+//       furnishing: "unfurnished",
+//       parking: "none",
+//       parkingCount: "",
+//       lift: false,
+//       powerBackup: false,
+//       waterSupply: "corporation",
+//       overlooking: [],
+//       ownership: "freehold",
+//       approvedBy: [],
+//       occupancyCertificate: false,
+//     },
+
+//     // Financial Details
+//     priceNegotiable: false,
+//     maintenanceCharges: {
+//       amount: "",
+//       period: "monthly",
+//     },
+//     securityDeposit: "",
+//     bookingAmount: "",
+
+//     // Arrays
+//     amenities: [],
+//     features: [],
+//     nearbyPlaces: [],
+//     transportation: [],
+
+//     // Status & Features
+//     status: "available",
+//     featured: false,
+
+//     // Contact Info
+//     contactInfo: {
+//       showPhone: true,
+//       showEmail: true,
+//       preferredContact: "all",
+//       viewingSchedule: "appointment-only",
+//       availableFrom: "",
+//       availableTill: "",
+//     },
+
+//     // Agent Assignment
+//     assignedAgent: "",
+//     manualAgentInfo: {
+//       name: "",
+//       email: "",
+//       phone: "",
+//       alternatePhone: "",
+//       designation: "Property Consultant",
+//       company: "",
+//       avatar: "",
+//       experience: "0+",
+//       languages: ["English", "Hindi"],
+//       rating: "",
+//       reviewCount: "",
+//       propertiesSold: "",
+//       responseTime: "",
+//       availability: "within-24h",
+//       verified: false,
+//     },
+
+//     images: [],
+//   });
+
+//   const [loading, setLoading] = useState(false);
+//   const [availableAgents, setAvailableAgents] = useState([]);
+//   const [userRole, setUserRole] = useState("");
+//   const [loadingAgents, setLoadingAgents] = useState(false);
+//   const [agentSelectionMethod, setAgentSelectionMethod] = useState("select");
+//   const [currentStep, setCurrentStep] = useState(1);
+//   const totalSteps = 6;
+
+//   // Fetch user role and available agents
+//   useEffect(() => {
+//     fetchUserData();
+//   }, []);
+
+//   const fetchUserData = useCallback(async () => {
+//     try {
+//       const userData = JSON.parse(localStorage.getItem("user") || "{}");
+//       const currentUserRole = userData.role || "customer";
+//       setUserRole(currentUserRole);
+
+//       if (currentUserRole === "employee" || currentUserRole === "admin") {
+//         setFormData((prev) => ({
+//           ...prev,
+//           assignedAgent: userData.id,
+//         }));
+//       }
+
+//       if (currentUserRole === "admin" || currentUserRole === "customer") {
+//         setLoadingAgents(true);
+//         const agentsResponse = await getAvailableAgents();
+//         setAvailableAgents(agentsResponse.agents || []);
+//         setLoadingAgents(false);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching user data:", error);
+//       toast.error("Error loading agent data");
+//     }
+//   }, []);
+
+//   // Handler functions
+//   const handleInputChange = useCallback((field, value) => {
+//     setFormData((prev) => ({
+//       ...prev,
+//       [field]: value,
+//     }));
+//   }, []);
+
+//   const handleNestedChange = useCallback((parent, field, value) => {
+//     setFormData((prev) => ({
+//       ...prev,
+//       [parent]: {
+//         ...prev[parent],
+//         [field]: value,
+//       },
+//     }));
+//   }, []);
+
+//   const handleDeepNestedChange = useCallback((parent, child, field, value) => {
+//     setFormData((prev) => ({
+//       ...prev,
+//       [parent]: {
+//         ...prev[parent],
+//         [child]: {
+//           ...prev[parent][child],
+//           [field]: value,
+//         },
+//       },
+//     }));
+//   }, []);
+
+//   const handleManualAgentChange = useCallback((field, value) => {
+//     setFormData((prev) => ({
+//       ...prev,
+//       manualAgentInfo: {
+//         ...prev.manualAgentInfo,
+//         [field]: value,
+//       },
+//     }));
+//   }, []);
+
+//   const handleArrayToggle = useCallback((arrayName, value) => {
+//     setFormData((prev) => ({
+//       ...prev,
+//       [arrayName]: prev[arrayName].includes(value)
+//         ? prev[arrayName].filter((item) => item !== value)
+//         : [...prev[arrayName], value],
+//     }));
+//   }, []);
+
+//   const handleSpecificationToggle = useCallback((field, value) => {
+//     setFormData((prev) => ({
+//       ...prev,
+//       specifications: {
+//         ...prev.specifications,
+//         [field]: prev.specifications[field].includes(value)
+//           ? prev.specifications[field].filter((item) => item !== value)
+//           : [...prev.specifications[field], value],
+//       },
+//     }));
+//   }, []);
+
+//   const handleAgentSelectionChange = useCallback((method) => {
+//     setAgentSelectionMethod(method);
+//     setFormData((prev) => ({
+//       ...prev,
+//       assignedAgent: "",
+//       manualAgentInfo: {
+//         name: "",
+//         email: "",
+//         phone: "",
+//         alternatePhone: "",
+//         designation: "Property Consultant",
+//         company: "",
+//         avatar: "",
+//         experience: "0+",
+//         languages: ["English", "Hindi"],
+//         rating: "",
+//         reviewCount: "",
+//         propertiesSold: "",
+//         responseTime: "",
+//         availability: "within-24h",
+//         verified: false,
+//       },
+//     }));
+//   }, []);
+
+//   const handleAgentSelect = useCallback((agentId) => {
+//     setFormData((prev) => ({
+//       ...prev,
+//       assignedAgent: agentId,
+//     }));
+//   }, []);
+
+//   const handleImageUpload = useCallback(
+//     (e) => {
+//       const files = Array.from(e.target.files);
+//       if (files.length + formData.images.length > 10) {
+//         toast.warning("Maximum 10 images allowed");
+//         return;
+//       }
+//       setFormData((prev) => ({
+//         ...prev,
+//         images: [...prev.images, ...files],
+//       }));
+//       toast.success(`${files.length} image(s) added`);
+//     },
+//     [formData.images.length]
+//   );
+
+//   const removeImage = useCallback((index) => {
+//     setFormData((prev) => ({
+//       ...prev,
+//       images: prev.images.filter((_, i) => i !== index),
+//     }));
+//     toast.info("Image removed");
+//   }, []);
+
+//   // Options for dropdowns
+//   const propertyTypes = [
+//     { value: "apartment", label: "Apartment" },
+//     { value: "villa", label: "Villa" },
+//     { value: "house", label: "House" },
+//     { value: "commercial", label: "Commercial" },
+//     { value: "plot", label: "Plot" },
+//     { value: "penthouse", label: "Penthouse" },
+//     { value: "studio", label: "Studio" },
+//   ];
+
+//   const categories = [
+//     { value: "residential", label: "Residential" },
+//     { value: "commercial", label: "Commercial" },
+//   ];
+
+//   const areaUnits = [
+//     { value: "sqft", label: "Square Feet" },
+//     { value: "sqm", label: "Square Meters" },
+//     { value: "acre", label: "Acre" },
+//     { value: "hectare", label: "Hectare" },
+//   ];
+
+//   const constructionStatuses = [
+//     { value: "ready-to-move", label: "Ready to Move" },
+//     { value: "under-construction", label: "Under Construction" },
+//     { value: "new-launch", label: "New Launch" },
+//   ];
+
+//   const facingOptions = [
+//     { value: "north", label: "North" },
+//     { value: "south", label: "South" },
+//     { value: "east", label: "East" },
+//     { value: "west", label: "West" },
+//     { value: "north-east", label: "North East" },
+//     { value: "north-west", label: "North West" },
+//     { value: "south-east", label: "South East" },
+//     { value: "south-west", label: "South West" },
+//   ];
+
+//   const furnishingOptions = [
+//     { value: "unfurnished", label: "Unfurnished" },
+//     { value: "semi-furnished", label: "Semi Furnished" },
+//     { value: "fully-furnished", label: "Fully Furnished" },
+//   ];
+
+//   const parkingOptions = [
+//     { value: "none", label: "None" },
+//     { value: "open", label: "Open" },
+//     { value: "covered", label: "Covered" },
+//     { value: "basement", label: "Basement" },
+//   ];
+
+//   const waterSupplyOptions = [
+//     { value: "corporation", label: "Corporation" },
+//     { value: "borewell", label: "Borewell" },
+//     { value: "both", label: "Both" },
+//   ];
+
+//   const ownershipOptions = [
+//     { value: "freehold", label: "Freehold" },
+//     { value: "leasehold", label: "Leasehold" },
+//   ];
+
+//   const maintenancePeriods = [
+//     { value: "monthly", label: "Monthly" },
+//     { value: "quarterly", label: "Quarterly" },
+//     { value: "yearly", label: "Yearly" },
+//   ];
+
+//   const contactOptions = [
+//     { value: "all", label: "All Methods" },
+//     { value: "phone", label: "Phone Only" },
+//     { value: "email", label: "Email Only" },
+//   ];
+
+//   const viewingOptions = [
+//     { value: "appointment-only", label: "Appointment Only" },
+//     { value: "walk-in", label: "Walk-in Welcome" },
+//     { value: "virtual-only", label: "Virtual Only" },
+//   ];
+
+//   const commonAmenities = [
+//     "Swimming Pool",
+//     "Gym",
+//     "Park",
+//     "Security",
+//     "Power Backup",
+//     "Water Supply",
+//     "Clubhouse",
+//     "Playground",
+//     "Garden",
+//     "Parking",
+//     "Lift",
+//     "Internet",
+//     "CCTV",
+//     "Fire Safety",
+//     "Rain Water Harvesting",
+//   ];
+
+//   const commonFeatures = [
+//     "Sea View",
+//     "Mountain View",
+//     "Fully Furnished",
+//     "Modular Kitchen",
+//     "Wooden Flooring",
+//     "Balcony",
+//     "Study Room",
+//     "Home Theater",
+//     "Smart Home",
+//     "Air Conditioning",
+//     "Modular Kitchen",
+//     "Walk-in Closet",
+//     "Jacuzzi",
+//   ];
+
+//   const overlookingOptions = [
+//     "Park",
+//     "Road",
+//     "Garden",
+//     "Pool",
+//     "Sea",
+//     "Mountain",
+//     "City",
+//   ];
+
+//   const approvalOptions = [
+//     "RERA",
+//     "Municipal Corporation",
+//     "Development Authority",
+//     "NA",
+//   ];
+
+//   // Form submission
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setLoading(true);
+
+//     // Basic validation
+//     if (
+//       !formData.title ||
+//       !formData.price ||
+//       !formData.type ||
+//       !formData.category
+//     ) {
+//       toast.error("Please fill all required fields");
+//       setLoading(false);
+//       return;
+//     }
+
+//     if (formData.images.length === 0) {
+//       toast.warning("Please add at least one property image");
+//       setLoading(false);
+//       return;
+//     }
+
+//     // Agent assignment validation
+//     if (
+//       userRole === "customer" &&
+//       !formData.assignedAgent &&
+//       !formData.manualAgentInfo.name
+//     ) {
+//       toast.error("Please assign an agent for the property");
+//       setLoading(false);
+//       return;
+//     }
+
+//     const toastId = toast.loading("Posting your property...");
+
+//     try {
+//       // Prepare data according to backend schema
+//       const propertyData = {
+//         title: formData.title,
+//         description: formData.description,
+//         price: Number(formData.price),
+//         type: formData.type,
+//         category: formData.category,
+//         location: JSON.stringify(formData.location),
+//         specifications: JSON.stringify(formData.specifications),
+//         amenities: JSON.stringify(formData.amenities),
+//         features: JSON.stringify(formData.features),
+//         nearbyPlaces: JSON.stringify(formData.nearbyPlaces),
+//         transportation: JSON.stringify(formData.transportation),
+//         priceNegotiable: formData.priceNegotiable,
+//         maintenanceCharges: JSON.stringify(formData.maintenanceCharges),
+//         securityDeposit: Number(formData.securityDeposit) || 0,
+//         bookingAmount: Number(formData.bookingAmount) || 0,
+//         status: formData.status,
+//         featured: formData.featured,
+//         contactInfo: JSON.stringify(formData.contactInfo),
+//         images: formData.images,
+//       };
+
+//       // Add agent assignment
+//       if (agentSelectionMethod === "select" && formData.assignedAgent) {
+//         propertyData.assignedAgent = formData.assignedAgent;
+//       } else if (
+//         agentSelectionMethod === "manual" &&
+//         formData.manualAgentInfo.name
+//       ) {
+//         propertyData.manualAgent = formData.manualAgentInfo;
+//       }
+
+//       const result = await createProperty(propertyData);
+
+//       toast.update(toastId, {
+//         render:
+//           result.agentType === "manual"
+//             ? "Property posted successfully with manual agent information! 🎉"
+//             : "Property posted successfully! 🎉",
+//         type: "success",
+//         isLoading: false,
+//         autoClose: 3000,
+//       });
+
+//       // Reset form
+//       setFormData({
+//         title: "",
+//         description: "",
+//         price: "",
+//         type: "",
+//         category: "",
+//         location: {
+//           address: "",
+//           city: "",
+//           state: "",
+//           pincode: "",
+//           locality: "",
+//           landmark: "",
+//           coordinates: { lat: "", lng: "" },
+//           googlePlaceId: "",
+//         },
+//         specifications: {
+//           bedrooms: "",
+//           bathrooms: "",
+//           balconies: "",
+//           area: "",
+//           areaUnit: "sqft",
+//           carpetArea: "",
+//           builtUpArea: "",
+//           superBuiltUpArea: "",
+//           builtYear: "",
+//           ageOfConstruction: "",
+//           constructionStatus: "ready-to-move",
+//           possessionDate: "",
+//           floor: "",
+//           totalFloors: "",
+//           facing: "north",
+//           furnishing: "unfurnished",
+//           parking: "none",
+//           parkingCount: "",
+//           lift: false,
+//           powerBackup: false,
+//           waterSupply: "corporation",
+//           overlooking: [],
+//           ownership: "freehold",
+//           approvedBy: [],
+//           occupancyCertificate: false,
+//         },
+//         priceNegotiable: false,
+//         maintenanceCharges: { amount: "", period: "monthly" },
+//         securityDeposit: "",
+//         bookingAmount: "",
+//         amenities: [],
+//         features: [],
+//         nearbyPlaces: [],
+//         transportation: [],
+//         status: "available",
+//         featured: false,
+//         contactInfo: {
+//           showPhone: true,
+//           showEmail: true,
+//           preferredContact: "all",
+//           viewingSchedule: "appointment-only",
+//           availableFrom: "",
+//           availableTill: "",
+//         },
+//         assignedAgent: "",
+//         manualAgentInfo: {
+//           name: "",
+//           email: "",
+//           phone: "",
+//           alternatePhone: "",
+//           designation: "Property Consultant",
+//           company: "",
+//           avatar: "",
+//           experience: "0+",
+//           languages: ["English", "Hindi"],
+//           rating: "",
+//           reviewCount: "",
+//           propertiesSold: "",
+//           responseTime: "",
+//           availability: "within-24h",
+//           verified: false,
+//         },
+//         images: [],
+//       });
+//       setCurrentStep(1);
+//     } catch (error) {
+//       console.error("Error creating property:", error);
+//       toast.update(toastId, {
+//         render: error.message || "Error posting property. Please try again.",
+//         type: "error",
+//         isLoading: false,
+//         autoClose: 4000,
+//       });
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // Step navigation
+//   const nextStep = () => {
+//     if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
+//   };
+
+//   const prevStep = () => {
+//     if (currentStep > 1) setCurrentStep(currentStep - 1);
+//   };
+
+//   // Progress Steps Component
+//   const ProgressSteps = () => (
+//     <div className="flex items-center justify-between mb-8">
+//       {[1, 2, 3, 4, 5, 6].map((step) => (
+//         <React.Fragment key={step}>
+//           <div className="flex flex-col items-center">
+//             <div
+//               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+//                 step === currentStep
+//                   ? "bg-primary text-primary-foreground"
+//                   : step < currentStep
+//                   ? "bg-success text-success-foreground"
+//                   : "bg-muted text-muted-foreground"
+//               }`}
+//             >
+//               {step}
+//             </div>
+//             <span className="text-xs mt-2 text-muted-foreground">
+//               {step === 1 && "Basic Info"}
+//               {step === 2 && "Location"}
+//               {step === 3 && "Specifications"}
+//               {step === 4 && "Features"}
+//               {step === 5 && "Financial"}
+//               {step === 6 && "Agent & Images"}
+//             </span>
+//           </div>
+//           {step < totalSteps && (
+//             <div
+//               className={`flex-1 h-1 mx-4 ${
+//                 step < currentStep ? "bg-success" : "bg-muted"
+//               }`}
+//             />
+//           )}
+//         </React.Fragment>
+//       ))}
+//     </div>
+//   );
+
+//   // Agent Selection Component
+//   const AgentSelectionField = React.memo(() => {
+//     if (userRole === "employee") {
+//       return (
+//         <div className="bg-success/10 border border-success/20 rounded-lg p-4">
+//           <div className="flex items-center space-x-2">
+//             <Icon name="UserCheck" size={20} className="text-success" />
+//             <span className="text-success font-medium">
+//               You are assigned as the agent for this property
+//             </span>
+//           </div>
+//         </div>
+//       );
+//     }
+
+//     return (
+//       <div className="space-y-4">
+//         <div className="flex items-center justify-between">
+//           <label className="text-sm font-medium text-foreground">
+//             Assign Agent
+//             {userRole === "customer" && (
+//               <span className="text-error ml-1">*</span>
+//             )}
+//           </label>
+
+//           <div className="flex space-x-2">
+//             <button
+//               type="button"
+//               onClick={() => handleAgentSelectionChange("select")}
+//               className={`px-3 py-1 text-xs rounded-full border transition-all ${
+//                 agentSelectionMethod === "select"
+//                   ? "bg-primary text-primary-foreground border-primary"
+//                   : "bg-background text-foreground border-border"
+//               }`}
+//             >
+//               Select from List
+//             </button>
+//             <button
+//               type="button"
+//               onClick={() => handleAgentSelectionChange("manual")}
+//               className={`px-3 py-1 text-xs rounded-full border transition-all ${
+//                 agentSelectionMethod === "manual"
+//                   ? "bg-primary text-primary-foreground border-primary"
+//                   : "bg-background text-foreground border-border"
+//               }`}
+//             >
+//               Manual Agent Info
+//             </button>
+//           </div>
+//         </div>
+
+//         {agentSelectionMethod === "select" ? (
+//           <div className="space-y-3">
+//             {loadingAgents ? (
+//               <div className="flex items-center space-x-2 text-muted-foreground">
+//                 <Icon name="Loader" size={16} className="animate-spin" />
+//                 <span>Loading available agents...</span>
+//               </div>
+//             ) : availableAgents.length > 0 ? (
+//               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto">
+//                 {availableAgents.map((agent) => (
+//                   <div
+//                     key={agent._id}
+//                     onClick={() => handleAgentSelect(agent._id)}
+//                     className={`p-3 border rounded-lg cursor-pointer transition-all ${
+//                       formData.assignedAgent === agent._id
+//                         ? "border-primary bg-primary/5"
+//                         : "border-border hover:border-primary/50"
+//                     }`}
+//                   >
+//                     <div className="flex items-center space-x-3">
+//                       {agent.avatar ? (
+//                         <img
+//                           src={agent.avatar}
+//                           alt={agent.name}
+//                           className="w-10 h-10 rounded-full object-cover"
+//                         />
+//                       ) : (
+//                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+//                           <Icon
+//                             name="User"
+//                             size={16}
+//                             className="text-primary"
+//                           />
+//                         </div>
+//                       )}
+//                       <div className="flex-1">
+//                         <h4 className="font-medium text-foreground">
+//                           {agent.name}
+//                         </h4>
+//                         <p className="text-sm text-muted-foreground">
+//                           {agent.designation} • {agent.experience || "0"}+ years
+//                         </p>
+//                         <div className="flex items-center space-x-2 mt-1">
+//                           <div className="flex items-center space-x-1">
+//                             <Icon
+//                               name="Star"
+//                               size={12}
+//                               className="text-warning"
+//                             />
+//                             <span className="text-xs">
+//                               {agent.rating?.average || 0}
+//                             </span>
+//                           </div>
+//                           <span className="text-xs text-muted-foreground">
+//                             ({agent.rating?.totalReviews || 0} reviews)
+//                           </span>
+//                         </div>
+//                       </div>
+//                       {formData.assignedAgent === agent._id && (
+//                         <Icon name="Check" size={16} className="text-primary" />
+//                       )}
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+//             ) : (
+//               <div className="text-center py-4 text-muted-foreground">
+//                 <Icon name="Users" size={24} className="mx-auto mb-2" />
+//                 <p>No agents available</p>
+//               </div>
+//             )}
+//           </div>
+//         ) : (
+//           <div className="space-y-4">
+//             <div className="bg-info/10 border border-info/20 rounded-lg p-4">
+//               <div className="flex items-center space-x-2">
+//                 <Icon name="Info" size={16} className="text-info" />
+//                 <span className="text-sm text-info">
+//                   Enter agent details. This information will be stored directly
+//                   with the property.
+//                 </span>
+//               </div>
+//             </div>
+
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//               <InputField
+//                 label="Agent Name"
+//                 placeholder="Enter agent full name"
+//                 value={formData.manualAgentInfo.name}
+//                 onChange={(e) =>
+//                   handleManualAgentChange("name", e.target.value)
+//                 }
+//                 required={userRole === "customer"}
+//                 icon="UserPlus"
+//               />
+//               <InputField
+//                 label="Designation"
+//                 placeholder="e.g., Senior Property Consultant"
+//                 value={formData.manualAgentInfo.designation}
+//                 onChange={(e) =>
+//                   handleManualAgentChange("designation", e.target.value)
+//                 }
+//                 icon="Briefcase"
+//               />
+//             </div>
+
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//               <InputField
+//                 label="Agent Email"
+//                 type="email"
+//                 placeholder="agent@example.com"
+//                 value={formData.manualAgentInfo.email}
+//                 onChange={(e) =>
+//                   handleManualAgentChange("email", e.target.value)
+//                 }
+//                 icon="Mail"
+//               />
+//               <InputField
+//                 label="Agent Phone"
+//                 placeholder="+91 00000 00000"
+//                 value={formData.manualAgentInfo.phone}
+//                 onChange={(e) =>
+//                   handleManualAgentChange("phone", e.target.value)
+//                 }
+//                 icon="Phone"
+//               />
+//             </div>
+
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//               <InputField
+//                 label="Experience"
+//                 placeholder="e.g., 5+ years"
+//                 value={formData.manualAgentInfo.experience}
+//                 onChange={(e) =>
+//                   handleManualAgentChange("experience", e.target.value)
+//                 }
+//                 icon="Award"
+//               />
+//               <InputField
+//                 label="Company"
+//                 placeholder="Company name"
+//                 value={formData.manualAgentInfo.company}
+//                 onChange={(e) =>
+//                   handleManualAgentChange("company", e.target.value)
+//                 }
+//                 icon="Building"
+//               />
+//             </div>
+//           </div>
+//         )}
+
+//         {(formData.assignedAgent || formData.manualAgentInfo.name) && (
+//           <div className="bg-primary/5 border border-primary/20 rounded-lg p-3">
+//             <div className="flex items-center justify-between">
+//               <div className="flex items-center space-x-2">
+//                 <Icon name="UserCheck" size={16} className="text-primary" />
+//                 <span className="text-sm font-medium text-foreground">
+//                   Assigned Agent:
+//                 </span>
+//                 <span className="text-sm text-muted-foreground">
+//                   {formData.assignedAgent
+//                     ? availableAgents.find(
+//                         (a) => a._id === formData.assignedAgent
+//                       )?.name
+//                     : formData.manualAgentInfo.name}
+//                 </span>
+//               </div>
+//               <button
+//                 type="button"
+//                 onClick={() => {
+//                   setFormData((prev) => ({
+//                     ...prev,
+//                     assignedAgent: "",
+//                     manualAgentInfo: {
+//                       name: "",
+//                       email: "",
+//                       phone: "",
+//                       alternatePhone: "",
+//                       designation: "Property Consultant",
+//                       company: "",
+//                       avatar: "",
+//                       experience: "0+",
+//                       languages: ["English", "Hindi"],
+//                       rating: "",
+//                       reviewCount: "",
+//                       propertiesSold: "",
+//                       responseTime: "",
+//                       availability: "within-24h",
+//                       verified: false,
+//                     },
+//                   }));
+//                 }}
+//                 className="text-error hover:text-error/80 transition-colors"
+//               >
+//                 <Icon name="X" size={16} />
+//               </button>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     );
+//   });
+
+//   // Step 1: Basic Information
+//   const Step1 = () => (
+//     <div className="bg-card border border-border rounded-lg p-6">
+//       <div className="flex items-center space-x-2 mb-6">
+//         <Icon name="Info" size={20} className="text-primary" />
+//         <h2 className="text-xl font-semibold text-foreground">
+//           Basic Information
+//         </h2>
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//         <InputField
+//           label="Property Title"
+//           placeholder="e.g., Luxury 3BHK Apartment with Sea View"
+//           value={formData.title}
+//           onChange={(e) => handleInputChange("title", e.target.value)}
+//           required
+//           icon="Tag"
+//         />
+
+//         <InputField
+//           label="Price"
+//           type="number"
+//           placeholder="Enter price"
+//           value={formData.price}
+//           onChange={(e) => handleInputChange("price", e.target.value)}
+//           required
+//           icon="DollarSign"
+//         />
+
+//         <SelectField
+//           label="Property Type"
+//           options={propertyTypes}
+//           value={formData.type}
+//           onChange={(e) => handleInputChange("type", e.target.value)}
+//           required
+//           icon="Building"
+//         />
+
+//         <SelectField
+//           label="Category"
+//           options={categories}
+//           value={formData.category}
+//           onChange={(e) => handleInputChange("category", e.target.value)}
+//           required
+//           icon="Briefcase"
+//         />
+//       </div>
+
+//       <div className="mt-6">
+//         <TextareaField
+//           label="Description"
+//           placeholder="Describe your property in detail..."
+//           value={formData.description}
+//           onChange={(e) => handleInputChange("description", e.target.value)}
+//           required
+//         />
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+//         <SelectField
+//           label="Status"
+//           options={[
+//             { value: "available", label: "Available" },
+//             { value: "sold", label: "Sold" },
+//             { value: "rented", label: "Rented" },
+//             { value: "under-agreement", label: "Under Agreement" },
+//           ]}
+//           value={formData.status}
+//           onChange={(e) => handleInputChange("status", e.target.value)}
+//           icon="Flag"
+//         />
+
+//         <div className="flex items-center space-x-4">
+//           <CheckboxField
+//             label="Featured Property"
+//             checked={formData.featured}
+//             onChange={(e) => handleInputChange("featured", e.target.checked)}
+//           />
+//           <CheckboxField
+//             label="Price Negotiable"
+//             checked={formData.priceNegotiable}
+//             onChange={(e) =>
+//               handleInputChange("priceNegotiable", e.target.checked)
+//             }
+//           />
+//         </div>
+//       </div>
+//     </div>
+//   );
+
+//   // Step 2: Location Details
+//   const Step2 = () => (
+//     <div className="bg-card border border-border rounded-lg p-6">
+//       <div className="flex items-center space-x-2 mb-6">
+//         <Icon name="MapPin" size={20} className="text-primary" />
+//         <h2 className="text-xl font-semibold text-foreground">
+//           Location Details
+//         </h2>
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//         <InputField
+//           label="Address"
+//           placeholder="Street address"
+//           value={formData.location.address}
+//           onChange={(e) =>
+//             handleNestedChange("location", "address", e.target.value)
+//           }
+//           required
+//           icon="Navigation"
+//         />
+
+//         <InputField
+//           label="Locality"
+//           placeholder="Locality/Area"
+//           value={formData.location.locality}
+//           onChange={(e) =>
+//             handleNestedChange("location", "locality", e.target.value)
+//           }
+//           icon="MapPin"
+//         />
+
+//         <InputField
+//           label="City"
+//           placeholder="City"
+//           value={formData.location.city}
+//           onChange={(e) =>
+//             handleNestedChange("location", "city", e.target.value)
+//           }
+//           required
+//           icon="Map"
+//         />
+
+//         <InputField
+//           label="State"
+//           placeholder="State"
+//           value={formData.location.state}
+//           onChange={(e) =>
+//             handleNestedChange("location", "state", e.target.value)
+//           }
+//           required
+//         />
+
+//         <InputField
+//           label="Pincode"
+//           placeholder="Pincode"
+//           value={formData.location.pincode}
+//           onChange={(e) =>
+//             handleNestedChange("location", "pincode", e.target.value)
+//           }
+//           required
+//         />
+
+//         <InputField
+//           label="Landmark"
+//           placeholder="Nearby landmark"
+//           value={formData.location.landmark}
+//           onChange={(e) =>
+//             handleNestedChange("location", "landmark", e.target.value)
+//           }
+//         />
+
+//         <InputField
+//           label="Latitude"
+//           type="number"
+//           placeholder="Latitude"
+//           value={formData.location.coordinates.lat}
+//           onChange={(e) =>
+//             handleDeepNestedChange(
+//               "location",
+//               "coordinates",
+//               "lat",
+//               e.target.value
+//             )
+//           }
+//           step="any"
+//         />
+
+//         <InputField
+//           label="Longitude"
+//           type="number"
+//           placeholder="Longitude"
+//           value={formData.location.coordinates.lng}
+//           onChange={(e) =>
+//             handleDeepNestedChange(
+//               "location",
+//               "coordinates",
+//               "lng",
+//               e.target.value
+//             )
+//           }
+//           step="any"
+//         />
+//       </div>
+//     </div>
+//   );
+
+//   // Step 3: Specifications
+//   const Step3 = () => (
+//     <div className="bg-card border border-border rounded-lg p-6">
+//       <div className="flex items-center space-x-2 mb-6">
+//         <Icon name="Ruler" size={20} className="text-primary" />
+//         <h2 className="text-xl font-semibold text-foreground">
+//           Specifications
+//         </h2>
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+//         <InputField
+//           label="Bedrooms"
+//           type="number"
+//           placeholder="0"
+//           value={formData.specifications.bedrooms}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "bedrooms", e.target.value)
+//           }
+//           icon="Bed"
+//         />
+
+//         <InputField
+//           label="Bathrooms"
+//           type="number"
+//           placeholder="0"
+//           value={formData.specifications.bathrooms}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "bathrooms", e.target.value)
+//           }
+//           icon="Bath"
+//         />
+
+//         <InputField
+//           label="Balconies"
+//           type="number"
+//           placeholder="0"
+//           value={formData.specifications.balconies}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "balconies", e.target.value)
+//           }
+//           icon="Square"
+//         />
+
+//         <InputField
+//           label="Area"
+//           type="number"
+//           placeholder="Area size"
+//           value={formData.specifications.area}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "area", e.target.value)
+//           }
+//           required
+//           icon="Square"
+//         />
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+//         <SelectField
+//           label="Area Unit"
+//           options={areaUnits}
+//           value={formData.specifications.areaUnit}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "areaUnit", e.target.value)
+//           }
+//           required
+//         />
+
+//         <InputField
+//           label="Carpet Area"
+//           type="number"
+//           placeholder="Carpet area"
+//           value={formData.specifications.carpetArea}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "carpetArea", e.target.value)
+//           }
+//         />
+
+//         <InputField
+//           label="Built-up Area"
+//           type="number"
+//           placeholder="Built-up area"
+//           value={formData.specifications.builtUpArea}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "builtUpArea", e.target.value)
+//           }
+//         />
+
+//         <InputField
+//           label="Super Built-up Area"
+//           type="number"
+//           placeholder="Super built-up area"
+//           value={formData.specifications.superBuiltUpArea}
+//           onChange={(e) =>
+//             handleNestedChange(
+//               "specifications",
+//               "superBuiltUpArea",
+//               e.target.value
+//             )
+//           }
+//         />
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+//         <InputField
+//           label="Floor"
+//           type="number"
+//           placeholder="Floor number"
+//           value={formData.specifications.floor}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "floor", e.target.value)
+//           }
+//         />
+
+//         <InputField
+//           label="Total Floors"
+//           type="number"
+//           placeholder="Total floors"
+//           value={formData.specifications.totalFloors}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "totalFloors", e.target.value)
+//           }
+//         />
+
+//         <SelectField
+//           label="Facing"
+//           options={facingOptions}
+//           value={formData.specifications.facing}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "facing", e.target.value)
+//           }
+//         />
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+//         <SelectField
+//           label="Furnishing"
+//           options={furnishingOptions}
+//           value={formData.specifications.furnishing}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "furnishing", e.target.value)
+//           }
+//         />
+
+//         <SelectField
+//           label="Parking"
+//           options={parkingOptions}
+//           value={formData.specifications.parking}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "parking", e.target.value)
+//           }
+//         />
+
+//         <InputField
+//           label="Parking Count"
+//           type="number"
+//           placeholder="Number of parking"
+//           value={formData.specifications.parkingCount}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "parkingCount", e.target.value)
+//           }
+//         />
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+//         <InputField
+//           label="Built Year"
+//           type="number"
+//           placeholder="e.g., 2020"
+//           value={formData.specifications.builtYear}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "builtYear", e.target.value)
+//           }
+//         />
+
+//         <InputField
+//           label="Age of Construction"
+//           placeholder="e.g., 2 years"
+//           value={formData.specifications.ageOfConstruction}
+//           onChange={(e) =>
+//             handleNestedChange(
+//               "specifications",
+//               "ageOfConstruction",
+//               e.target.value
+//             )
+//           }
+//         />
+
+//         <SelectField
+//           label="Construction Status"
+//           options={constructionStatuses}
+//           value={formData.specifications.constructionStatus}
+//           onChange={(e) =>
+//             handleNestedChange(
+//               "specifications",
+//               "constructionStatus",
+//               e.target.value
+//             )
+//           }
+//         />
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+//         <InputField
+//           label="Possession Date"
+//           type="date"
+//           value={formData.specifications.possessionDate}
+//           onChange={(e) =>
+//             handleNestedChange(
+//               "specifications",
+//               "possessionDate",
+//               e.target.value
+//             )
+//           }
+//         />
+
+//         <SelectField
+//           label="Water Supply"
+//           options={waterSupplyOptions}
+//           value={formData.specifications.waterSupply}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "waterSupply", e.target.value)
+//           }
+//         />
+//       </div>
+
+//       <div className="mt-6">
+//         <label className="text-sm font-medium text-foreground mb-3 block">
+//           Overlooking
+//         </label>
+//         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+//           {overlookingOptions.map((option) => (
+//             <CheckboxField
+//               key={option}
+//               label={option}
+//               checked={formData.specifications.overlooking.includes(option)}
+//               onChange={() => handleSpecificationToggle("overlooking", option)}
+//             />
+//           ))}
+//         </div>
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+//         <SelectField
+//           label="Ownership"
+//           options={ownershipOptions}
+//           value={formData.specifications.ownership}
+//           onChange={(e) =>
+//             handleNestedChange("specifications", "ownership", e.target.value)
+//           }
+//         />
+
+//         <div className="flex items-center space-x-4">
+//           <CheckboxField
+//             label="Lift Available"
+//             checked={formData.specifications.lift}
+//             onChange={(e) =>
+//               handleNestedChange("specifications", "lift", e.target.checked)
+//             }
+//           />
+//           <CheckboxField
+//             label="Power Backup"
+//             checked={formData.specifications.powerBackup}
+//             onChange={(e) =>
+//               handleNestedChange(
+//                 "specifications",
+//                 "powerBackup",
+//                 e.target.checked
+//               )
+//             }
+//           />
+//           <CheckboxField
+//             label="Occupancy Certificate"
+//             checked={formData.specifications.occupancyCertificate}
+//             onChange={(e) =>
+//               handleNestedChange(
+//                 "specifications",
+//                 "occupancyCertificate",
+//                 e.target.checked
+//               )
+//             }
+//           />
+//         </div>
+//       </div>
+
+//       <div className="mt-6">
+//         <label className="text-sm font-medium text-foreground mb-3 block">
+//           Approved By
+//         </label>
+//         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+//           {approvalOptions.map((option) => (
+//             <CheckboxField
+//               key={option}
+//               label={option}
+//               checked={formData.specifications.approvedBy.includes(option)}
+//               onChange={() => handleSpecificationToggle("approvedBy", option)}
+//             />
+//           ))}
+//         </div>
+//       </div>
+//     </div>
+//   );
+
+//   // Step 4: Features & Amenities
+//   const Step4 = () => (
+//     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+//       {/* Amenities */}
+//       <div className="bg-card border border-border rounded-lg p-6">
+//         <div className="flex items-center space-x-2 mb-6">
+//           <Icon name="Wifi" size={20} className="text-primary" />
+//           <h2 className="text-xl font-semibold text-foreground">Amenities</h2>
+//         </div>
+
+//         <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto">
+//           {commonAmenities.map((amenity) => (
+//             <CheckboxField
+//               key={amenity}
+//               label={amenity}
+//               checked={formData.amenities.includes(amenity)}
+//               onChange={() => handleArrayToggle("amenities", amenity)}
+//             />
+//           ))}
+//         </div>
+//       </div>
+
+//       {/* Features */}
+//       <div className="bg-card border border-border rounded-lg p-6">
+//         <div className="flex items-center space-x-2 mb-6">
+//           <Icon name="Star" size={20} className="text-primary" />
+//           <h2 className="text-xl font-semibold text-foreground">Features</h2>
+//         </div>
+
+//         <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto">
+//           {commonFeatures.map((feature) => (
+//             <CheckboxField
+//               key={feature}
+//               label={feature}
+//               checked={formData.features.includes(feature)}
+//               onChange={() => handleArrayToggle("features", feature)}
+//             />
+//           ))}
+//         </div>
+//       </div>
+//     </div>
+//   );
+
+//   // Step 5: Financial Details
+//   const Step5 = () => (
+//     <div className="bg-card border border-border rounded-lg p-6">
+//       <div className="flex items-center space-x-2 mb-6">
+//         <Icon name="DollarSign" size={20} className="text-primary" />
+//         <h2 className="text-xl font-semibold text-foreground">
+//           Financial Details
+//         </h2>
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//         <InputField
+//           label="Security Deposit"
+//           type="number"
+//           placeholder="Security deposit amount"
+//           value={formData.securityDeposit}
+//           onChange={(e) => handleInputChange("securityDeposit", e.target.value)}
+//           icon="Shield"
+//         />
+
+//         <InputField
+//           label="Booking Amount"
+//           type="number"
+//           placeholder="Booking amount"
+//           value={formData.bookingAmount}
+//           onChange={(e) => handleInputChange("bookingAmount", e.target.value)}
+//           icon="CreditCard"
+//         />
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+//         <InputField
+//           label="Maintenance Charges"
+//           type="number"
+//           placeholder="Maintenance amount"
+//           value={formData.maintenanceCharges.amount}
+//           onChange={(e) =>
+//             handleNestedChange("maintenanceCharges", "amount", e.target.value)
+//           }
+//           icon="Settings"
+//         />
+
+//         <SelectField
+//           label="Maintenance Period"
+//           options={maintenancePeriods}
+//           value={formData.maintenanceCharges.period}
+//           onChange={(e) =>
+//             handleNestedChange("maintenanceCharges", "period", e.target.value)
+//           }
+//         />
+//       </div>
+
+//       {/* Contact Information */}
+//       <div className="mt-8">
+//         <div className="flex items-center space-x-2 mb-6">
+//           <Icon name="Phone" size={20} className="text-primary" />
+//           <h2 className="text-xl font-semibold text-foreground">
+//             Contact Information
+//           </h2>
+//         </div>
+
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//           <SelectField
+//             label="Preferred Contact"
+//             options={contactOptions}
+//             value={formData.contactInfo.preferredContact}
+//             onChange={(e) =>
+//               handleNestedChange(
+//                 "contactInfo",
+//                 "preferredContact",
+//                 e.target.value
+//               )
+//             }
+//           />
+
+//           <SelectField
+//             label="Viewing Schedule"
+//             options={viewingOptions}
+//             value={formData.contactInfo.viewingSchedule}
+//             onChange={(e) =>
+//               handleNestedChange(
+//                 "contactInfo",
+//                 "viewingSchedule",
+//                 e.target.value
+//               )
+//             }
+//           />
+//         </div>
+
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+//           <InputField
+//             label="Available From"
+//             type="date"
+//             value={formData.contactInfo.availableFrom}
+//             onChange={(e) =>
+//               handleNestedChange("contactInfo", "availableFrom", e.target.value)
+//             }
+//           />
+
+//           <InputField
+//             label="Available Till"
+//             type="date"
+//             value={formData.contactInfo.availableTill}
+//             onChange={(e) =>
+//               handleNestedChange("contactInfo", "availableTill", e.target.value)
+//             }
+//           />
+//         </div>
+
+//         <div className="flex items-center space-x-6 mt-6">
+//           <CheckboxField
+//             label="Show Phone Number"
+//             checked={formData.contactInfo.showPhone}
+//             onChange={(e) =>
+//               handleNestedChange("contactInfo", "showPhone", e.target.checked)
+//             }
+//           />
+//           <CheckboxField
+//             label="Show Email Address"
+//             checked={formData.contactInfo.showEmail}
+//             onChange={(e) =>
+//               handleNestedChange("contactInfo", "showEmail", e.target.checked)
+//             }
+//           />
+//         </div>
+//       </div>
+//     </div>
+//   );
+
+//   // Step 6: Agent & Images
+//   const Step6 = () => (
+//     <>
+//       {/* Agent Assignment */}
+//       {(userRole === "admin" || userRole === "customer") && (
+//         <div className="bg-card border border-border rounded-lg p-6 mb-6">
+//           <div className="flex items-center space-x-2 mb-6">
+//             <Icon name="User" size={20} className="text-primary" />
+//             <h2 className="text-xl font-semibold text-foreground">
+//               Agent Assignment
+//             </h2>
+//           </div>
+//           <AgentSelectionField />
+//         </div>
+//       )}
+
+//       {/* Images Upload */}
+//       <div className="bg-card border border-border rounded-lg p-6">
+//         <div className="flex items-center space-x-2 mb-6">
+//           <Icon name="Image" size={20} className="text-primary" />
+//           <h2 className="text-xl font-semibold text-foreground">
+//             Property Images
+//           </h2>
+//         </div>
+
+//         <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+//           <input
+//             type="file"
+//             multiple
+//             accept="image/*"
+//             onChange={handleImageUpload}
+//             className="hidden"
+//             id="image-upload"
+//           />
+//           <label
+//             htmlFor="image-upload"
+//             className="cursor-pointer flex flex-col items-center justify-center space-y-3"
+//           >
+//             <Icon name="Upload" size={32} className="text-muted-foreground" />
+//             <div>
+//               <p className="text-foreground font-medium">
+//                 Click to upload images
+//               </p>
+//               <p className="text-sm text-muted-foreground">
+//                 PNG, JPG, WEBP up to 10MB (Max 10 images)
+//               </p>
+//             </div>
+//             <Button type="button" variant="outline">
+//               Choose Files
+//             </Button>
+//           </label>
+//         </div>
+
+//         {formData.images.length > 0 && (
+//           <div className="mt-4">
+//             <h3 className="text-sm font-medium text-foreground mb-3">
+//               Selected Images ({formData.images.length}/10)
+//             </h3>
+//             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+//               {formData.images.map((image, index) => (
+//                 <div key={index} className="relative group">
+//                   <img
+//                     src={URL.createObjectURL(image)}
+//                     alt={`Property ${index + 1}`}
+//                     className="w-full h-24 object-cover rounded-lg"
+//                   />
+//                   <button
+//                     type="button"
+//                     onClick={() => removeImage(index)}
+//                     className="absolute -top-2 -right-2 bg-error text-error-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+//                   >
+//                     <Icon name="X" size={12} />
+//                   </button>
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </>
+//   );
+
+//   // Render current step
+//   const renderStep = () => {
+//     switch (currentStep) {
+//       case 1:
+//         return <Step1 />;
+//       case 2:
+//         return <Step2 />;
+//       case 3:
+//         return <Step3 />;
+//       case 4:
+//         return <Step4 />;
+//       case 5:
+//         return <Step5 />;
+//       case 6:
+//         return <Step6 />;
+//       default:
+//         return <Step1 />;
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-background p-6">
+//       <div className="max-w-6xl mx-auto">
+//         {/* Header */}
+//         <div className="mb-8">
+//           <div className="flex items-center space-x-3 mb-2">
+//             <Icon name="Home" size={24} className="text-primary" />
+//             <h1 className="text-3xl font-bold text-foreground">
+//               Post New Property
+//             </h1>
+//           </div>
+//           <p className="text-muted-foreground">
+//             List your property and reach potential buyers or tenants
+//           </p>
+//         </div>
+
+//         {/* Progress Steps */}
+//         <ProgressSteps />
+
+//         <form onSubmit={handleSubmit}>
+//           {renderStep()}
+
+//           {/* Navigation Buttons */}
+//           <div className="flex justify-between pt-6 mt-8 border-t border-border">
+//             <Button
+//               type="button"
+//               variant="outline"
+//               onClick={prevStep}
+//               disabled={currentStep === 1}
+//               iconName="ArrowLeft"
+//               iconPosition="left"
+//             >
+//               Previous
+//             </Button>
+
+//             {currentStep < totalSteps ? (
+//               <Button
+//                 type="button"
+//                 onClick={nextStep}
+//                 iconName="ArrowRight"
+//                 iconPosition="right"
+//               >
+//                 Next
+//               </Button>
+//             ) : (
+//               <Button
+//                 type="submit"
+//                 disabled={loading}
+//                 iconName="Upload"
+//                 iconPosition="left"
+//               >
+//                 {loading ? "Posting Property..." : "Post Property"}
+//               </Button>
+//             )}
+//           </div>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default PostProperty;
+
+import React, { useState, useEffect, useCallback } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Icon from "../../../components/AppIcon";
+import Button from "../../../components/ui/Button";
+import { createProperty } from "../../../lib/mongo/services/propertyService";
+import { getAvailableAgents } from "../../../lib/mongo/services/propertyService";
+
+// Memoized input components
+const InputField = React.memo(
+  ({
+    label,
+    type = "text",
+    value,
+    onChange,
+    placeholder,
+    required = false,
+    icon,
+    ...props
+  }) => (
+    <div className="space-y-2">
+      <label className="text-sm font-medium text-foreground flex items-center">
+        {icon && (
+          <Icon name={icon} size={16} className="mr-2 text-muted-foreground" />
+        )}
+        {label}
+        {required && <span className="text-error ml-1">*</span>}
+      </label>
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        required={required}
+        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        {...props}
+      />
+    </div>
+  )
+);
+
+const SelectField = React.memo(
+  ({ label, options, value, onChange, required = false, icon, ...props }) => (
+    <div className="space-y-2">
+      <label className="text-sm font-medium text-foreground flex items-center">
+        {icon && (
+          <Icon name={icon} size={16} className="mr-2 text-muted-foreground" />
+        )}
+        {label}
+        {required && <span className="text-error ml-1">*</span>}
+      </label>
+      <select
+        value={value}
+        onChange={onChange}
+        required={required}
+        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        {...props}
+      >
+        <option value="">Select {label}</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  )
+);
+
+const TextareaField = React.memo(
+  ({
+    label,
+    value,
+    onChange,
+    placeholder,
+    required = false,
+    rows = 4,
+    ...props
+  }) => (
+    <div className="space-y-2">
+      <label className="text-sm font-medium text-foreground">
+        {label}
+        {required && <span className="text-error ml-1">*</span>}
+      </label>
+      <textarea
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        required={required}
+        rows={rows}
+        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-vertical"
+        {...props}
+      />
+    </div>
+  )
+);
+
+const CheckboxField = React.memo(({ label, checked, onChange, ...props }) => (
+  <label className="flex items-center space-x-2 cursor-pointer">
+    <input
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+      className="rounded border-border text-primary focus:ring-primary"
+      {...props}
+    />
+    <span className="text-sm text-foreground">{label}</span>
+  </label>
+));
+
+const PostProperty = () => {
+  const [formData, setFormData] = useState({
+    // Basic Information
+    title: "",
+    description: "",
+    price: "",
+    type: "",
+    category: "residential",
+
+    // Location
+    location: {
+      address: "",
+      city: "",
+      state: "",
+      pincode: "",
+      locality: "",
+      landmark: "",
+      coordinates: { lat: "", lng: "" },
+      googlePlaceId: "",
+    },
+
+    // Enhanced Specifications
+    specifications: {
+      bedrooms: "",
+      bathrooms: "",
+      balconies: "",
+      area: "",
+      areaUnit: "sqft",
+      carpetArea: "",
+      builtUpArea: "",
+      superBuiltUpArea: "",
+      builtYear: "",
+      ageOfConstruction: "",
+      constructionStatus: "ready-to-move",
+      possessionDate: "",
+      floor: "",
+      totalFloors: "",
+      facing: "north",
+      furnishing: "unfurnished",
+      parking: "none",
+      parkingCount: "",
+      lift: false,
+      powerBackup: false,
+      waterSupply: "corporation",
+      overlooking: [],
+      ownership: "freehold",
+      approvedBy: [],
+      occupancyCertificate: false,
+    },
+
+    // Financial Details
+    priceNegotiable: false,
+    maintenanceCharges: {
+      amount: "",
+      period: "monthly",
+    },
+    securityDeposit: "",
+    bookingAmount: "",
+
+    // Arrays
+    amenities: [],
+    features: [],
+    nearbyPlaces: [],
+    transportation: [],
+
+    // Status & Features
+    status: "available",
+    featured: false,
+    priority: "medium",
+
+    // Contact Info
+    contactInfo: {
+      showPhone: true,
+      showEmail: true,
+      preferredContact: "all",
+      viewingSchedule: "appointment-only",
+      availableFrom: "",
+      availableTill: "",
+    },
+
+    // Agent Assignment
+    assignedAgent: "",
+    manualAgentInfo: {
+      name: "",
+      email: "",
+      phone: "",
+      alternatePhone: "",
+      designation: "Property Consultant",
+      company: "",
+      avatar: "",
+      experience: "0+",
+      languages: ["English", "Hindi"],
+      rating: "",
+      reviewCount: "",
+      propertiesSold: "",
+      responseTime: "",
+      availability: "within-24h",
+      verified: false,
+    },
+
+    images: [],
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [availableAgents, setAvailableAgents] = useState([]);
+  const [userRole, setUserRole] = useState("");
+  const [loadingAgents, setLoadingAgents] = useState(false);
+  const [agentSelectionMethod, setAgentSelectionMethod] = useState("select");
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 6;
+
+  // Fetch user role and available agents
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = useCallback(async () => {
+    try {
+      const userData = JSON.parse(localStorage.getItem("user") || "{}");
+      const currentUserRole = userData.role || "customer";
+      setUserRole(currentUserRole);
+
+      if (currentUserRole === "employee" || currentUserRole === "admin") {
+        setFormData((prev) => ({
+          ...prev,
+          assignedAgent: userData.id,
+        }));
+      }
+
+      if (currentUserRole === "admin" || currentUserRole === "customer") {
+        setLoadingAgents(true);
+        const agentsResponse = await getAvailableAgents();
+        setAvailableAgents(agentsResponse.agents || []);
+        setLoadingAgents(false);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      toast.error("Error loading agent data");
+    }
+  }, []);
+
+  // Handler functions
+  const handleInputChange = useCallback((field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  }, []);
+
+  const handleNestedChange = useCallback((parent, field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [parent]: {
+        ...prev[parent],
+        [field]: value,
+      },
+    }));
+  }, []);
+
+  const handleDeepNestedChange = useCallback((parent, child, field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [parent]: {
+        ...prev[parent],
+        [child]: {
+          ...prev[parent][child],
+          [field]: value,
+        },
+      },
+    }));
+  }, []);
+
+  const handleManualAgentChange = useCallback((field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      manualAgentInfo: {
+        ...prev.manualAgentInfo,
+        [field]: value,
+      },
+    }));
+  }, []);
+
+  const handleArrayToggle = useCallback((arrayName, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [arrayName]: prev[arrayName].includes(value)
+        ? prev[arrayName].filter((item) => item !== value)
+        : [...prev[arrayName], value],
+    }));
+  }, []);
+
+  const handleSpecificationToggle = useCallback((field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      specifications: {
+        ...prev.specifications,
+        [field]: prev.specifications[field].includes(value)
+          ? prev.specifications[field].filter((item) => item !== value)
+          : [...prev.specifications[field], value],
+      },
+    }));
+  }, []);
+
+  const handleAgentSelectionChange = useCallback((method) => {
+    setAgentSelectionMethod(method);
+    setFormData((prev) => ({
+      ...prev,
+      assignedAgent: "",
+      manualAgentInfo: {
+        name: "",
+        email: "",
+        phone: "",
+        alternatePhone: "",
+        designation: "Property Consultant",
+        company: "",
+        avatar: "",
+        experience: "0+",
+        languages: ["English", "Hindi"],
+        rating: "",
+        reviewCount: "",
+        propertiesSold: "",
+        responseTime: "",
+        availability: "within-24h",
+        verified: false,
+      },
+    }));
+  }, []);
+
+  const handleAgentSelect = useCallback((agentId) => {
+    setFormData((prev) => ({
+      ...prev,
+      assignedAgent: agentId,
+    }));
+  }, []);
+
+  const handleImageUpload = useCallback(
+    (e) => {
+      const files = Array.from(e.target.files);
+      if (files.length + formData.images.length > 10) {
+        toast.warning("Maximum 10 images allowed");
+        return;
+      }
+      setFormData((prev) => ({
+        ...prev,
+        images: [...prev.images, ...files],
+      }));
+      toast.success(`${files.length} image(s) added`);
+    },
+    [formData.images.length]
+  );
+
+  const removeImage = useCallback((index) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+    toast.info("Image removed");
+  }, []);
+
+  // Options for dropdowns
+  const propertyTypes = [
+    { value: "apartment", label: "Apartment" },
+    { value: "independent-house", label: "Independent House" },
+    { value: "villa", label: "Villa" },
+    { value: "studio-apartment", label: "Studio Apartment" },
+    { value: "penthouse", label: "Penthouse" },
+    { value: "duplex", label: "Duplex" },
+    { value: "farm-house", label: "Farm House" },
+    { value: "plot", label: "Plot" },
+    { value: "commercial-office", label: "Commercial Office" },
+    { value: "commercial-shop", label: "Commercial Shop" },
+    { value: "commercial-warehouse", label: "Commercial Warehouse" },
+    { value: "industrial", label: "Industrial" },
+    { value: "agricultural-land", label: "Agricultural Land" },
+    { value: "hotel-resort", label: "Hotel/Resort" },
+  ];
+
+  const categories = [
+    { value: "residential", label: "Residential" },
+    { value: "commercial", label: "Commercial" },
+    { value: "industrial", label: "Industrial" },
+    { value: "agricultural", label: "Agricultural" },
+  ];
+
+  const areaUnits = [
+    { value: "sqft", label: "Square Feet" },
+    { value: "sqm", label: "Square Meters" },
+    { value: "sqyd", label: "Square Yards" },
+    { value: "acre", label: "Acre" },
+    { value: "hectare", label: "Hectare" },
+  ];
+
+  const constructionStatuses = [
+    { value: "ready-to-move", label: "Ready to Move" },
+    { value: "under-construction", label: "Under Construction" },
+    { value: "new-launch", label: "New Launch" },
+    { value: "resale", label: "Resale" },
+  ];
+
+  const facingOptions = [
+    { value: "north", label: "North" },
+    { value: "south", label: "South" },
+    { value: "east", label: "East" },
+    { value: "west", label: "West" },
+    { value: "north-east", label: "North East" },
+    { value: "north-west", label: "North West" },
+    { value: "south-east", label: "South East" },
+    { value: "south-west", label: "South West" },
+  ];
+
+  const furnishingOptions = [
+    { value: "unfurnished", label: "Unfurnished" },
+    { value: "semi-furnished", label: "Semi Furnished" },
+    { value: "fully-furnished", label: "Fully Furnished" },
+  ];
+
+  const parkingOptions = [
+    { value: "none", label: "None" },
+    { value: "open", label: "Open" },
+    { value: "covered", label: "Covered" },
+    { value: "basement", label: "Basement" },
+    { value: "multiple", label: "Multiple" },
+  ];
+
+  const waterSupplyOptions = [
+    { value: "corporation", label: "Corporation" },
+    { value: "borewell", label: "Borewell" },
+    { value: "both", label: "Both" },
+    { value: "other", label: "Other" },
+  ];
+
+  const ownershipOptions = [
+    { value: "freehold", label: "Freehold" },
+    { value: "leasehold", label: "Leasehold" },
+    { value: "co-operative", label: "Co-operative" },
+    { value: "power-of-attorney", label: "Power of Attorney" },
+  ];
+
+  const maintenancePeriods = [
+    { value: "monthly", label: "Monthly" },
+    { value: "quarterly", label: "Quarterly" },
+    { value: "yearly", label: "Yearly" },
+  ];
+
+  const contactOptions = [
+    { value: "all", label: "All Methods" },
+    { value: "phone", label: "Phone Only" },
+    { value: "email", label: "Email Only" },
+    { value: "whatsapp", label: "WhatsApp Only" },
+  ];
+
+  const viewingOptions = [
+    { value: "flexible", label: "Flexible" },
+    { value: "appointment-only", label: "Appointment Only" },
+    { value: "weekdays", label: "Weekdays Only" },
+    { value: "weekends", label: "Weekends Only" },
+    { value: "specific-times", label: "Specific Times" },
+  ];
+
+  const priorityOptions = [
+    { value: "low", label: "Low" },
+    { value: "medium", label: "Medium" },
+    { value: "high", label: "High" },
+    { value: "premium", label: "Premium" },
+  ];
+
+  const statusOptions = [
+    { value: "available", label: "Available" },
+    { value: "sold", label: "Sold" },
+    { value: "rented", label: "Rented" },
+    { value: "under-maintenance", label: "Under Maintenance" },
+    { value: "under-construction", label: "Under Construction" },
+    { value: "resale", label: "Resale" },
+  ];
+
+  // Enhanced amenities and features based on your schema
+  const commonAmenities = [
+    // Security
+    "24x7-security",
+    "cctv",
+    "security-guards",
+    "intercom",
+    "fire-safety",
+    // Outdoor
+    "swimming-pool",
+    "garden",
+    "park",
+    "children-play-area",
+    "club-house",
+    "jogging-track",
+    "tennis-court",
+    "basketball-court",
+    "squash-court",
+    "badminton-court",
+    "gym",
+    "yoga-area",
+    // Indoor
+    "community-hall",
+    "party-area",
+    "barbecue-area",
+    "indoor-games",
+    "library",
+    "business-center",
+    // Health & Wellness
+    "spa",
+    "sauna",
+    "steam-room",
+    "jacuzzi",
+    // Services
+    "concierge",
+    "valet-parking",
+    "car-wash",
+    "house-keeping",
+    "maintenance-staff",
+    "power-backup",
+    // Accessibility
+    "pet-friendly",
+    "senior-living",
+    "wheelchair-accessible",
+    "high-speed-internet",
+    "smart-home",
+    // Utilities
+    "central-ac",
+    "central-heating",
+    "fireplace",
+    "walk-in-closet",
+    "hardwood-floors",
+  ];
+
+  const commonFeatures = [
+    "corner-property",
+    "main-road-facing",
+    "green-view",
+    "lake-view",
+    "sea-view",
+    "mountain-view",
+    "corner-apartment",
+    "premium-location",
+    "corner-plot",
+    "gated-community",
+    "water-harvesting",
+    "solar-panels",
+    "vaastu-compliant",
+    "energy-efficient",
+    "sound-proof",
+    "panic-room",
+    "home-theater",
+    "wine-cellar",
+    "private-pool",
+    "private-garden",
+    "private-terrace",
+  ];
+
+  const overlookingOptions = [
+    "garden",
+    "park",
+    "road",
+    "pool",
+    "sea",
+    "mountain",
+    "other",
+  ];
+
+  const approvalOptions = [
+    "rera",
+    "municipal",
+    "development-authority",
+    "other",
+  ];
+
+  // Form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    // Basic validation
+    if (
+      !formData.title ||
+      !formData.price ||
+      !formData.type ||
+      !formData.category
+    ) {
+      toast.error("Please fill all required fields");
+      setLoading(false);
+      return;
+    }
+
+    if (formData.images.length === 0) {
+      toast.warning("Please add at least one property image");
+      setLoading(false);
+      return;
+    }
+
+    // Agent assignment validation
+    if (
+      userRole === "customer" &&
+      !formData.assignedAgent &&
+      !formData.manualAgentInfo.name
+    ) {
+      toast.error("Please assign an agent for the property");
+      setLoading(false);
+      return;
+    }
+
+    const toastId = toast.loading("Posting your property...");
+
+    try {
+      // Prepare data according to backend schema - using JSON.stringify for complex objects
+      const propertyData = {
+        title: formData.title,
+        description: formData.description,
+        price: Number(formData.price),
+        type: formData.type,
+        category: formData.category,
+        location: JSON.stringify(formData.location),
+        specifications: JSON.stringify(formData.specifications),
+        amenities: JSON.stringify(formData.amenities),
+        features: JSON.stringify(formData.features),
+        nearbyPlaces: JSON.stringify(formData.nearbyPlaces),
+        transportation: JSON.stringify(formData.transportation),
+        priceNegotiable: formData.priceNegotiable,
+        maintenanceCharges: JSON.stringify(formData.maintenanceCharges),
+        securityDeposit: Number(formData.securityDeposit) || 0,
+        bookingAmount: Number(formData.bookingAmount) || 0,
+        status: formData.status,
+        featured: formData.featured,
+        priority: formData.priority,
+        contactInfo: JSON.stringify(formData.contactInfo),
+        images: formData.images,
+      };
+
+      // Add agent assignment
+      if (agentSelectionMethod === "select" && formData.assignedAgent) {
+        propertyData.assignedAgent = formData.assignedAgent;
+      } else if (
+        agentSelectionMethod === "manual" &&
+        formData.manualAgentInfo.name
+      ) {
+        propertyData.manualAgent = formData.manualAgentInfo;
+      }
+
+      const result = await createProperty(propertyData);
+
+      toast.update(toastId, {
+        render:
+          result.agentType === "manual"
+            ? "Property posted successfully with manual agent information! 🎉"
+            : "Property posted successfully! 🎉",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
+
+      // Reset form
+      setFormData({
+        title: "",
+        description: "",
+        price: "",
+        type: "",
+        category: "residential",
+        location: {
+          address: "",
+          city: "",
+          state: "",
+          pincode: "",
+          locality: "",
+          landmark: "",
+          coordinates: { lat: "", lng: "" },
+          googlePlaceId: "",
+        },
+        specifications: {
+          bedrooms: "",
+          bathrooms: "",
+          balconies: "",
+          area: "",
+          areaUnit: "sqft",
+          carpetArea: "",
+          builtUpArea: "",
+          superBuiltUpArea: "",
+          builtYear: "",
+          ageOfConstruction: "",
+          constructionStatus: "ready-to-move",
+          possessionDate: "",
+          floor: "",
+          totalFloors: "",
+          facing: "north",
+          furnishing: "unfurnished",
+          parking: "none",
+          parkingCount: "",
+          lift: false,
+          powerBackup: false,
+          waterSupply: "corporation",
+          overlooking: [],
+          ownership: "freehold",
+          approvedBy: [],
+          occupancyCertificate: false,
+        },
+        priceNegotiable: false,
+        maintenanceCharges: { amount: "", period: "monthly" },
+        securityDeposit: "",
+        bookingAmount: "",
+        amenities: [],
+        features: [],
+        nearbyPlaces: [],
+        transportation: [],
+        status: "available",
+        featured: false,
+        priority: "medium",
+        contactInfo: {
+          showPhone: true,
+          showEmail: true,
+          preferredContact: "all",
+          viewingSchedule: "appointment-only",
+          availableFrom: "",
+          availableTill: "",
+        },
+        assignedAgent: "",
+        manualAgentInfo: {
+          name: "",
+          email: "",
+          phone: "",
+          alternatePhone: "",
+          designation: "Property Consultant",
+          company: "",
+          avatar: "",
+          experience: "0+",
+          languages: ["English", "Hindi"],
+          rating: "",
+          reviewCount: "",
+          propertiesSold: "",
+          responseTime: "",
+          availability: "within-24h",
+          verified: false,
+        },
+        images: [],
+      });
+      setCurrentStep(1);
+    } catch (error) {
+      console.error("Error creating property:", error);
+      toast.update(toastId, {
+        render: error.message || "Error posting property. Please try again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 4000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Step navigation
+  const nextStep = () => {
+    if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
+  };
+
+  const prevStep = () => {
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
+  };
+
+  // Progress Steps Component
+  const ProgressSteps = () => (
+    <div className="flex items-center justify-between mb-8">
+      {[1, 2, 3, 4, 5, 6].map((step) => (
+        <React.Fragment key={step}>
+          <div className="flex flex-col items-center">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                step === currentStep
+                  ? "bg-primary text-primary-foreground"
+                  : step < currentStep
+                  ? "bg-success text-success-foreground"
+                  : "bg-muted text-muted-foreground"
+              }`}
+            >
+              {step}
+            </div>
+            <span className="text-xs mt-2 text-muted-foreground">
+              {step === 1 && "Basic Info"}
+              {step === 2 && "Location"}
+              {step === 3 && "Specifications"}
+              {step === 4 && "Features"}
+              {step === 5 && "Financial"}
+              {step === 6 && "Agent & Images"}
+            </span>
+          </div>
+          {step < totalSteps && (
+            <div
+              className={`flex-1 h-1 mx-4 ${
+                step < currentStep ? "bg-success" : "bg-muted"
+              }`}
+            />
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+
+  // Agent Selection Component
+  const AgentSelectionField = React.memo(() => {
+    if (userRole === "employee") {
+      return (
+        <div className="bg-success/10 border border-success/20 rounded-lg p-4">
+          <div className="flex items-center space-x-2">
+            <Icon name="UserCheck" size={20} className="text-success" />
+            <span className="text-success font-medium">
+              You are assigned as the agent for this property
+            </span>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-foreground">
+            Assign Agent
+            {userRole === "customer" && (
+              <span className="text-error ml-1">*</span>
+            )}
+          </label>
+
+          <div className="flex space-x-2">
+            <button
+              type="button"
+              onClick={() => handleAgentSelectionChange("select")}
+              className={`px-3 py-1 text-xs rounded-full border transition-all ${
+                agentSelectionMethod === "select"
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-background text-foreground border-border"
+              }`}
+            >
+              Select from List
+            </button>
+            <button
+              type="button"
+              onClick={() => handleAgentSelectionChange("manual")}
+              className={`px-3 py-1 text-xs rounded-full border transition-all ${
+                agentSelectionMethod === "manual"
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-background text-foreground border-border"
+              }`}
+            >
+              Manual Agent Info
+            </button>
+          </div>
+        </div>
+
+        {agentSelectionMethod === "select" ? (
+          <div className="space-y-3">
+            {loadingAgents ? (
+              <div className="flex items-center space-x-2 text-muted-foreground">
+                <Icon name="Loader" size={16} className="animate-spin" />
+                <span>Loading available agents...</span>
+              </div>
+            ) : availableAgents.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto">
+                {availableAgents.map((agent) => (
+                  <div
+                    key={agent._id}
+                    onClick={() => handleAgentSelect(agent._id)}
+                    className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                      formData.assignedAgent === agent._id
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      {agent.avatar ? (
+                        <img
+                          src={agent.avatar}
+                          alt={agent.name}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Icon
+                            name="User"
+                            size={16}
+                            className="text-primary"
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <h4 className="font-medium text-foreground">
+                          {agent.name}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {agent.designation} • {agent.experience || "0"}+ years
+                        </p>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <div className="flex items-center space-x-1">
+                            <Icon
+                              name="Star"
+                              size={12}
+                              className="text-warning"
+                            />
+                            <span className="text-xs">
+                              {agent.rating?.average || 0}
+                            </span>
+                          </div>
+                          <span className="text-xs text-muted-foreground">
+                            ({agent.rating?.totalReviews || 0} reviews)
+                          </span>
+                        </div>
+                      </div>
+                      {formData.assignedAgent === agent._id && (
+                        <Icon name="Check" size={16} className="text-primary" />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-4 text-muted-foreground">
+                <Icon name="Users" size={24} className="mx-auto mb-2" />
+                <p>No agents available</p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="bg-info/10 border border-info/20 rounded-lg p-4">
+              <div className="flex items-center space-x-2">
+                <Icon name="Info" size={16} className="text-info" />
+                <span className="text-sm text-info">
+                  Enter agent details. This information will be stored directly
+                  with the property.
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField
+                label="Agent Name"
+                placeholder="Enter agent full name"
+                value={formData.manualAgentInfo.name}
+                onChange={(e) =>
+                  handleManualAgentChange("name", e.target.value)
+                }
+                required={userRole === "customer"}
+                icon="UserPlus"
+              />
+              <InputField
+                label="Designation"
+                placeholder="e.g., Senior Property Consultant"
+                value={formData.manualAgentInfo.designation}
+                onChange={(e) =>
+                  handleManualAgentChange("designation", e.target.value)
+                }
+                icon="Briefcase"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField
+                label="Agent Email"
+                type="email"
+                placeholder="agent@example.com"
+                value={formData.manualAgentInfo.email}
+                onChange={(e) =>
+                  handleManualAgentChange("email", e.target.value)
+                }
+                icon="Mail"
+              />
+              <InputField
+                label="Agent Phone"
+                placeholder="+91 00000 00000"
+                value={formData.manualAgentInfo.phone}
+                onChange={(e) =>
+                  handleManualAgentChange("phone", e.target.value)
+                }
+                icon="Phone"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField
+                label="Experience"
+                placeholder="e.g., 5+ years"
+                value={formData.manualAgentInfo.experience}
+                onChange={(e) =>
+                  handleManualAgentChange("experience", e.target.value)
+                }
+                icon="Award"
+              />
+              <InputField
+                label="Company"
+                placeholder="Company name"
+                value={formData.manualAgentInfo.company}
+                onChange={(e) =>
+                  handleManualAgentChange("company", e.target.value)
+                }
+                icon="Building"
+              />
+            </div>
+          </div>
+        )}
+
+        {(formData.assignedAgent || formData.manualAgentInfo.name) && (
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Icon name="UserCheck" size={16} className="text-primary" />
+                <span className="text-sm font-medium text-foreground">
+                  Assigned Agent:
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {formData.assignedAgent
+                    ? availableAgents.find(
+                        (a) => a._id === formData.assignedAgent
+                      )?.name
+                    : formData.manualAgentInfo.name}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    assignedAgent: "",
+                    manualAgentInfo: {
+                      name: "",
+                      email: "",
+                      phone: "",
+                      alternatePhone: "",
+                      designation: "Property Consultant",
+                      company: "",
+                      avatar: "",
+                      experience: "0+",
+                      languages: ["English", "Hindi"],
+                      rating: "",
+                      reviewCount: "",
+                      propertiesSold: "",
+                      responseTime: "",
+                      availability: "within-24h",
+                      verified: false,
+                    },
+                  }));
+                }}
+                className="text-error hover:text-error/80 transition-colors"
+              >
+                <Icon name="X" size={16} />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  });
+
+  // Step 1: Basic Information
+  const Step1 = () => (
+    <div className="bg-card border border-border rounded-lg p-6">
+      <div className="flex items-center space-x-2 mb-6">
+        <Icon name="Info" size={20} className="text-primary" />
+        <h2 className="text-xl font-semibold text-foreground">
+          Basic Information
+        </h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <InputField
+          label="Property Title"
+          placeholder="e.g., Luxury 3BHK Apartment with Sea View"
+          value={formData.title}
+          onChange={(e) => handleInputChange("title", e.target.value)}
+          required
+          icon="Tag"
+        />
+
+        <InputField
+          label="Price"
+          type="number"
+          placeholder="Enter price"
+          value={formData.price}
+          onChange={(e) => handleInputChange("price", e.target.value)}
+          required
+          icon="DollarSign"
+        />
+
+        <SelectField
+          label="Property Type"
+          options={propertyTypes}
+          value={formData.type}
+          onChange={(e) => handleInputChange("type", e.target.value)}
+          required
+          icon="Building"
+        />
+
+        <SelectField
+          label="Category"
+          options={categories}
+          value={formData.category}
+          onChange={(e) => handleInputChange("category", e.target.value)}
+          required
+          icon="Briefcase"
+        />
+      </div>
+
+      <div className="mt-6">
+        <TextareaField
+          label="Description"
+          placeholder="Describe your property in detail..."
+          value={formData.description}
+          onChange={(e) => handleInputChange("description", e.target.value)}
+          required
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <SelectField
+          label="Status"
+          options={statusOptions}
+          value={formData.status}
+          onChange={(e) => handleInputChange("status", e.target.value)}
+          icon="Flag"
+        />
+
+        <SelectField
+          label="Priority"
+          options={priorityOptions}
+          value={formData.priority}
+          onChange={(e) => handleInputChange("priority", e.target.value)}
+          icon="Star"
+        />
+
+        <div className="flex items-center space-x-4 pt-6">
+          <CheckboxField
+            label="Featured Property"
+            checked={formData.featured}
+            onChange={(e) => handleInputChange("featured", e.target.checked)}
+          />
+          <CheckboxField
+            label="Price Negotiable"
+            checked={formData.priceNegotiable}
+            onChange={(e) =>
+              handleInputChange("priceNegotiable", e.target.checked)
+            }
+          />
+        </div>
+      </div>
+    </div>
+  );
+
+  // Step 2: Location Details
+  const Step2 = () => (
+    <div className="bg-card border border-border rounded-lg p-6">
+      <div className="flex items-center space-x-2 mb-6">
+        <Icon name="MapPin" size={20} className="text-primary" />
+        <h2 className="text-xl font-semibold text-foreground">
+          Location Details
+        </h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <InputField
+          label="Address"
+          placeholder="Street address"
+          value={formData.location.address}
+          onChange={(e) =>
+            handleNestedChange("location", "address", e.target.value)
+          }
+          required
+          icon="Navigation"
+        />
+
+        <InputField
+          label="Locality"
+          placeholder="Locality/Area"
+          value={formData.location.locality}
+          onChange={(e) =>
+            handleNestedChange("location", "locality", e.target.value)
+          }
+          icon="MapPin"
+        />
+
+        <InputField
+          label="City"
+          placeholder="City"
+          value={formData.location.city}
+          onChange={(e) =>
+            handleNestedChange("location", "city", e.target.value)
+          }
+          required
+          icon="Map"
+        />
+
+        <InputField
+          label="State"
+          placeholder="State"
+          value={formData.location.state}
+          onChange={(e) =>
+            handleNestedChange("location", "state", e.target.value)
+          }
+          required
+        />
+
+        <InputField
+          label="Pincode"
+          placeholder="Pincode"
+          value={formData.location.pincode}
+          onChange={(e) =>
+            handleNestedChange("location", "pincode", e.target.value)
+          }
+          required
+        />
+
+        <InputField
+          label="Landmark"
+          placeholder="Nearby landmark"
+          value={formData.location.landmark}
+          onChange={(e) =>
+            handleNestedChange("location", "landmark", e.target.value)
+          }
+        />
+
+        <InputField
+          label="Latitude"
+          type="number"
+          placeholder="Latitude"
+          value={formData.location.coordinates.lat}
+          onChange={(e) =>
+            handleDeepNestedChange(
+              "location",
+              "coordinates",
+              "lat",
+              e.target.value
+            )
+          }
+          step="any"
+        />
+
+        <InputField
+          label="Longitude"
+          type="number"
+          placeholder="Longitude"
+          value={formData.location.coordinates.lng}
+          onChange={(e) =>
+            handleDeepNestedChange(
+              "location",
+              "coordinates",
+              "lng",
+              e.target.value
+            )
+          }
+          step="any"
+        />
+      </div>
+    </div>
+  );
+
+  // Step 3: Specifications
+  const Step3 = () => (
+    <div className="bg-card border border-border rounded-lg p-6">
+      <div className="flex items-center space-x-2 mb-6">
+        <Icon name="Ruler" size={20} className="text-primary" />
+        <h2 className="text-xl font-semibold text-foreground">
+          Specifications
+        </h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <InputField
+          label="Bedrooms"
+          type="number"
+          placeholder="0"
+          value={formData.specifications.bedrooms}
+          onChange={(e) =>
+            handleNestedChange("specifications", "bedrooms", e.target.value)
+          }
+          icon="Bed"
+        />
+
+        <InputField
+          label="Bathrooms"
+          type="number"
+          placeholder="0"
+          value={formData.specifications.bathrooms}
+          onChange={(e) =>
+            handleNestedChange("specifications", "bathrooms", e.target.value)
+          }
+          icon="Bath"
+        />
+
+        <InputField
+          label="Balconies"
+          type="number"
+          placeholder="0"
+          value={formData.specifications.balconies}
+          onChange={(e) =>
+            handleNestedChange("specifications", "balconies", e.target.value)
+          }
+          icon="Square"
+        />
+
+        <InputField
+          label="Area"
+          type="number"
+          placeholder="Area size"
+          value={formData.specifications.area}
+          onChange={(e) =>
+            handleNestedChange("specifications", "area", e.target.value)
+          }
+          required
+          icon="Square"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+        <SelectField
+          label="Area Unit"
+          options={areaUnits}
+          value={formData.specifications.areaUnit}
+          onChange={(e) =>
+            handleNestedChange("specifications", "areaUnit", e.target.value)
+          }
+          required
+        />
+
+        <InputField
+          label="Carpet Area"
+          type="number"
+          placeholder="Carpet area"
+          value={formData.specifications.carpetArea}
+          onChange={(e) =>
+            handleNestedChange("specifications", "carpetArea", e.target.value)
+          }
+        />
+
+        <InputField
+          label="Built-up Area"
+          type="number"
+          placeholder="Built-up area"
+          value={formData.specifications.builtUpArea}
+          onChange={(e) =>
+            handleNestedChange("specifications", "builtUpArea", e.target.value)
+          }
+        />
+
+        <InputField
+          label="Super Built-up Area"
+          type="number"
+          placeholder="Super built-up area"
+          value={formData.specifications.superBuiltUpArea}
+          onChange={(e) =>
+            handleNestedChange(
+              "specifications",
+              "superBuiltUpArea",
+              e.target.value
+            )
+          }
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <InputField
+          label="Floor"
+          type="number"
+          placeholder="Floor number"
+          value={formData.specifications.floor}
+          onChange={(e) =>
+            handleNestedChange("specifications", "floor", e.target.value)
+          }
+        />
+
+        <InputField
+          label="Total Floors"
+          type="number"
+          placeholder="Total floors"
+          value={formData.specifications.totalFloors}
+          onChange={(e) =>
+            handleNestedChange("specifications", "totalFloors", e.target.value)
+          }
+        />
+
+        <SelectField
+          label="Facing"
+          options={facingOptions}
+          value={formData.specifications.facing}
+          onChange={(e) =>
+            handleNestedChange("specifications", "facing", e.target.value)
+          }
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <SelectField
+          label="Furnishing"
+          options={furnishingOptions}
+          value={formData.specifications.furnishing}
+          onChange={(e) =>
+            handleNestedChange("specifications", "furnishing", e.target.value)
+          }
+        />
+
+        <SelectField
+          label="Parking"
+          options={parkingOptions}
+          value={formData.specifications.parking}
+          onChange={(e) =>
+            handleNestedChange("specifications", "parking", e.target.value)
+          }
+        />
+
+        <InputField
+          label="Parking Count"
+          type="number"
+          placeholder="Number of parking"
+          value={formData.specifications.parkingCount}
+          onChange={(e) =>
+            handleNestedChange("specifications", "parkingCount", e.target.value)
+          }
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <InputField
+          label="Built Year"
+          type="number"
+          placeholder="e.g., 2020"
+          value={formData.specifications.builtYear}
+          onChange={(e) =>
+            handleNestedChange("specifications", "builtYear", e.target.value)
+          }
+        />
+
+        <InputField
+          label="Age of Construction"
+          placeholder="e.g., 2 years"
+          value={formData.specifications.ageOfConstruction}
+          onChange={(e) =>
+            handleNestedChange(
+              "specifications",
+              "ageOfConstruction",
+              e.target.value
+            )
+          }
+        />
+
+        <SelectField
+          label="Construction Status"
+          options={constructionStatuses}
+          value={formData.specifications.constructionStatus}
+          onChange={(e) =>
+            handleNestedChange(
+              "specifications",
+              "constructionStatus",
+              e.target.value
+            )
+          }
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <InputField
+          label="Possession Date"
+          type="date"
+          value={formData.specifications.possessionDate}
+          onChange={(e) =>
+            handleNestedChange(
+              "specifications",
+              "possessionDate",
+              e.target.value
+            )
+          }
+        />
+
+        <SelectField
+          label="Water Supply"
+          options={waterSupplyOptions}
+          value={formData.specifications.waterSupply}
+          onChange={(e) =>
+            handleNestedChange("specifications", "waterSupply", e.target.value)
+          }
+        />
+      </div>
+
+      <div className="mt-6">
+        <label className="text-sm font-medium text-foreground mb-3 block">
+          Overlooking
+        </label>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {overlookingOptions.map((option) => (
+            <CheckboxField
+              key={option}
+              label={option}
+              checked={formData.specifications.overlooking.includes(option)}
+              onChange={() => handleSpecificationToggle("overlooking", option)}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <SelectField
+          label="Ownership"
+          options={ownershipOptions}
+          value={formData.specifications.ownership}
+          onChange={(e) =>
+            handleNestedChange("specifications", "ownership", e.target.value)
+          }
+        />
+
+        <div className="flex items-center space-x-4 pt-6">
+          <CheckboxField
+            label="Lift Available"
+            checked={formData.specifications.lift}
+            onChange={(e) =>
+              handleNestedChange("specifications", "lift", e.target.checked)
+            }
+          />
+          <CheckboxField
+            label="Power Backup"
+            checked={formData.specifications.powerBackup}
+            onChange={(e) =>
+              handleNestedChange(
+                "specifications",
+                "powerBackup",
+                e.target.checked
+              )
+            }
+          />
+          <CheckboxField
+            label="Occupancy Certificate"
+            checked={formData.specifications.occupancyCertificate}
+            onChange={(e) =>
+              handleNestedChange(
+                "specifications",
+                "occupancyCertificate",
+                e.target.checked
+              )
+            }
+          />
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <label className="text-sm font-medium text-foreground mb-3 block">
+          Approved By
+        </label>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {approvalOptions.map((option) => (
+            <CheckboxField
+              key={option}
+              label={option}
+              checked={formData.specifications.approvedBy.includes(option)}
+              onChange={() => handleSpecificationToggle("approvedBy", option)}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Step 4: Features & Amenities
+  const Step4 = () => (
+    <div className="space-y-6">
+      {/* Amenities */}
+      <div className="bg-card border border-border rounded-lg p-6">
+        <div className="flex items-center space-x-2 mb-6">
+          <Icon name="Wifi" size={20} className="text-primary" />
+          <h2 className="text-xl font-semibold text-foreground">Amenities</h2>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+          {commonAmenities.map((amenity) => (
+            <CheckboxField
+              key={amenity}
+              label={amenity
+                .replace(/-/g, " ")
+                .replace(/\b\w/g, (l) => l.toUpperCase())}
+              checked={formData.amenities.includes(amenity)}
+              onChange={() => handleArrayToggle("amenities", amenity)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Features */}
+      <div className="bg-card border border-border rounded-lg p-6">
+        <div className="flex items-center space-x-2 mb-6">
+          <Icon name="Star" size={20} className="text-primary" />
+          <h2 className="text-xl font-semibold text-foreground">Features</h2>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+          {commonFeatures.map((feature) => (
+            <CheckboxField
+              key={feature}
+              label={feature
+                .replace(/-/g, " ")
+                .replace(/\b\w/g, (l) => l.toUpperCase())}
+              checked={formData.features.includes(feature)}
+              onChange={() => handleArrayToggle("features", feature)}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Step 5: Financial Details
+  const Step5 = () => (
+    <div className="bg-card border border-border rounded-lg p-6">
+      <div className="flex items-center space-x-2 mb-6">
+        <Icon name="DollarSign" size={20} className="text-primary" />
+        <h2 className="text-xl font-semibold text-foreground">
+          Financial Details
+        </h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <InputField
+          label="Security Deposit"
+          type="number"
+          placeholder="Security deposit amount"
+          value={formData.securityDeposit}
+          onChange={(e) => handleInputChange("securityDeposit", e.target.value)}
+          icon="Shield"
+        />
+
+        <InputField
+          label="Booking Amount"
+          type="number"
+          placeholder="Booking amount"
+          value={formData.bookingAmount}
+          onChange={(e) => handleInputChange("bookingAmount", e.target.value)}
+          icon="CreditCard"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <InputField
+          label="Maintenance Charges"
+          type="number"
+          placeholder="Maintenance amount"
+          value={formData.maintenanceCharges.amount}
+          onChange={(e) =>
+            handleNestedChange("maintenanceCharges", "amount", e.target.value)
+          }
+          icon="Settings"
+        />
+
+        <SelectField
+          label="Maintenance Period"
+          options={maintenancePeriods}
+          value={formData.maintenanceCharges.period}
+          onChange={(e) =>
+            handleNestedChange("maintenanceCharges", "period", e.target.value)
+          }
+        />
+      </div>
+
+      {/* Contact Information */}
+      <div className="mt-8">
+        <div className="flex items-center space-x-2 mb-6">
+          <Icon name="Phone" size={20} className="text-primary" />
+          <h2 className="text-xl font-semibold text-foreground">
+            Contact Information
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <SelectField
+            label="Preferred Contact"
+            options={contactOptions}
+            value={formData.contactInfo.preferredContact}
+            onChange={(e) =>
+              handleNestedChange(
+                "contactInfo",
+                "preferredContact",
+                e.target.value
+              )
+            }
+          />
+
+          <SelectField
+            label="Viewing Schedule"
+            options={viewingOptions}
+            value={formData.contactInfo.viewingSchedule}
+            onChange={(e) =>
+              handleNestedChange(
+                "contactInfo",
+                "viewingSchedule",
+                e.target.value
+              )
+            }
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <InputField
+            label="Available From"
+            type="date"
+            value={formData.contactInfo.availableFrom}
+            onChange={(e) =>
+              handleNestedChange("contactInfo", "availableFrom", e.target.value)
+            }
+          />
+
+          <InputField
+            label="Available Till"
+            type="date"
+            value={formData.contactInfo.availableTill}
+            onChange={(e) =>
+              handleNestedChange("contactInfo", "availableTill", e.target.value)
+            }
+          />
+        </div>
+
+        <div className="flex items-center space-x-6 mt-6">
+          <CheckboxField
+            label="Show Phone Number"
+            checked={formData.contactInfo.showPhone}
+            onChange={(e) =>
+              handleNestedChange("contactInfo", "showPhone", e.target.checked)
+            }
+          />
+          <CheckboxField
+            label="Show Email Address"
+            checked={formData.contactInfo.showEmail}
+            onChange={(e) =>
+              handleNestedChange("contactInfo", "showEmail", e.target.checked)
+            }
+          />
+        </div>
+      </div>
+    </div>
+  );
+
+  // Step 6: Agent & Images
+  const Step6 = () => (
+    <>
+      {/* Agent Assignment */}
+      {(userRole === "admin" || userRole === "customer") && (
+        <div className="bg-card border border-border rounded-lg p-6 mb-6">
+          <div className="flex items-center space-x-2 mb-6">
+            <Icon name="User" size={20} className="text-primary" />
+            <h2 className="text-xl font-semibold text-foreground">
+              Agent Assignment
+            </h2>
+          </div>
+          <AgentSelectionField />
+        </div>
+      )}
+
+      {/* Images Upload */}
+      <div className="bg-card border border-border rounded-lg p-6">
+        <div className="flex items-center space-x-2 mb-6">
+          <Icon name="Image" size={20} className="text-primary" />
+          <h2 className="text-xl font-semibold text-foreground">
+            Property Images
+          </h2>
+        </div>
+
+        <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+            id="image-upload"
+          />
+          <label
+            htmlFor="image-upload"
+            className="cursor-pointer flex flex-col items-center justify-center space-y-3"
+          >
+            <Icon name="Upload" size={32} className="text-muted-foreground" />
+            <div>
+              <p className="text-foreground font-medium">
+                Click to upload images
+              </p>
+              <p className="text-sm text-muted-foreground">
+                PNG, JPG, WEBP up to 10MB (Max 10 images)
+              </p>
+            </div>
+            <Button type="button" variant="outline">
+              Choose Files
+            </Button>
+          </label>
+        </div>
+
+        {formData.images.length > 0 && (
+          <div className="mt-4">
+            <h3 className="text-sm font-medium text-foreground mb-3">
+              Selected Images ({formData.images.length}/10)
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {formData.images.map((image, index) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt={`Property ${index + 1}`}
+                    className="w-full h-24 object-cover rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute -top-2 -right-2 bg-error text-error-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Icon name="X" size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+
+  // Render current step
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <Step1 />;
+      case 2:
+        return <Step2 />;
+      case 3:
+        return <Step3 />;
+      case 4:
+        return <Step4 />;
+      case 5:
+        return <Step5 />;
+      case 6:
+        return <Step6 />;
+      default:
+        return <Step1 />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center space-x-3 mb-2">
+            <Icon name="Home" size={24} className="text-primary" />
+            <h1 className="text-3xl font-bold text-foreground">
+              Post New Property
+            </h1>
+          </div>
+          <p className="text-muted-foreground">
+            List your property and reach potential buyers or tenants
+          </p>
+        </div>
+
+        {/* Progress Steps */}
+        <ProgressSteps />
+
+        <form onSubmit={handleSubmit}>
+          {renderStep()}
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-between pt-6 mt-8 border-t border-border">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={prevStep}
+              disabled={currentStep === 1}
+              iconName="ArrowLeft"
+              iconPosition="left"
+            >
+              Previous
+            </Button>
+
+            {currentStep < totalSteps ? (
+              <Button
+                type="button"
+                onClick={nextStep}
+                iconName="ArrowRight"
+                iconPosition="right"
+              >
+                Next
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                disabled={loading}
+                iconName="Upload"
+                iconPosition="left"
+              >
+                {loading ? "Posting Property..." : "Post Property"}
+              </Button>
+            )}
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default PostProperty;
