@@ -255,4 +255,16 @@ export const propertyService = {
   },
 };
 
+// Get top 6 featured properties
+export const getTopFeaturedProperties = async () => {
+  try {
+    const res = await api.get("/properties/featured/top");
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching top featured properties:", error);
+    throw error;
+  }
+};
+
+
 export default propertyService;

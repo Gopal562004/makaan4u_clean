@@ -9,6 +9,7 @@ import {
   getAgentProperties,
   getFilterOptions,
   getAvailableAgents,
+  getTopFeaturedProperties
 } from "../controllers/propertyController.js";
 import { protect, authorize, optionalAuth } from "../middlewares/auth.js";
 import {
@@ -23,7 +24,9 @@ const router = express.Router();
 // Public routes
 router.get("/", optionalAuth, getAllProperties);
 router.get("/featured", getFeaturedProperties);
+router.get("/featured/top", getTopFeaturedProperties);
 router.get("/filter-options", getFilterOptions);
+
 router.get("/agent/:agentId", getAgentProperties);
 //router.get("/:id", optionalAuth, getProperty);
 router.get("/agents/available", getAvailableAgents);
