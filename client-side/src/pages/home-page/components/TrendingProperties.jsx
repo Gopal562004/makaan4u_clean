@@ -377,6 +377,54 @@ const TrendingProperties = memo(() => {
       "_blank"
     );
   };
+const SkeletonCard = () => (
+  <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden animate-pulse">
+    {/* Image Skeleton */}
+    <div className="h-48 bg-slate-200 w-full"></div>
+
+    <div className="p-4 space-y-4">
+      {/* Title */}
+      <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+
+      {/* Location */}
+      <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+
+      {/* Specs */}
+      <div className="flex justify-between bg-slate-100 p-3 rounded-lg">
+        <div className="space-y-2 flex-1 px-2">
+          <div className="h-3 bg-slate-200 rounded w-5"></div>
+          <div className="h-3 bg-slate-200 rounded w-8"></div>
+        </div>
+        <div className="space-y-2 flex-1 px-2">
+          <div className="h-3 bg-slate-200 rounded w-5"></div>
+          <div className="h-3 bg-slate-200 rounded w-8"></div>
+        </div>
+        <div className="space-y-2 flex-1 px-2">
+          <div className="h-3 bg-slate-200 rounded w-5"></div>
+          <div className="h-3 bg-slate-200 rounded w-8"></div>
+        </div>
+      </div>
+
+      {/* Agent */}
+      <div className="flex items-center justify-between bg-slate-100 p-3 rounded-lg">
+        <div className="flex items-center">
+          <div className="w-8 h-8 bg-slate-300 rounded-full mr-2"></div>
+          <div>
+            <div className="h-3 bg-slate-200 rounded w-16"></div>
+            <div className="h-3 bg-slate-200 rounded w-10 mt-1"></div>
+          </div>
+        </div>
+        <div className="w-8 h-8 bg-slate-200 rounded-lg"></div>
+      </div>
+
+      {/* Buttons */}
+      <div className="flex gap-2">
+        <div className="flex-1 h-8 bg-slate-200 rounded-lg"></div>
+        <div className="w-10 h-8 bg-slate-200 rounded-lg"></div>
+      </div>
+    </div>
+  </div>
+);
 
   return (
     <section className="py-20 bg-gradient-to-b from-slate-50 to-white">
@@ -412,9 +460,11 @@ const TrendingProperties = memo(() => {
         )}
 
         {/* Properties Grid */}
-        {!loading && properties.length === 0 && (
-          <div className="text-center text-slate-500 py-10">
-            No featured properties found
+        {loading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <SkeletonCard key={i} />
+            ))}
           </div>
         )}
 
