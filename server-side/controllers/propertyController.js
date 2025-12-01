@@ -1139,6 +1139,9 @@ export const getAllProperties = async (req, res) => {
       .skip(skip)
       .lean();
 
+
+
+
     // Get total count for pagination
     const total = await Property.countDocuments(filter);
 
@@ -1174,6 +1177,7 @@ export const getAllProperties = async (req, res) => {
       properties: properties.map((property) => ({
         _id: property._id,
         title: property.title,
+        slug: property.slug,
         description: property.description,
         price: property.price,
         originalPrice: property.originalPrice,
@@ -2193,15 +2197,89 @@ export const createProperty = async (req, res) => {
 //     });
 //   }
 // };
+// export const getProperty = async (req, res) => {
+//   try {
+//     // Use lean() to bypass Mongoose validation and get plain JavaScript object
+//     const property = await Property.findById(req.params.id)
+//       .populate(
+//         "postedBy",
+//         "name email phone avatar designation experience languages rating performance"
+//       )
+//       .lean(); // Convert to plain object to avoid validation errors
+
+//     if (!property) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Property not found",
+//       });
+//     }
+
+//     // ✅ Count view for ALL users (both logged-in and non-logged-in)
+//     // Update without validation to avoid schema issues
+//     await Property.findByIdAndUpdate(
+//       req.params.id,
+//       { $inc: { views: 1 } },
+//       { runValidators: false } // Disable validation for this update
+//     );
+
+//     // ✅ Track detailed property view for logged-in users only
+//     if (req.user) {
+//       try {
+//         await PropertyView.create({
+//           property: property._id,
+//           user: req.user.id,
+//           ipAddress: req.ip,
+//           userAgent: req.get("User-Agent"),
+//         });
+//       } catch (viewError) {
+//         console.warn("Failed to track detailed view:", viewError.message);
+//         // Continue anyway - don't fail the main request
+//       }
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       property,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching property:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Server error while fetching property",
+//       error: error.message,
+//     });
+//   }
+// };
 export const getProperty = async (req, res) => {
   try {
-    // Use lean() to bypass Mongoose validation and get plain JavaScript object
-    const property = await Property.findById(req.params.id)
-      .populate(
-        "postedBy",
-        "name email phone avatar designation experience languages rating performance"
-      )
-      .lean(); // Convert to plain object to avoid validation errors
+    const param = req.params.slug;
+
+    let property;
+
+    // Check if param is a valid MongoDB ObjectId → fetch by ID
+    if (/^[0-9a-fA-F]{24}$/.test(param)) {
+      property = await Property.findById(param)
+        .populate(
+          "postedBy",
+          "name email phone avatar designation experience languages rating performance"
+        )
+        .lean();
+
+      // If property found using ID → redirect to SEO slug URL
+      if (property && property.slug) {
+        return res.redirect(301, `/property-details/${property.slug}`);
+      }
+    }
+
+    // Otherwise → fetch by slug
+    if (!property) {
+      property = await Property.findOne({ slug: param })
+        .populate(
+          "postedBy",
+          "name email phone avatar designation experience languages rating performance"
+        )
+        .lean();
+    }
 
     if (!property) {
       return res.status(404).json({
@@ -2210,15 +2288,14 @@ export const getProperty = async (req, res) => {
       });
     }
 
-    // ✅ Count view for ALL users (both logged-in and non-logged-in)
-    // Update without validation to avoid schema issues
+    // Count views for everyone (disable validators)
     await Property.findByIdAndUpdate(
-      req.params.id,
+      property._id,
       { $inc: { views: 1 } },
-      { runValidators: false } // Disable validation for this update
+      { runValidators: false }
     );
 
-    // ✅ Track detailed property view for logged-in users only
+    // Track detailed view (logged-in only)
     if (req.user) {
       try {
         await PropertyView.create({
@@ -2229,23 +2306,23 @@ export const getProperty = async (req, res) => {
         });
       } catch (viewError) {
         console.warn("Failed to track detailed view:", viewError.message);
-        // Continue anyway - don't fail the main request
       }
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       property,
     });
   } catch (error) {
     console.error("Error fetching property:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Server error while fetching property",
       error: error.message,
     });
   }
 };
+
 // @desc    Update property
 // @route   PUT /api/properties/:id
 // @access  Private

@@ -169,3 +169,40 @@ body {
 .subtle-white-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #f1f5f9;
 }
+
+
+/* Enhanced Toast Notifications */
+.toast-custom {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.toast-body-custom {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Success Toast */
+.Toastify__toast--success {
+  background: #10b981;
+  color: white;
+}
+
+/* Error Toast */
+.Toastify__toast--error {
+  background: #ef4444;
+  color: white;
+}
+
+/* Warning Toast */
+.Toastify__toast--warning {
+  background: #f59e0b;
+  color: white;
+}
+
+/* Info Toast */
+.Toastify__toast--info {
+  background: #3b82f6;
+  color: white;
+}

@@ -8,10 +8,10 @@
  */
 
 import axios from "axios";
-
+import { getApiUrl } from "utils/getApiUrl";
 // ✅ Create a reusable Axios instance
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000",
+  baseURL: getApiUrl(),
   withCredentials: true, // Required for cookie/session authentication
 });
 

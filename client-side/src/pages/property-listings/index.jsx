@@ -1,9 +1,8 @@
-
-
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
+import { Helmet } from "react-helmet";
 import Header from "../../components/ui/Header";
 import FloatingChat from "../../components/ui/FloatingChat";
 import FilterSidebar from "./components/FilterSidebar";
@@ -317,10 +316,75 @@ const SearchAndSort = ({
 
 const SearchAndSortMemo = React.memo(SearchAndSort);
 
+// URL Parameter Helper Functions
+const useURLParams = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const getURLParams = () => {
+    const params = new URLSearchParams(location.search);
+    return {
+      search: params.get("search") || "",
+      sort: params.get("sort") || "relevance",
+      view: params.get("view") || "grid",
+      map: params.get("map") === "true",
+      page: parseInt(params.get("page")) || 1,
+      price_min: params.get("price_min") || "",
+      price_max: params.get("price_max") || "",
+      location: params.get("location") ? params.get("location").split(",") : [],
+      type: params.get("type") ? params.get("type").split(",") : [],
+      bedrooms: params.get("bedrooms") || "",
+      bathrooms: params.get("bathrooms") || "",
+      amenities: params.get("amenities")
+        ? params.get("amenities").split(",")
+        : [],
+      agent: params.get("agent") || "",
+    };
+  };
+
+  const updateURLParams = (updates) => {
+    const currentParams = getURLParams();
+    const newParams = { ...currentParams, ...updates };
+
+    const params = new URLSearchParams();
+
+    // Only add non-empty parameters to URL
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (key === "page" && value === 1) return; // Don't show page=1 in URL
+      if (
+        value === "" ||
+        value === null ||
+        value === undefined ||
+        (Array.isArray(value) && value.length === 0)
+      )
+        return;
+
+      if (Array.isArray(value)) {
+        if (value.length > 0) {
+          params.set(key, value.join(","));
+        }
+      } else if (typeof value === "boolean") {
+        params.set(key, value.toString());
+      } else {
+        params.set(key, value.toString());
+      }
+    });
+
+    const newSearch = params.toString();
+    const newUrl = `${location.pathname}${newSearch ? `?${newSearch}` : ""}`;
+
+    // Use replace instead of push to avoid adding to browser history for every filter change
+    navigate(newUrl, { replace: true });
+  };
+
+  return { getURLParams, updateURLParams };
+};
+
 // Main PropertyListings Component
 const PropertyListings = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { getURLParams, updateURLParams } = useURLParams();
 
   const [user] = useState({
     id: 1,
@@ -329,20 +393,23 @@ const PropertyListings = () => {
     role: "buyer",
   });
 
+  // Initialize state from URL parameters
+  const urlParams = getURLParams();
+
   const [filters, setFilters] = useState({
-    priceRange: { min: "", max: "" },
-    location: [],
-    propertyType: [],
-    bedrooms: "",
-    bathrooms: "",
-    amenities: [],
-    agent: "",
+    priceRange: { min: urlParams.price_min, max: urlParams.price_max },
+    location: urlParams.location,
+    propertyType: urlParams.type,
+    bedrooms: urlParams.bedrooms,
+    bathrooms: urlParams.bathrooms,
+    amenities: urlParams.amenities,
+    agent: urlParams.agent,
   });
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("relevance");
-  const [viewMode, setViewMode] = useState("grid");
-  const [showMapView, setShowMapView] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(urlParams.search);
+  const [sortBy, setSortBy] = useState(urlParams.sort);
+  const [viewMode, setViewMode] = useState(urlParams.view);
+  const [showMapView, setShowMapView] = useState(urlParams.map);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -357,7 +424,7 @@ const PropertyListings = () => {
     bedrooms: [],
     bathrooms: [],
   });
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(urlParams.page);
   const [totalPages, setTotalPages] = useState(1);
 
   // Helper functions for sorting
@@ -394,9 +461,9 @@ const PropertyListings = () => {
       const queryFilters = {
         page,
         limit: 12,
-        search: searchQuery, // This matches backend 'search' parameter
-        type: filters.propertyType[0] || "", // Use first selected type
-        city: filters.location[0] || "", // Use first selected location
+        search: searchQuery,
+        type: filters.propertyType[0] || "",
+        city: filters.location[0] || "",
         minPrice: filters.priceRange.min || "",
         maxPrice: filters.priceRange.max || "",
         bedrooms: filters.bedrooms,
@@ -419,8 +486,6 @@ const PropertyListings = () => {
         }
       });
 
-      console.log("Fetching properties with filters:", queryFilters);
-
       const data = await getAllProperties(queryFilters);
       setProperties(data.properties || []);
       setTotalPages(data.pages || 1);
@@ -441,6 +506,52 @@ const PropertyListings = () => {
     }
   };
 
+  // Update URL when filters change
+  const updateFiltersInURL = useCallback(
+    (newFilters) => {
+      updateURLParams({
+        search: searchQuery,
+        sort: sortBy,
+        view: viewMode,
+        map: showMapView,
+        page: page > 1 ? page : 1,
+        price_min: newFilters.priceRange.min,
+        price_max: newFilters.priceRange.max,
+        location: newFilters.location.join(","),
+        type: newFilters.propertyType.join(","),
+        bedrooms: newFilters.bedrooms,
+        bathrooms: newFilters.bathrooms,
+        amenities: newFilters.amenities.join(","),
+        agent: newFilters.agent,
+      });
+    },
+    [searchQuery, sortBy, viewMode, showMapView, page, updateURLParams]
+  );
+
+  // Handle URL parameter changes
+  useEffect(() => {
+    const params = getURLParams();
+
+    // Update state from URL parameters
+    if (params.search !== searchQuery) setSearchQuery(params.search);
+    if (params.sort !== sortBy) setSortBy(params.sort);
+    if (params.view !== viewMode) setViewMode(params.view);
+    if (params.map !== showMapView) setShowMapView(params.map);
+    if (params.page !== page) setPage(params.page);
+
+    const newFilters = {
+      priceRange: { min: params.price_min, max: params.price_max },
+      location: params.location,
+      propertyType: params.type,
+      bedrooms: params.bedrooms,
+      bathrooms: params.bathrooms,
+      amenities: params.amenities,
+      agent: params.agent,
+    };
+
+    setFilters(newFilters);
+  }, [location.search]); // Only depend on location.search
+
   useEffect(() => {
     fetchFilterOptions();
   }, []);
@@ -449,28 +560,49 @@ const PropertyListings = () => {
     fetchProperties();
   }, [filters, searchQuery, sortBy, page]);
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const searchParam = urlParams.get("search");
-    const locationParam = urlParams.get("location");
-
-    if (searchParam) setSearchQuery(searchParam);
-    if (locationParam)
-      setFilters((prev) => ({ ...prev, location: [locationParam] }));
-    if (location.state?.searchQuery) setSearchQuery(location.state.searchQuery);
-  }, [location]);
-
   const handleFiltersChange = (newFilters) => {
     setFilters(newFilters);
     setPage(1);
+    updateFiltersInURL(newFilters);
   };
 
   const handleSearchChange = (query) => {
     setSearchQuery(query);
     setPage(1);
+    updateURLParams({
+      search: query,
+      page: 1,
+    });
   };
 
-  const handleSortChange = (newSortBy) => setSortBy(newSortBy);
+  const handleSortChange = (newSortBy) => {
+    setSortBy(newSortBy);
+    updateURLParams({
+      sort: newSortBy,
+    });
+  };
+
+  const handleViewModeChange = (newViewMode) => {
+    setViewMode(newViewMode);
+    updateURLParams({
+      view: newViewMode,
+    });
+  };
+
+  const handleMapToggle = () => {
+    const newMapView = !showMapView;
+    setShowMapView(newMapView);
+    updateURLParams({
+      map: newMapView,
+    });
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+    updateURLParams({
+      page: newPage > 1 ? newPage : 1,
+    });
+  };
 
   const handleWishlistToggle = (propertyId) => {
     setWishlistedProperties((prev) =>
@@ -482,8 +614,176 @@ const PropertyListings = () => {
 
   const handleLogout = () => navigate("/login");
 
+  // Generate dynamic meta tags based on URL parameters
+  const getPageMetaTags = () => {
+    const params = getURLParams();
+    const baseTitle = "Property Listings | Find Your Dream Home";
+    const baseDescription =
+      "Browse through our extensive collection of properties. Find apartments, villas, plots, and commercial spaces with detailed filters and map view.";
+
+    let dynamicTitle = baseTitle;
+    let dynamicDescription = baseDescription;
+
+    // Customize based on search query
+    if (params.search) {
+      dynamicTitle = `Properties in ${params.search} | Real Estate Platform`;
+      dynamicDescription = `Find properties in ${params.search}. Browse listings with prices, photos, and contact details.`;
+    }
+
+    // Customize based on property type filter
+    if (params.type.length > 0) {
+      const types = params.type.join(", ");
+      dynamicTitle = `${types} Properties | Real Estate Listings`;
+      dynamicDescription = `Explore ${types.toLowerCase()} properties for sale and rent. Find your perfect ${types.toLowerCase()} with our advanced search filters.`;
+    }
+
+    // Customize based on location filter
+    if (params.location.length > 0) {
+      const locations = params.location.join(", ");
+      dynamicTitle = `Properties in ${locations} | Real Estate`;
+      dynamicDescription = `Discover properties in ${locations}. Browse residential and commercial real estate listings with verified details.`;
+    }
+
+    // Add price range to description if specified
+    if (params.price_min || params.price_max) {
+      const priceText =
+        params.price_min && params.price_max
+          ? ` priced between ₹${parseInt(
+              params.price_min
+            ).toLocaleString()} and ₹${parseInt(
+              params.price_max
+            ).toLocaleString()}`
+          : params.price_min
+          ? ` priced from ₹${parseInt(params.price_min).toLocaleString()}`
+          : ` priced up to ₹${parseInt(params.price_max).toLocaleString()}`;
+
+      dynamicDescription += priceText;
+    }
+
+    const currentUrl = window.location.href;
+    const imageUrl = "/images/property-listings-og.jpg";
+
+    // Generate canonical URL without page parameter for SEO
+    const canonicalParams = new URLSearchParams(location.search);
+    canonicalParams.delete("page");
+    const canonicalUrl = `${window.location.origin}${location.pathname}${
+      canonicalParams.toString() ? `?${canonicalParams.toString()}` : ""
+    }`;
+
+    return (
+      <Helmet>
+        {/* Primary Meta Tags */}
+        <title>{dynamicTitle}</title>
+        <meta name="description" content={dynamicDescription} />
+        <meta
+          name="keywords"
+          content="real estate, property, buy property, rent apartment, commercial property, residential property, house for sale"
+        />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={currentUrl} />
+        <meta property="og:title" content={dynamicTitle} />
+        <meta property="og:description" content={dynamicDescription} />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="og:site_name" content="Real Estate Platform" />
+
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content={currentUrl} />
+        <meta property="twitter:title" content={dynamicTitle} />
+        <meta property="twitter:description" content={dynamicDescription} />
+        <meta property="twitter:image" content={imageUrl} />
+
+        {/* Canonical URL */}
+        <link rel="canonical" href={canonicalUrl} />
+
+        {/* Pagination SEO */}
+        {page > 1 && (
+          <link rel="prev" href={`${canonicalUrl}?page=${page - 1}`} />
+        )}
+        {page < totalPages && (
+          <link rel="next" href={`${canonicalUrl}?page=${page + 1}`} />
+        )}
+
+        {/* Structured Data for Search Engines */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: dynamicTitle,
+            description: dynamicDescription,
+            url: canonicalUrl,
+            numberOfItems: properties.length,
+            itemListElement: properties.slice(0, 10).map((property, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              item: {
+                "@type": "RealEstateListing",
+                name: property.title,
+                description: `Property in ${
+                  property.location?.city || property.location
+                }`,
+                url: `${window.location.origin}/property-details/${property.slug}`,
+                image: property.images?.[0]?.url,
+                offers: {
+                  "@type": "Offer",
+                  price: property.price,
+                  priceCurrency: "INR",
+                  availability:
+                    property.status === "available"
+                      ? "https://schema.org/InStock"
+                      : "https://schema.org/OutOfStock",
+                },
+              },
+            })),
+          })}
+        </script>
+
+        {/* Additional Schema for SearchAction */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            url: window.location.origin,
+            potentialAction: {
+              "@type": "SearchAction",
+              target: `${window.location.origin}/properties?search={search_term_string}`,
+              "query-input": "required name=search_term_string",
+            },
+          })}
+        </script>
+
+        {/* Breadcrumb Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: window.location.origin,
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Properties",
+                item: currentUrl,
+              },
+            ],
+          })}
+        </script>
+      </Helmet>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
+      {/* SEO Meta Tags */}
+      {getPageMetaTags()}
+
       <Header
         user={user}
         notificationCount={3}
@@ -525,11 +825,11 @@ const PropertyListings = () => {
             sortBy={sortBy}
             onSortChange={handleSortChange}
             viewMode={viewMode}
-            onViewModeChange={setViewMode}
+            onViewModeChange={handleViewModeChange}
             onFilterToggle={() => setIsMobileFilterOpen(true)}
             propertyCount={properties.length}
             showMapView={showMapView}
-            onMapToggle={() => setShowMapView(!showMapView)}
+            onMapToggle={handleMapToggle}
           />
 
           <div className="flex-1 overflow-hidden bg-white">
@@ -538,10 +838,13 @@ const PropertyListings = () => {
                 <div className="w-1/2 overflow-y-auto border-r border-slate-200 custom-scrollbar">
                   <PropertyGrid
                     properties={properties}
-                    viewMode="list"
+                    viewMode={viewMode}
                     onWishlistToggle={handleWishlistToggle}
                     wishlistedProperties={wishlistedProperties}
                     loading={loading}
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
                   />
                 </div>
                 <div className="w-1/2">
@@ -560,6 +863,9 @@ const PropertyListings = () => {
                   onWishlistToggle={handleWishlistToggle}
                   wishlistedProperties={wishlistedProperties}
                   loading={loading}
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
                 />
               </div>
             )}

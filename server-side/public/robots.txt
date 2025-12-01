@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://makaan4u-clean.vercel.app/sitemap.xml
+Host: https://makaan4u-clean.vercel.app

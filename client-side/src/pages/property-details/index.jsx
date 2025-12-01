@@ -1,5 +1,6 @@
 // // import React, { useState, useEffect, useCallback, useMemo } from "react";
-// // import { useSearchParams, useNavigate } from "react-router-dom";
+// // import { useParams, useNavigate } from "react-router-dom";
+// // import { Helmet } from "react-helmet";
 // // import Header from "../../components/ui/Header";
 // // import FloatingChat from "../../components/ui/FloatingChat";
 // // import PropertyImageGallery from "./components/PropertyImageGallery";
@@ -9,103 +10,379 @@
 // // import PropertyLocation from "./components/PropertyLocation";
 // // import SimilarProperties from "./components/SimilarProperties";
 // // import PropertyActions from "./components/PropertyActions";
+// // import BreadcrumbTrail from "../../components/ui/BreadcrumbTrail";
 // // import Icon from "../../components/AppIcon";
 // // import Button from "../../components/ui/Button";
+// // import { getPropertyBySlug } from "../../lib/mongo/services/propertyService";
+// // import { AlertCircle } from "lucide-react";
 
-// // // Move mock data outside component to prevent recreation on every render
-// // const mockProperty = {
-// //   id: 1,
-// //   title: "Luxury 3BHK Apartment with Premium Amenities",
-// //   price: 15000000,
-// //   originalPrice: 16500000,
-// //   location: "Andheri West, Mumbai",
-// //   address: "Plot No. 123, Veera Desai Road, Andheri West",
-// //   pincode: "400053",
-// //   coordinates: {
-// //     lat: 19.1334,
-// //     lng: 72.8267,
-// //   },
-// //   status: "available",
-// //   featured: true,
-// //   bedrooms: 3,
-// //   bathrooms: 2,
-// //   area: 1250,
-// //   type: "Apartment",
-// //   builtYear: "2022",
-// //   parking: "2 Covered",
-// //   description: `This stunning 3BHK apartment offers the perfect blend of luxury and comfort in the heart of Andheri West. Featuring spacious rooms with premium finishes, modern amenities, and excellent connectivity to major business districts.\n\nThe apartment boasts of high-quality Italian marble flooring, modular kitchen with branded appliances, and large windows offering abundant natural light. The building features 24/7 security, power backup, and recreational facilities.\n\nLocated in a prime area with easy access to metro stations, shopping malls, schools, and hospitals. This is an ideal investment opportunity for both end-users and investors.`,
-// //   amenities: [
-// //     "Swimming Pool",
-// //     "Gymnasium",
-// //     "Children's Play Area",
-// //     "Landscaped Gardens",
-// //     "24/7 Security",
-// //     "Power Backup",
-// //     "Lift",
-// //     "Parking",
-// //     "Club House",
-// //     "Jogging Track",
-// //     "Indoor Games",
-// //     "CCTV Surveillance",
-// //   ],
-// //   features: [
-// //     "Premium Italian marble flooring throughout the apartment",
-// //     "Modular kitchen with granite countertops and branded appliances",
-// //     "Master bedroom with attached bathroom and walk-in wardrobe",
-// //     "Large balconies with city views from all bedrooms",
-// //     "High-speed internet connectivity and cable TV points",
-// //     "Earthquake resistant RCC structure with modern architecture",
-// //   ],
-// //   images: [
-// //     {
-// //       url: "https://images.unsplash.com/photo-1698673786592-cd5730baf7d7",
-// //       alt: "Spacious living room with modern furniture, large windows, and elegant interior design",
-// //     },
-// //     {
-// //       url: "https://images.unsplash.com/photo-1609766856923-7e0a0c06584d",
-// //       alt: "Modern kitchen with granite countertops, stainless steel appliances, and ample storage",
-// //     },
-// //     {
-// //       url: "https://images.unsplash.com/photo-1723470918065-13488200464c",
-// //       alt: "Master bedroom with king-size bed, wooden flooring, and large windows with city view",
-// //     },
-// //     {
-// //       url: "https://images.unsplash.com/photo-1730881123778-053fc13c501c",
-// //       alt: "Luxurious bathroom with modern fixtures, marble tiles, and glass shower enclosure",
-// //     },
-// //     {
-// //       url: "https://images.unsplash.com/photo-1725003940447-4663f27fab8e",
-// //       alt: "Spacious balcony with outdoor furniture overlooking city skyline and green spaces",
-// //     },
-// //   ],
-// //   agent: {
-// //     id: 1,
-// //     name: "Rajesh Kumar",
-// //     designation: "Senior Property Consultant",
-// //     avatar: "https://images.unsplash.com/photo-1691671318357-370ca801ad5f",
-// //     avatarAlt:
-// //       "Professional headshot of middle-aged Indian man with mustache in formal blue shirt",
-// //     phone: "+91 98765 43210",
-// //     email: "rajesh.kumar@realconnect.com",
-// //     location: "Andheri West, Mumbai",
-// //     rating: 4.8,
-// //     reviewCount: 127,
-// //     propertiesSold: 85,
-// //     experience: "8+",
-// //     languages: ["English", "Hindi", "Marathi", "Gujarati"],
-// //   },
-// // };
+// // // 🔥 IMPORT SKELETON COMPONENT
+// // import PropertyDetailsSkeleton from "../../components/loading/PropertyDetailsSkeleton";
+
+// // // 🔥 ADD THESE IMPORTS
+// // import { usePerformanceMonitor } from "../../hooks/usePerformanceMonitor";
+// // import { checkPerformanceBudget } from "../../utils/performanceBudget";
+// // import { trackSEOEvents } from "../../utils/analytics";
+// // import { optimizeImageUrl } from "../../utils/imageOptimizer";
 
 // // const PropertyDetails = () => {
-// //   const [searchParams] = useSearchParams();
+// //   const { slug } = useParams();
 // //   const navigate = useNavigate();
+
 // //   const [property, setProperty] = useState(null);
+// //   const [loading, setLoading] = useState(true);
+// //   const [error, setError] = useState(null);
 // //   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
 // //   const [isChatOpen, setIsChatOpen] = useState(false);
 // //   const [activeTab, setActiveTab] = useState("overview");
 // //   const [user, setUser] = useState(null);
 
-// //   // Memoize tabs configuration to prevent recreation
+// //   // 🔥 INITIALIZE PERFORMANCE MONITORING
+// //   usePerformanceMonitor();
+
+// //   // 🔥 ENHANCED SEO META TAGS
+// //   const getPropertyMetaTags = useCallback(() => {
+// //     if (!property) return null;
+
+// //     const title = `🏠 ${property.title} | ${property.bedrooms}BHK ${
+// //       property.type
+// //     } in ${property.location} | ₹${
+// //       property.price?.toLocaleString("en-IN") || "Price on Request"
+// //     }`;
+
+// //     const description = `✅ Verified ${property.bedrooms}BHK ${
+// //       property.type
+// //     } in ${property.location}. ${property.area} sq ft • ${
+// //       property.bathrooms
+// //     } Bath • ${property.amenities?.slice(0, 3).join(" • ")}. 📞 Contact ${
+// //       property.agent?.name
+// //     } for viewing. Instant booking available.`;
+
+// //     const currentUrl = `${window.location.origin}/property/${slug}`;
+// //     const featuredImage = optimizeImageUrl(
+// //       property.images?.[0]?.url || "/images/property-og-default.jpg",
+// //       { width: 1200, quality: 85 }
+// //     );
+
+// //     return (
+// //       <Helmet>
+// //         {/* Primary Meta Tags */}
+// //         <title>{title}</title>
+// //         <meta name="description" content={description} />
+// //         <meta
+// //           name="robots"
+// //           content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+// //         />
+// //         <meta
+// //           name="keywords"
+// //           content={`${property.type}, ${property.location}, real estate, property for sale, ${property.bedrooms} bedroom, ${property.area} sq ft, buy property, rent apartment`}
+// //         />
+
+// //         {/* Canonical URL */}
+// //         <link rel="canonical" href={currentUrl} />
+
+// //         {/* Open Graph / Facebook */}
+// //         <meta property="og:type" content="real_estate.property" />
+// //         <meta property="og:url" content={currentUrl} />
+// //         <meta property="og:title" content={title} />
+// //         <meta property="og:description" content={description} />
+// //         <meta property="og:image" content={featuredImage} />
+// //         <meta property="og:image:width" content="1200" />
+// //         <meta property="og:image:height" content="630" />
+// //         <meta
+// //           property="og:image:alt"
+// //           content={`Main image of ${property.title}`}
+// //         />
+// //         <meta property="og:site_name" content="Premium Real Estate Platform" />
+// //         <meta property="og:locale" content="en_IN" />
+// //         <meta property="og:price:amount" content={property.price?.toString()} />
+// //         <meta property="og:price:currency" content="INR" />
+// //         <meta
+// //           property="og:availability"
+// //           content={property.status === "available" ? "instock" : "out of stock"}
+// //         />
+
+// //         {/* Twitter Cards */}
+// //         <meta property="twitter:card" content="summary_large_image" />
+// //         <meta property="twitter:url" content={currentUrl} />
+// //         <meta property="twitter:title" content={title} />
+// //         <meta property="twitter:description" content={description} />
+// //         <meta property="twitter:image" content={featuredImage} />
+// //         <meta
+// //           property="twitter:image:alt"
+// //           content={`Main image of ${property.title}`}
+// //         />
+// //         <meta property="twitter:site" content="@RealEstatePlatform" />
+// //         <meta property="twitter:creator" content="@RealEstatePlatform" />
+
+// //         {/* Enhanced Structured Data */}
+// //         <script type="application/ld+json">
+// //           {JSON.stringify({
+// //             "@context": "https://schema.org",
+// //             "@graph": [
+// //               {
+// //                 "@type": "RealEstateListing",
+// //                 "@id": `${currentUrl}#realestatelisting`,
+// //                 name: property.title,
+// //                 description: property.description || description,
+// //                 url: currentUrl,
+// //                 image: property.images?.map((img) =>
+// //                   optimizeImageUrl(img.url, { width: 800, quality: 85 })
+// //                 ) || [featuredImage],
+// //                 offers: {
+// //                   "@type": "Offer",
+// //                   price: property.price,
+// //                   priceCurrency: "INR",
+// //                   availability:
+// //                     property.status === "available"
+// //                       ? "https://schema.org/InStock"
+// //                       : "https://schema.org/OutOfStock",
+// //                   priceValidUntil: new Date(
+// //                     Date.now() + 90 * 24 * 60 * 60 * 1000
+// //                   )
+// //                     .toISOString()
+// //                     .split("T")[0],
+// //                   url: currentUrl,
+// //                   seller: {
+// //                     "@type": "RealEstateAgent",
+// //                     name: property.agent?.name,
+// //                     telephone: property.agent?.phone,
+// //                     email: property.agent?.email,
+// //                   },
+// //                 },
+// //                 address: {
+// //                   "@type": "PostalAddress",
+// //                   streetAddress: property.address || property.location,
+// //                   addressLocality:
+// //                     typeof property.location === "object"
+// //                       ? property.location.city
+// //                       : property.location,
+// //                   addressRegion:
+// //                     typeof property.location === "object"
+// //                       ? property.location.state
+// //                       : "",
+// //                   postalCode: property.pincode,
+// //                   addressCountry: "IN",
+// //                 },
+// //                 geo: {
+// //                   "@type": "GeoCoordinates",
+// //                   latitude: property.coordinates?.lat || 0,
+// //                   longitude: property.coordinates?.lng || 0,
+// //                 },
+// //                 numberOfRooms: property.bedrooms,
+// //                 numberOfBathroomsTotal: property.bathrooms,
+// //                 floorSize: {
+// //                   "@type": "QuantitativeValue",
+// //                   value: property.area,
+// //                   unitCode: property.areaUnit === "sqft" ? "FTK" : "MTK",
+// //                 },
+// //                 petsAllowed:
+// //                   property.amenities?.includes("Pet Friendly") || false,
+// //                 yearBuilt: property.builtYear,
+// //                 listingDate: property.listedDate,
+// //                 provider: {
+// //                   "@type": "RealEstateAgent",
+// //                   name: property.agent?.name,
+// //                   telephone: property.agent?.phone,
+// //                   email: property.agent?.email,
+// //                   rating: {
+// //                     "@type": "AggregateRating",
+// //                     ratingValue: property.agent?.rating || 4.5,
+// //                     reviewCount: property.agent?.reviewCount || 25,
+// //                     bestRating: 5,
+// //                   },
+// //                 },
+// //                 amenityFeature: property.amenities?.map((amenity) => ({
+// //                   "@type": "LocationFeatureSpecification",
+// //                   name: amenity,
+// //                   value: true,
+// //                 })),
+// //               },
+// //               {
+// //                 "@type": "WebPage",
+// //                 "@id": `${currentUrl}#webpage`,
+// //                 url: currentUrl,
+// //                 name: title,
+// //                 description: description,
+// //                 isPartOf: {
+// //                   "@id": `${window.location.origin}/#website`,
+// //                 },
+// //                 about: {
+// //                   "@id": `${currentUrl}#realestatelisting`,
+// //                 },
+// //                 datePublished: property.listedDate,
+// //                 dateModified: new Date().toISOString(),
+// //                 breadcrumb: {
+// //                   "@id": `${currentUrl}#breadcrumb`,
+// //                 },
+// //                 primaryImageOfPage: {
+// //                   "@type": "ImageObject",
+// //                   url: featuredImage,
+// //                   width: 1200,
+// //                   height: 630,
+// //                 },
+// //                 potentialAction: [
+// //                   {
+// //                     "@type": "ReadAction",
+// //                     target: [currentUrl],
+// //                   },
+// //                 ],
+// //               },
+// //               {
+// //                 "@type": "Organization",
+// //                 "@id": `${window.location.origin}/#organization`,
+// //                 name: "Premium Real Estate Platform",
+// //                 url: window.location.origin,
+// //                 logo: `${window.location.origin}/logo.png`,
+// //                 description:
+// //                   "India's leading real estate platform for buying, selling, and renting properties",
+// //                 address: {
+// //                   "@type": "PostalAddress",
+// //                   addressLocality: "Mumbai",
+// //                   addressRegion: "Maharashtra",
+// //                   addressCountry: "IN",
+// //                 },
+// //                 contactPoint: {
+// //                   "@type": "ContactPoint",
+// //                   telephone: "+91-XXXXXXXXXX",
+// //                   contactType: "customer service",
+// //                   areaServed: "IN",
+// //                   availableLanguage: ["English", "Hindi"],
+// //                 },
+// //                 sameAs: [
+// //                   "https://www.facebook.com/realestateplatform",
+// //                   "https://www.twitter.com/realestateplatform",
+// //                   "https://www.linkedin.com/company/realestateplatform",
+// //                 ],
+// //               },
+// //             ],
+// //           })}
+// //         </script>
+// //       </Helmet>
+// //     );
+// //   }, [property, slug]);
+
+// //   const transformPropertyData = useCallback((apiData) => {
+// //     if (!apiData) return null;
+
+// //     // Determine which agent data to use
+// //     let agentData = {};
+
+// //     if (
+// //       apiData.agentInfo &&
+// //       apiData.agentInfo.name &&
+// //       apiData.agentInfo.name !== "Agent"
+// //     ) {
+// //       agentData = {
+// //         id: apiData.agentInfo?._id || apiData._id,
+// //         name: apiData.agentInfo.name,
+// //         designation: apiData.agentInfo.designation,
+// //         avatar: apiData.agentInfo.avatar,
+// //         phone: apiData.agentInfo.phone,
+// //         email: apiData.agentInfo.email,
+// //         rating: apiData.agentInfo.rating,
+// //         reviewCount: apiData.agentInfo.reviewCount,
+// //         propertiesSold: apiData.agentInfo.propertiesSold,
+// //         experience: apiData.agentInfo.experience,
+// //         languages: apiData.agentInfo.languages,
+// //       };
+// //     } else if (apiData.postedBy && typeof apiData.postedBy === "object") {
+// //       agentData = {
+// //         id: apiData.postedBy._id,
+// //         name: apiData.postedBy.name,
+// //         designation: apiData.postedBy.designation,
+// //         avatar: apiData.postedBy.avatar,
+// //         phone: apiData.postedBy.phone,
+// //         email: apiData.postedBy.email,
+// //         rating: apiData.postedBy.rating?.average || 0,
+// //         reviewCount: apiData.postedBy.rating?.totalReviews || 0,
+// //         propertiesSold: apiData.postedBy.performance?.totalPropertiesSold || 0,
+// //         experience: apiData.postedBy.experience
+// //           ? `${apiData.postedBy.experience}+`
+// //           : "0+",
+// //         languages: apiData.postedBy.languages || ["English", "Hindi"],
+// //       };
+// //     } else {
+// //       agentData = {
+// //         id: apiData._id,
+// //         name: "Agent",
+// //         designation: "Property Consultant",
+// //         avatar: "default-avatar.jpg",
+// //         phone: "+919876543210",
+// //         email: "agent@example.com",
+// //         rating: 0,
+// //         reviewCount: 0,
+// //         propertiesSold: 0,
+// //         experience: "0+",
+// //         languages: ["English", "Hindi"],
+// //       };
+// //     }
+
+// //     return {
+// //       // Basic info
+// //       id: apiData._id,
+// //       title: apiData.title,
+// //       description: apiData.description,
+// //       price: apiData.price,
+// //       originalPrice: apiData.originalPrice,
+
+// //       // Location
+// //       location:
+// //         typeof apiData.location === "string"
+// //           ? apiData.location
+// //           : apiData.location?.address ||
+// //             `${apiData.location?.city}, ${apiData.location?.state}`,
+// //       address:
+// //         typeof apiData.location === "string"
+// //           ? apiData.location
+// //           : apiData.location?.address,
+// //       pincode:
+// //         typeof apiData.location === "string" ? "" : apiData.location?.pincode,
+// //       coordinates:
+// //         typeof apiData.location === "string"
+// //           ? { lat: 0, lng: 0 }
+// //           : apiData.location?.coordinates || { lat: 0, lng: 0 },
+
+// //       // Status
+// //       status: apiData.status,
+// //       featured: apiData.featured,
+
+// //       // Specifications
+// //       bedrooms: apiData.specifications?.bedrooms,
+// //       bathrooms: apiData.specifications?.bathrooms,
+// //       area: apiData.specifications?.area,
+// //       areaUnit: apiData.specifications?.areaUnit || "sqft",
+// //       type: apiData.specifications?.type,
+// //       builtYear: apiData.specifications?.builtYear,
+// //       parking: apiData.specifications?.parking,
+
+// //       // Arrays
+// //       amenities: apiData.amenities || [],
+// //       features: apiData.features || [],
+// //       // 🔥 ENHANCED: Optimized images
+// //       images:
+// //         apiData.images?.map((img) => ({
+// //           ...img,
+// //           url: optimizeImageUrl(img.url, { width: 1200, quality: 85 }),
+// //         })) || [],
+
+// //       // Agent data
+// //       agent: {
+// //         ...agentData,
+// //         avatarAlt: `Professional photo of ${agentData.name}`,
+// //         location:
+// //           agentData.location ||
+// //           (typeof apiData.location === "string"
+// //             ? apiData.location
+// //             : `${apiData.location?.city}, ${apiData.location?.state}`),
+// //       },
+
+// //       // Additional fields
+// //       listedDate: apiData.listedDate || new Date().toISOString(),
+// //       propertyId: apiData.propertyId || `RC${apiData._id?.slice(-6)}`,
+// //     };
+// //   }, []);
+
 // //   const tabs = useMemo(
 // //     () => [
 // //       { id: "overview", label: "Overview", icon: "Home" },
@@ -115,11 +392,30 @@
 // //     []
 // //   );
 
-// //   // Optimize useEffect with proper dependencies
 // //   useEffect(() => {
-// //     // Simulate loading property data
-// //     const propertyId = searchParams?.get("id") || "1";
-// //     setProperty(mockProperty);
+// //     const fetchProperty = async () => {
+// //       try {
+// //         setLoading(true);
+
+// //         if (!slug) {
+// //           setError("No property slug found in URL");
+// //           setLoading(false);
+// //           return;
+// //         }
+
+// //         const res = await getPropertyBySlug(slug);
+// //         console.log("API response for property:", res);
+// //         const transformedProperty = transformPropertyData(res.property);
+// //         setProperty(transformedProperty);
+// //       } catch (err) {
+// //         console.error("Error fetching property:", err);
+// //         setError(err.message || "Failed to load property details.");
+// //       } finally {
+// //         setLoading(false);
+// //       }
+// //     };
+
+// //     fetchProperty();
 
 // //     // Mock user data
 // //     setUser({
@@ -127,15 +423,47 @@
 // //       email: "john.doe@example.com",
 // //       role: "buyer",
 // //     });
-// //   }, [searchParams]);
+// //   }, [slug, transformPropertyData]);
 
-// //   // Memoize handlers to prevent unnecessary re-renders
-// //   const handleScheduleViewing = useCallback(() => {
-// //     setIsAppointmentModalOpen(true);
-// //   }, []);
+// //   // 🔥 ADD TRACKING TO EFFECT
+// //   useEffect(() => {
+// //     if (property) {
+// //       trackSEOEvents.propertyView(property);
 
+// //       // Check performance after page loads
+// //       setTimeout(() => {
+// //         checkPerformanceBudget();
+// //       }, 2000);
+// //     }
+// //   }, [property]);
+
+// //   const handleScheduleViewing = useCallback(
+// //     () => setIsAppointmentModalOpen(true),
+// //     []
+// //   );
+// //   const handleCloseAppointmentModal = useCallback(
+// //     () => setIsAppointmentModalOpen(false),
+// //     []
+// //   );
+// //   const handleToggleChat = useCallback(
+// //     () => setIsChatOpen((prev) => !prev),
+// //     []
+// //   );
+// //   const handleTabChange = useCallback((tabId) => setActiveTab(tabId), []);
+// //   const handleBackToListings = useCallback(
+// //     () => navigate("/property-listings"),
+// //     [navigate]
+// //   );
+// //   const handleHomeNavigate = useCallback(
+// //     () => navigate("/home-page"),
+// //     [navigate]
+// //   );
+
+// //   // 🔥 ENHANCED CONTACT HANDLERS WITH TRACKING
 // //   const handleWhatsAppContact = useCallback(() => {
 // //     if (!property?.agent?.phone) return;
+
+// //     trackSEOEvents.contactAction(property, "whatsapp");
 
 // //     const message = encodeURIComponent(
 // //       `Hi ${property.agent.name}, I'm interested in the property: ${property.title}. Can we schedule a viewing?`
@@ -144,32 +472,29 @@
 // //     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
 // //   }, [property]);
 
-// //   const handleBackToListings = useCallback(() => {
-// //     navigate("/property-listings");
-// //   }, [navigate]);
+// //   const handleEmailContact = useCallback(() => {
+// //     if (!property?.agent?.email) return;
 
-// //   const handleCloseAppointmentModal = useCallback(() => {
-// //     setIsAppointmentModalOpen(false);
-// //   }, []);
+// //     trackSEOEvents.contactAction(property, "email");
 
-// //   const handleToggleChat = useCallback(() => {
-// //     setIsChatOpen((prev) => !prev);
-// //   }, []);
+// //     const subject = encodeURIComponent(
+// //       `Interest in Property: ${property.title}`
+// //     );
+// //     const body = encodeURIComponent(
+// //       `Hi ${property.agent.name},\n\nI'm interested in the property: ${property.title}.\n\nCan you please provide more details and available viewing schedules?\n\nThank you!`
+// //     );
 
-// //   const handleTabChange = useCallback((tabId) => {
-// //     setActiveTab(tabId);
-// //   }, []);
-
-// //   const handleHomeNavigate = useCallback(() => {
-// //     navigate("/home-page");
-// //   }, [navigate]);
-
-// //   // Memoize property ID formatting
-// //   const formattedPropertyId = useMemo(() => {
-// //     return property ? `RC${property.id.toString().padStart(6, "0")}` : "";
+// //     window.open(
+// //       `mailto:${property.agent.email}?subject=${subject}&body=${body}`,
+// //       "_blank"
+// //     );
 // //   }, [property]);
 
-// //   // Memoize tab content to prevent unnecessary re-renders
+// //   const formattedPropertyId = useMemo(
+// //     () => property?.propertyId || "",
+// //     [property]
+// //   );
+
 // //   const tabContent = useMemo(() => {
 // //     switch (activeTab) {
 // //       case "overview":
@@ -177,22 +502,67 @@
 // //       case "location":
 // //         return <PropertyLocation property={property} />;
 // //       case "similar":
-// //         return <SimilarProperties currentPropertyId={property?.id} />;
+// //         return <SimilarProperties currentProperty={property} />;
 // //       default:
 // //         return <PropertyInfo property={property} />;
 // //     }
 // //   }, [activeTab, property]);
 
-// //   // Loading state
+// //   // 🔥 SKELETON LOADING
+// //   if (loading) {
+// //     return <PropertyDetailsSkeleton />;
+// //   }
+
+// //   if (error) {
+// //     return (
+// //       <div className="min-h-screen bg-white flex items-center justify-center p-6">
+// //         <Helmet>
+// //           <title>Property Not Found | Premium Real Estate Platform</title>
+// //           <meta
+// //             name="description"
+// //             content="The requested property could not be found."
+// //           />
+// //         </Helmet>
+// //         <div className="text-center max-w-md">
+// //           <div className="flex justify-center mb-6">
+// //             <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center border border-red-100">
+// //               <AlertCircle className="w-8 h-8 text-red-500" />
+// //             </div>
+// //           </div>
+// //           <h2 className="text-xl font-semibold text-gray-900 mb-3">
+// //             Something went wrong
+// //           </h2>
+// //           <p className="text-red-500 font-medium mb-2">{error}</p>
+// //           <p className="text-gray-600 text-sm mb-6">
+// //             We encountered an issue while loading this page.
+// //           </p>
+// //           <Button
+// //             onClick={handleBackToListings}
+// //             variant="primary"
+// //             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3"
+// //           >
+// //             Back to Property Listings
+// //           </Button>
+// //         </div>
+// //       </div>
+// //     );
+// //   }
+
 // //   if (!property) {
 // //     return (
-// //       <div className="min-h-screen bg-background">
-// //         <Header user={user} />
-// //         <div className="flex items-center justify-center h-96">
-// //           <div className="text-center">
-// //             <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-// //             <p className="text-muted-foreground">Loading property details...</p>
-// //           </div>
+// //       <div className="min-h-screen bg-background flex items-center justify-center">
+// //         <Helmet>
+// //           <title>Property Not Found | Premium Real Estate Platform</title>
+// //           <meta
+// //             name="description"
+// //             content="The requested property could not be found."
+// //           />
+// //         </Helmet>
+// //         <div className="text-center">
+// //           <p className="text-muted-foreground mb-4">No property found.</p>
+// //           <Button onClick={handleBackToListings}>
+// //             Back to Property Listings
+// //           </Button>
 // //         </div>
 // //       </div>
 // //     );
@@ -200,6 +570,9 @@
 
 // //   return (
 // //     <div className="min-h-screen bg-background">
+// //       {/* 🔥 SEO Meta Tags */}
+// //       {getPropertyMetaTags()}
+
 // //       <Header
 // //         user={user}
 // //         onLogout={() => navigate("/login")}
@@ -207,24 +580,8 @@
 // //       />
 
 // //       <main className="container mx-auto px-4 py-6">
-// //         {/* Breadcrumb */}
-// //         <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
-// //           <button
-// //             onClick={handleHomeNavigate}
-// //             className="hover:text-foreground transition-smooth"
-// //           >
-// //             Home
-// //           </button>
-// //           <Icon name="ChevronRight" size={16} />
-// //           <button
-// //             onClick={handleBackToListings}
-// //             className="hover:text-foreground transition-smooth"
-// //           >
-// //             Properties
-// //           </button>
-// //           <Icon name="ChevronRight" size={16} />
-// //           <span className="text-foreground">Property Details</span>
-// //         </div>
+// //         {/* 🔥 REPLACE OLD BREADCRUMB WITH ENHANCED BREADCRUMBTRAIL */}
+// //         <BreadcrumbTrail propertyData={property} user={user} />
 
 // //         {/* Back Button */}
 // //         <div className="mb-6">
@@ -241,10 +598,11 @@
 // //         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 // //           {/* Main Content */}
 // //           <div className="lg:col-span-2 space-y-8">
-// //             {/* Image Gallery */}
-// //             <PropertyImageGallery images={property.images} />
+// //             <PropertyImageGallery
+// //               images={property.images}
+// //               propertyTitle={property.title}
+// //             />
 
-// //             {/* Mobile Actions */}
 // //             <div className="lg:hidden">
 // //               <PropertyActions
 // //                 property={property}
@@ -279,14 +637,13 @@
 
 // //           {/* Sidebar */}
 // //           <div className="space-y-6">
-// //             {/* Agent Card */}
 // //             <AgentCard
 // //               agent={property.agent}
 // //               onScheduleViewing={handleScheduleViewing}
 // //               onWhatsAppContact={handleWhatsAppContact}
+// //               onEmailContact={handleEmailContact}
 // //             />
 
-// //             {/* Desktop Actions */}
 // //             <div className="hidden lg:block">
 // //               <PropertyActions
 // //                 property={property}
@@ -295,7 +652,7 @@
 // //               />
 // //             </div>
 
-// //             {/* Quick Info Card */}
+// //             {/* Quick Information */}
 // //             <div className="bg-card border border-border rounded-lg p-6">
 // //               <h4 className="font-semibold text-foreground mb-4">
 // //                 Quick Information
@@ -309,19 +666,27 @@
 // //                 </div>
 // //                 <div className="flex justify-between">
 // //                   <span className="text-muted-foreground">Listed Date</span>
-// //                   <span className="text-foreground">15 Oct 2024</span>
+// //                   <span className="text-foreground">
+// //                     {new Date(property.listedDate).toLocaleDateString()}
+// //                   </span>
 // //                 </div>
 // //                 <div className="flex justify-between">
-// //                   <span className="text-muted-foreground">Property Age</span>
-// //                   <span className="text-foreground">2 Years</span>
+// //                   <span className="text-muted-foreground">Status</span>
+// //                   <span className="text-foreground capitalize">
+// //                     {property.status}
+// //                   </span>
 // //                 </div>
 // //                 <div className="flex justify-between">
-// //                   <span className="text-muted-foreground">Possession</span>
-// //                   <span className="text-foreground">Ready to Move</span>
+// //                   <span className="text-muted-foreground">Type</span>
+// //                   <span className="text-foreground capitalize">
+// //                     {property.type}
+// //                   </span>
 // //                 </div>
 // //                 <div className="flex justify-between">
-// //                   <span className="text-muted-foreground">Facing</span>
-// //                   <span className="text-foreground">North-East</span>
+// //                   <span className="text-muted-foreground">Area</span>
+// //                   <span className="text-foreground">
+// //                     {property.area} {property.areaUnit}
+// //                   </span>
 // //                 </div>
 // //               </div>
 // //             </div>
@@ -345,7 +710,6 @@
 // //         </div>
 // //       </main>
 
-// //       {/* Appointment Modal */}
 // //       <AppointmentModal
 // //         isOpen={isAppointmentModalOpen}
 // //         onClose={handleCloseAppointmentModal}
@@ -353,15 +717,16 @@
 // //         agent={property.agent}
 // //       />
 
-// //       {/* Floating Chat */}
 // //       <FloatingChat isOpen={isChatOpen} onToggle={handleToggleChat} />
 // //     </div>
 // //   );
 // // };
 
 // // export default React.memo(PropertyDetails);
+
 // import React, { useState, useEffect, useCallback, useMemo } from "react";
 // import { useParams, useNavigate } from "react-router-dom";
+// import { Helmet } from "react-helmet";
 // import Header from "../../components/ui/Header";
 // import FloatingChat from "../../components/ui/FloatingChat";
 // import PropertyImageGallery from "./components/PropertyImageGallery";
@@ -371,12 +736,30 @@
 // import PropertyLocation from "./components/PropertyLocation";
 // import SimilarProperties from "./components/SimilarProperties";
 // import PropertyActions from "./components/PropertyActions";
+// import BreadcrumbTrail from "../../components/ui/BreadcrumbTrail";
 // import Icon from "../../components/AppIcon";
 // import Button from "../../components/ui/Button";
-// import { getPropertyById } from "../../lib/mongo/services/propertyService";
+// import { getPropertyBySlug } from "../../lib/mongo/services/propertyService";
+// import { AlertCircle, Heart } from "lucide-react";
+
+// // 🔥 IMPORT SKELETON COMPONENT
+// import PropertyDetailsSkeleton from "../../components/loading/PropertyDetailsSkeleton";
+
+// // 🔥 ADD THESE IMPORTS
+// import { usePerformanceMonitor } from "../../hooks/usePerformanceMonitor";
+// import { checkPerformanceBudget } from "../../utils/performanceBudget";
+// import { trackSEOEvents } from "../../utils/analytics";
+// import { optimizeImageUrl } from "../../utils/imageOptimizer";
+
+// // 🔥 IMPORT WISHLIST SERVICES
+// import {
+//   addToWishlist,
+//   removeFromWishlist,
+//   checkWishlistStatus,
+// } from "../../lib/mongo/services/wishlistService";
 
 // const PropertyDetails = () => {
-//   const { id: propertyId } = useParams();
+//   const { slug } = useParams();
 //   const navigate = useNavigate();
 
 //   const [property, setProperty] = useState(null);
@@ -387,9 +770,291 @@
 //   const [activeTab, setActiveTab] = useState("overview");
 //   const [user, setUser] = useState(null);
 
-//   // Transform API data to match component expectations
+//   // 🔥 WISHLIST STATES
+//   const [isWishlisted, setIsWishlisted] = useState(false);
+//   const [wishlistLoading, setWishlistLoading] = useState(false);
+//   const [wishlistError, setWishlistError] = useState(null);
+
+//   // 🔥 INITIALIZE PERFORMANCE MONITORING
+//   usePerformanceMonitor();
+
+//   // 🔥 ENHANCED SEO META TAGS
+//   const getPropertyMetaTags = useCallback(() => {
+//     if (!property) return null;
+
+//     const title = `🏠 ${property.title} | ${property.bedrooms}BHK ${
+//       property.type
+//     } in ${property.location} | ₹${
+//       property.price?.toLocaleString("en-IN") || "Price on Request"
+//     }`;
+
+//     const description = `✅ Verified ${property.bedrooms}BHK ${
+//       property.type
+//     } in ${property.location}. ${property.area} sq ft • ${
+//       property.bathrooms
+//     } Bath • ${property.amenities?.slice(0, 3).join(" • ")}. 📞 Contact ${
+//       property.agent?.name
+//     } for viewing. Instant booking available.`;
+
+//     const currentUrl = `${window.location.origin}/property/${slug}`;
+//     const featuredImage = optimizeImageUrl(
+//       property.images?.[0]?.url || "/images/property-og-default.jpg",
+//       { width: 1200, quality: 85 }
+//     );
+
+//     return (
+//       <Helmet>
+//         {/* Primary Meta Tags */}
+//         <title>{title}</title>
+//         <meta name="description" content={description} />
+//         <meta
+//           name="robots"
+//           content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+//         />
+//         <meta
+//           name="keywords"
+//           content={`${property.type}, ${property.location}, real estate, property for sale, ${property.bedrooms} bedroom, ${property.area} sq ft, buy property, rent apartment`}
+//         />
+
+//         {/* Canonical URL */}
+//         <link rel="canonical" href={currentUrl} />
+
+//         {/* Open Graph / Facebook */}
+//         <meta property="og:type" content="real_estate.property" />
+//         <meta property="og:url" content={currentUrl} />
+//         <meta property="og:title" content={title} />
+//         <meta property="og:description" content={description} />
+//         <meta property="og:image" content={featuredImage} />
+//         <meta property="og:image:width" content="1200" />
+//         <meta property="og:image:height" content="630" />
+//         <meta
+//           property="og:image:alt"
+//           content={`Main image of ${property.title}`}
+//         />
+//         <meta property="og:site_name" content="Premium Real Estate Platform" />
+//         <meta property="og:locale" content="en_IN" />
+//         <meta property="og:price:amount" content={property.price?.toString()} />
+//         <meta property="og:price:currency" content="INR" />
+//         <meta
+//           property="og:availability"
+//           content={property.status === "available" ? "instock" : "out of stock"}
+//         />
+
+//         {/* Twitter Cards */}
+//         <meta property="twitter:card" content="summary_large_image" />
+//         <meta property="twitter:url" content={currentUrl} />
+//         <meta property="twitter:title" content={title} />
+//         <meta property="twitter:description" content={description} />
+//         <meta property="twitter:image" content={featuredImage} />
+//         <meta
+//           property="twitter:image:alt"
+//           content={`Main image of ${property.title}`}
+//         />
+//         <meta property="twitter:site" content="@RealEstatePlatform" />
+//         <meta property="twitter:creator" content="@RealEstatePlatform" />
+
+//         {/* Enhanced Structured Data */}
+//         <script type="application/ld+json">
+//           {JSON.stringify({
+//             "@context": "https://schema.org",
+//             "@graph": [
+//               {
+//                 "@type": "RealEstateListing",
+//                 "@id": `${currentUrl}#realestatelisting`,
+//                 name: property.title,
+//                 description: property.description || description,
+//                 url: currentUrl,
+//                 image: property.images?.map((img) =>
+//                   optimizeImageUrl(img.url, { width: 800, quality: 85 })
+//                 ) || [featuredImage],
+//                 offers: {
+//                   "@type": "Offer",
+//                   price: property.price,
+//                   priceCurrency: "INR",
+//                   availability:
+//                     property.status === "available"
+//                       ? "https://schema.org/InStock"
+//                       : "https://schema.org/OutOfStock",
+//                   priceValidUntil: new Date(
+//                     Date.now() + 90 * 24 * 60 * 60 * 1000
+//                   )
+//                     .toISOString()
+//                     .split("T")[0],
+//                   url: currentUrl,
+//                   seller: {
+//                     "@type": "RealEstateAgent",
+//                     name: property.agent?.name,
+//                     telephone: property.agent?.phone,
+//                     email: property.agent?.email,
+//                   },
+//                 },
+//                 address: {
+//                   "@type": "PostalAddress",
+//                   streetAddress: property.address || property.location,
+//                   addressLocality:
+//                     typeof property.location === "object"
+//                       ? property.location.city
+//                       : property.location,
+//                   addressRegion:
+//                     typeof property.location === "object"
+//                       ? property.location.state
+//                       : "",
+//                   postalCode: property.pincode,
+//                   addressCountry: "IN",
+//                 },
+//                 geo: {
+//                   "@type": "GeoCoordinates",
+//                   latitude: property.coordinates?.lat || 0,
+//                   longitude: property.coordinates?.lng || 0,
+//                 },
+//                 numberOfRooms: property.bedrooms,
+//                 numberOfBathroomsTotal: property.bathrooms,
+//                 floorSize: {
+//                   "@type": "QuantitativeValue",
+//                   value: property.area,
+//                   unitCode: property.areaUnit === "sqft" ? "FTK" : "MTK",
+//                 },
+//                 petsAllowed:
+//                   property.amenities?.includes("Pet Friendly") || false,
+//                 yearBuilt: property.builtYear,
+//                 listingDate: property.listedDate,
+//                 provider: {
+//                   "@type": "RealEstateAgent",
+//                   name: property.agent?.name,
+//                   telephone: property.agent?.phone,
+//                   email: property.agent?.email,
+//                   rating: {
+//                     "@type": "AggregateRating",
+//                     ratingValue: property.agent?.rating || 4.5,
+//                     reviewCount: property.agent?.reviewCount || 25,
+//                     bestRating: 5,
+//                   },
+//                 },
+//                 amenityFeature: property.amenities?.map((amenity) => ({
+//                   "@type": "LocationFeatureSpecification",
+//                   name: amenity,
+//                   value: true,
+//                 })),
+//               },
+//               {
+//                 "@type": "WebPage",
+//                 "@id": `${currentUrl}#webpage`,
+//                 url: currentUrl,
+//                 name: title,
+//                 description: description,
+//                 isPartOf: {
+//                   "@id": `${window.location.origin}/#website`,
+//                 },
+//                 about: {
+//                   "@id": `${currentUrl}#realestatelisting`,
+//                 },
+//                 datePublished: property.listedDate,
+//                 dateModified: new Date().toISOString(),
+//                 breadcrumb: {
+//                   "@id": `${currentUrl}#breadcrumb`,
+//                 },
+//                 primaryImageOfPage: {
+//                   "@type": "ImageObject",
+//                   url: featuredImage,
+//                   width: 1200,
+//                   height: 630,
+//                 },
+//                 potentialAction: [
+//                   {
+//                     "@type": "ReadAction",
+//                     target: [currentUrl],
+//                   },
+//                 ],
+//               },
+//               {
+//                 "@type": "Organization",
+//                 "@id": `${window.location.origin}/#organization`,
+//                 name: "Premium Real Estate Platform",
+//                 url: window.location.origin,
+//                 logo: `${window.location.origin}/logo.png`,
+//                 description:
+//                   "India's leading real estate platform for buying, selling, and renting properties",
+//                 address: {
+//                   "@type": "PostalAddress",
+//                   addressLocality: "Mumbai",
+//                   addressRegion: "Maharashtra",
+//                   addressCountry: "IN",
+//                 },
+//                 contactPoint: {
+//                   "@type": "ContactPoint",
+//                   telephone: "+91-XXXXXXXXXX",
+//                   contactType: "customer service",
+//                   areaServed: "IN",
+//                   availableLanguage: ["English", "Hindi"],
+//                 },
+//                 sameAs: [
+//                   "https://www.facebook.com/realestateplatform",
+//                   "https://www.twitter.com/realestateplatform",
+//                   "https://www.linkedin.com/company/realestateplatform",
+//                 ],
+//               },
+//             ],
+//           })}
+//         </script>
+//       </Helmet>
+//     );
+//   }, [property, slug]);
+
 //   const transformPropertyData = useCallback((apiData) => {
 //     if (!apiData) return null;
+
+//     // Determine which agent data to use
+//     let agentData = {};
+
+//     if (
+//       apiData.agentInfo &&
+//       apiData.agentInfo.name &&
+//       apiData.agentInfo.name !== "Agent"
+//     ) {
+//       agentData = {
+//         id: apiData.agentInfo?._id || apiData._id,
+//         name: apiData.agentInfo.name,
+//         designation: apiData.agentInfo.designation,
+//         avatar: apiData.agentInfo.avatar,
+//         phone: apiData.agentInfo.phone,
+//         email: apiData.agentInfo.email,
+//         rating: apiData.agentInfo.rating,
+//         reviewCount: apiData.agentInfo.reviewCount,
+//         propertiesSold: apiData.agentInfo.propertiesSold,
+//         experience: apiData.agentInfo.experience,
+//         languages: apiData.agentInfo.languages,
+//       };
+//     } else if (apiData.postedBy && typeof apiData.postedBy === "object") {
+//       agentData = {
+//         id: apiData.postedBy._id,
+//         name: apiData.postedBy.name,
+//         designation: apiData.postedBy.designation,
+//         avatar: apiData.postedBy.avatar,
+//         phone: apiData.postedBy.phone,
+//         email: apiData.postedBy.email,
+//         rating: apiData.postedBy.rating?.average || 0,
+//         reviewCount: apiData.postedBy.rating?.totalReviews || 0,
+//         propertiesSold: apiData.postedBy.performance?.totalPropertiesSold || 0,
+//         experience: apiData.postedBy.experience
+//           ? `${apiData.postedBy.experience}+`
+//           : "0+",
+//         languages: apiData.postedBy.languages || ["English", "Hindi"],
+//       };
+//     } else {
+//       agentData = {
+//         id: apiData._id,
+//         name: "Agent",
+//         designation: "Property Consultant",
+//         avatar: "default-avatar.jpg",
+//         phone: "+919876543210",
+//         email: "agent@example.com",
+//         rating: 0,
+//         reviewCount: 0,
+//         propertiesSold: 0,
+//         experience: "0+",
+//         languages: ["English", "Hindi"],
+//       };
+//     }
 
 //     return {
 //       // Basic info
@@ -399,7 +1064,7 @@
 //       price: apiData.price,
 //       originalPrice: apiData.originalPrice,
 
-//       // Location - handle object structure
+//       // Location
 //       location:
 //         typeof apiData.location === "string"
 //           ? apiData.location
@@ -424,6 +1089,7 @@
 //       bedrooms: apiData.specifications?.bedrooms,
 //       bathrooms: apiData.specifications?.bathrooms,
 //       area: apiData.specifications?.area,
+//       areaUnit: apiData.specifications?.areaUnit || "sqft",
 //       type: apiData.specifications?.type,
 //       builtYear: apiData.specifications?.builtYear,
 //       parking: apiData.specifications?.parking,
@@ -431,37 +1097,86 @@
 //       // Arrays
 //       amenities: apiData.amenities || [],
 //       features: apiData.features || [],
-//       images: apiData.images || [],
+//       // 🔥 ENHANCED: Optimized images
+//       images:
+//         apiData.images?.map((img) => ({
+//           ...img,
+//           url: optimizeImageUrl(img.url, { width: 1200, quality: 85 }),
+//         })) || [],
 
-//       // Agent info - handle object structure
+//       // Agent data
 //       agent: {
-//         id: apiData.postedBy?._id,
-//         name: apiData.postedBy?.name,
-//         designation: apiData.postedBy?.designation || "Property Consultant",
-//         avatar: apiData.postedBy?.avatar,
-//         avatarAlt: `Professional photo of ${apiData.postedBy?.name}`,
-//         phone: apiData.postedBy?.phone || "+919876543210",
-//         email: apiData.postedBy?.email,
-//         location: apiData.postedBy?.location || "Mumbai",
-//         // Handle rating object
-//         rating:
-//           typeof apiData.postedBy?.rating === "number"
-//             ? apiData.postedBy.rating
-//             : apiData.postedBy?.rating?.average || 0,
-//         reviewCount:
-//           typeof apiData.postedBy?.rating === "number"
-//             ? 0
-//             : apiData.postedBy?.rating?.totalReviews || 0,
-//         propertiesSold: apiData.postedBy?.propertiesSold || 0,
-//         experience: apiData.postedBy?.experience || "5+",
-//         languages: apiData.postedBy?.languages || ["English", "Hindi"],
+//         ...agentData,
+//         avatarAlt: `Professional photo of ${agentData.name}`,
+//         location:
+//           agentData.location ||
+//           (typeof apiData.location === "string"
+//             ? apiData.location
+//             : `${apiData.location?.city}, ${apiData.location?.state}`),
 //       },
 
-//       // Additional fields for components
+//       // Additional fields
 //       listedDate: apiData.listedDate || new Date().toISOString(),
 //       propertyId: apiData.propertyId || `RC${apiData._id?.slice(-6)}`,
 //     };
 //   }, []);
+
+//   // 🔥 CHECK WISHLIST STATUS
+//   const checkWishlistStatusForProperty = useCallback(async (propertyId) => {
+//     if (!propertyId) return;
+
+//     try {
+//       setWishlistLoading(true);
+//       const response = await checkWishlistStatus(propertyId);
+//       setIsWishlisted(response.isWishlisted || false);
+//       setWishlistError(null);
+//     } catch (err) {
+//       console.error("Error checking wishlist status:", err);
+//       setWishlistError("Failed to check wishlist status");
+//       setIsWishlisted(false);
+//     } finally {
+//       setWishlistLoading(false);
+//     }
+//   }, []);
+
+//   // 🔥 TOGGLE WISHLIST FUNCTION
+//   const toggleWishlist = useCallback(async () => {
+//     if (!property?.id || !user) {
+//       // Redirect to login if user is not authenticated
+//       navigate("/login", {
+//         state: {
+//           from: `/property/${slug}`,
+//           message: "Please login to add properties to your wishlist",
+//         },
+//       });
+//       return;
+//     }
+
+//     try {
+//       setWishlistLoading(true);
+//       setWishlistError(null);
+
+//       if (isWishlisted) {
+//         // Remove from wishlist
+//         await removeFromWishlist(property.id);
+//         setIsWishlisted(false);
+//         trackSEOEvents.wishlistAction(property, "remove");
+//       } else {
+//         // Add to wishlist
+//         await addToWishlist(property.id);
+//         setIsWishlisted(true);
+//         trackSEOEvents.wishlistAction(property, "add");
+//       }
+//     } catch (err) {
+//       console.error("Error toggling wishlist:", err);
+//       setWishlistError(
+//         err.message ||
+//           `Failed to ${isWishlisted ? "remove from" : "add to"} wishlist`
+//       );
+//     } finally {
+//       setWishlistLoading(false);
+//     }
+//   }, [property, isWishlisted, user, slug, navigate]);
 
 //   const tabs = useMemo(
 //     () => [
@@ -476,18 +1191,17 @@
 //     const fetchProperty = async () => {
 //       try {
 //         setLoading(true);
-//         console.log("Fetching property with ID:", propertyId);
 
-//         if (!propertyId) {
-//           setError("No property ID found in URL");
+//         if (!slug) {
+//           setError("No property slug found in URL");
 //           setLoading(false);
 //           return;
 //         }
 
-//         const res = await getPropertyById(propertyId);
+//         const res = await getPropertyBySlug(slug);
+//         console.log("API response for property:", res);
 //         const transformedProperty = transformPropertyData(res.property);
 //         setProperty(transformedProperty);
-//         console.log("Transformed property:", transformedProperty);
 //       } catch (err) {
 //         console.error("Error fetching property:", err);
 //         setError(err.message || "Failed to load property details.");
@@ -498,29 +1212,46 @@
 
 //     fetchProperty();
 
-//     // Mock user data
+//     // Mock user data - In real app, you'd get this from context or auth service
 //     setUser({
+//       id: "user123",
 //       name: "John Doe",
 //       email: "john.doe@example.com",
 //       role: "buyer",
 //     });
-//   }, [propertyId, transformPropertyData]);
+//   }, [slug, transformPropertyData]);
+
+//   // 🔥 CHECK WISHLIST STATUS WHEN PROPERTY LOADS
+//   useEffect(() => {
+//     if (property?.id && user) {
+//       checkWishlistStatusForProperty(property.id);
+//     }
+//   }, [property, user, checkWishlistStatusForProperty]);
+
+//   // 🔥 ADD TRACKING TO EFFECT
+//   useEffect(() => {
+//     if (property) {
+//       trackSEOEvents.propertyView(property);
+
+//       // Check performance after page loads
+//       setTimeout(() => {
+//         checkPerformanceBudget();
+//       }, 2000);
+//     }
+//   }, [property]);
 
 //   const handleScheduleViewing = useCallback(
 //     () => setIsAppointmentModalOpen(true),
 //     []
 //   );
-
 //   const handleCloseAppointmentModal = useCallback(
 //     () => setIsAppointmentModalOpen(false),
 //     []
 //   );
-
 //   const handleToggleChat = useCallback(
 //     () => setIsChatOpen((prev) => !prev),
 //     []
 //   );
-
 //   const handleTabChange = useCallback((tabId) => setActiveTab(tabId), []);
 //   const handleBackToListings = useCallback(
 //     () => navigate("/property-listings"),
@@ -531,9 +1262,11 @@
 //     [navigate]
 //   );
 
-//   // ✅ Simple WhatsApp contact like in commented code
+//   // 🔥 ENHANCED CONTACT HANDLERS WITH TRACKING
 //   const handleWhatsAppContact = useCallback(() => {
 //     if (!property?.agent?.phone) return;
+
+//     trackSEOEvents.contactAction(property, "whatsapp");
 
 //     const message = encodeURIComponent(
 //       `Hi ${property.agent.name}, I'm interested in the property: ${property.title}. Can we schedule a viewing?`
@@ -542,9 +1275,10 @@
 //     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
 //   }, [property]);
 
-//   // ✅ Simple Email contact
 //   const handleEmailContact = useCallback(() => {
 //     if (!property?.agent?.email) return;
+
+//     trackSEOEvents.contactAction(property, "email");
 
 //     const subject = encodeURIComponent(
 //       `Interest in Property: ${property.title}`
@@ -571,29 +1305,71 @@
 //       case "location":
 //         return <PropertyLocation property={property} />;
 //       case "similar":
-//         return <SimilarProperties currentPropertyId={property?.id} />;
+//         return <SimilarProperties currentProperty={property} />;
 //       default:
 //         return <PropertyInfo property={property} />;
 //     }
 //   }, [activeTab, property]);
 
+//   // 🔥 WISHLIST BUTTON COMPONENT
+//   const WishlistButton = useMemo(
+//     () => (
+//       <Button
+//         variant={isWishlisted ? "primary" : "outline"}
+//         size="sm"
+//         onClick={toggleWishlist}
+//         disabled={wishlistLoading}
+//         iconName={isWishlisted ? "Heart" : "Heart"}
+//         iconPosition="left"
+//         className={`transition-smooth ${
+//           isWishlisted
+//             ? "bg-red-500 hover:bg-red-600 border-red-500 text-white"
+//             : "border-border hover:border-red-300 hover:text-red-500"
+//         } ${wishlistLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+//       >
+//         {wishlistLoading
+//           ? "Loading..."
+//           : isWishlisted
+//           ? "Saved to Wishlist"
+//           : "Add to Wishlist"}
+//       </Button>
+//     ),
+//     [isWishlisted, wishlistLoading, toggleWishlist]
+//   );
+
+//   // 🔥 SKELETON LOADING
 //   if (loading) {
-//     return (
-//       <div className="min-h-screen bg-background flex items-center justify-center">
-//         <div className="text-center">
-//           <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-//           <p className="text-muted-foreground">Loading property details...</p>
-//         </div>
-//       </div>
-//     );
+//     return <PropertyDetailsSkeleton />;
 //   }
 
 //   if (error) {
 //     return (
-//       <div className="min-h-screen bg-background flex items-center justify-center">
-//         <div className="text-center">
-//           <p className="text-red-500 font-medium mb-4">{error}</p>
-//           <Button onClick={handleBackToListings}>
+//       <div className="min-h-screen bg-white flex items-center justify-center p-6">
+//         <Helmet>
+//           <title>Property Not Found | Premium Real Estate Platform</title>
+//           <meta
+//             name="description"
+//             content="The requested property could not be found."
+//           />
+//         </Helmet>
+//         <div className="text-center max-w-md">
+//           <div className="flex justify-center mb-6">
+//             <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center border border-red-100">
+//               <AlertCircle className="w-8 h-8 text-red-500" />
+//             </div>
+//           </div>
+//           <h2 className="text-xl font-semibold text-gray-900 mb-3">
+//             Something went wrong
+//           </h2>
+//           <p className="text-red-500 font-medium mb-2">{error}</p>
+//           <p className="text-gray-600 text-sm mb-6">
+//             We encountered an issue while loading this page.
+//           </p>
+//           <Button
+//             onClick={handleBackToListings}
+//             variant="primary"
+//             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3"
+//           >
 //             Back to Property Listings
 //           </Button>
 //         </div>
@@ -604,6 +1380,13 @@
 //   if (!property) {
 //     return (
 //       <div className="min-h-screen bg-background flex items-center justify-center">
+//         <Helmet>
+//           <title>Property Not Found | Premium Real Estate Platform</title>
+//           <meta
+//             name="description"
+//             content="The requested property could not be found."
+//           />
+//         </Helmet>
 //         <div className="text-center">
 //           <p className="text-muted-foreground mb-4">No property found.</p>
 //           <Button onClick={handleBackToListings}>
@@ -616,6 +1399,9 @@
 
 //   return (
 //     <div className="min-h-screen bg-background">
+//       {/* 🔥 SEO Meta Tags */}
+//       {getPropertyMetaTags()}
+
 //       <Header
 //         user={user}
 //         onLogout={() => navigate("/login")}
@@ -623,24 +1409,8 @@
 //       />
 
 //       <main className="container mx-auto px-4 py-6">
-//         {/* Breadcrumb */}
-//         <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
-//           <button
-//             onClick={handleHomeNavigate}
-//             className="hover:text-foreground transition-smooth"
-//           >
-//             Home
-//           </button>
-//           <Icon name="ChevronRight" size={16} />
-//           <button
-//             onClick={handleBackToListings}
-//             className="hover:text-foreground transition-smooth"
-//           >
-//             Properties
-//           </button>
-//           <Icon name="ChevronRight" size={16} />
-//           <span className="text-foreground">Property Details</span>
-//         </div>
+//         {/* 🔥 REPLACE OLD BREADCRUMB WITH ENHANCED BREADCRUMBTRAIL */}
+//         <BreadcrumbTrail propertyData={property} user={user} />
 
 //         {/* Back Button */}
 //         <div className="mb-6">
@@ -657,13 +1427,25 @@
 //         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 //           {/* Main Content */}
 //           <div className="lg:col-span-2 space-y-8">
-//             <PropertyImageGallery images={property.images} />
+//             <PropertyImageGallery
+//               images={property.images}
+//               propertyTitle={property.title}
+//               // 🔥 ADD WISHLIST BUTTON TO GALLERY
+//               wishlistButton={WishlistButton}
+//               isWishlisted={isWishlisted}
+//               onWishlistToggle={toggleWishlist}
+//               wishlistLoading={wishlistLoading}
+//             />
 
 //             <div className="lg:hidden">
 //               <PropertyActions
 //                 property={property}
 //                 onScheduleViewing={handleScheduleViewing}
 //                 onWhatsAppContact={handleWhatsAppContact}
+//                 // 🔥 PASS WISHLIST PROPS
+//                 isWishlisted={isWishlisted}
+//                 onWishlistToggle={toggleWishlist}
+//                 wishlistLoading={wishlistLoading}
 //               />
 //             </div>
 
@@ -691,33 +1473,24 @@
 //             <div className="min-h-[400px]">{tabContent}</div>
 //           </div>
 
-//           {/* Sidebar - Fixed Agent Card for Desktop */}
+//           {/* Sidebar */}
 //           <div className="space-y-6">
-//             {/* Fixed Agent Card for Desktop */}
-//             <div className="hidden lg:block sticky top-24 z-10">
-//               <AgentCard
-//                 agent={property.agent}
-//                 onScheduleViewing={handleScheduleViewing}
-//                 onWhatsAppContact={handleWhatsAppContact}
-//                 onEmailContact={handleEmailContact}
-//               />
-//             </div>
-
-//             {/* Mobile Agent Card */}
-//             <div className="lg:hidden">
-//               <AgentCard
-//                 agent={property.agent}
-//                 onScheduleViewing={handleScheduleViewing}
-//                 onWhatsAppContact={handleWhatsAppContact}
-//                 onEmailContact={handleEmailContact}
-//               />
-//             </div>
+//             <AgentCard
+//               agent={property.agent}
+//               onScheduleViewing={handleScheduleViewing}
+//               onWhatsAppContact={handleWhatsAppContact}
+//               onEmailContact={handleEmailContact}
+//             />
 
 //             <div className="hidden lg:block">
 //               <PropertyActions
 //                 property={property}
 //                 onScheduleViewing={handleScheduleViewing}
 //                 onWhatsAppContact={handleWhatsAppContact}
+//                 // 🔥 PASS WISHLIST PROPS
+//                 isWishlisted={isWishlisted}
+//                 onWishlistToggle={toggleWishlist}
+//                 wishlistLoading={wishlistLoading}
 //               />
 //             </div>
 
@@ -753,10 +1526,43 @@
 //                 </div>
 //                 <div className="flex justify-between">
 //                   <span className="text-muted-foreground">Area</span>
-//                   <span className="text-foreground">{property.area} sq ft</span>
+//                   <span className="text-foreground">
+//                     {property.area} {property.areaUnit}
+//                   </span>
+//                 </div>
+//                 {/* 🔥 ADD WISHLIST STATUS */}
+//                 <div className="flex justify-between items-center pt-2 border-t border-border">
+//                   <span className="text-muted-foreground">Wishlist Status</span>
+//                   <div className="flex items-center space-x-1">
+//                     <Heart
+//                       size={16}
+//                       className={
+//                         isWishlisted
+//                           ? "text-red-500 fill-red-500"
+//                           : "text-gray-400"
+//                       }
+//                     />
+//                     <span
+//                       className={`text-sm font-medium ${
+//                         isWishlisted ? "text-red-500" : "text-foreground"
+//                       }`}
+//                     >
+//                       {isWishlisted ? "Saved" : "Not Saved"}
+//                     </span>
+//                   </div>
 //                 </div>
 //               </div>
 //             </div>
+
+//             {/* 🔥 WISHLIST ERROR MESSAGE */}
+//             {wishlistError && (
+//               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+//                 <div className="flex items-center space-x-2 text-red-700">
+//                   <AlertCircle size={16} />
+//                   <span className="text-sm font-medium">{wishlistError}</span>
+//                 </div>
+//               </div>
+//             )}
 
 //             {/* Contact Support */}
 //             <div className="bg-muted/50 rounded-lg p-6 text-center">
@@ -790,8 +1596,10 @@
 // };
 
 // export default React.memo(PropertyDetails);
+
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import Header from "../../components/ui/Header";
 import FloatingChat from "../../components/ui/FloatingChat";
 import PropertyImageGallery from "./components/PropertyImageGallery";
@@ -801,12 +1609,30 @@ import AppointmentModal from "./components/AppointmentModal";
 import PropertyLocation from "./components/PropertyLocation";
 import SimilarProperties from "./components/SimilarProperties";
 import PropertyActions from "./components/PropertyActions";
+import BreadcrumbTrail from "../../components/ui/BreadcrumbTrail";
 import Icon from "../../components/AppIcon";
 import Button from "../../components/ui/Button";
-import { getPropertyById } from "../../lib/mongo/services/propertyService";
-import { AlertCircle } from "lucide-react";
+import { getPropertyBySlug } from "../../lib/mongo/services/propertyService";
+import { AlertCircle, Heart } from "lucide-react";
+
+// 🔥 IMPORT SKELETON COMPONENT
+import PropertyDetailsSkeleton from "../../components/loading/PropertyDetailsSkeleton";
+
+// 🔥 ADD THESE IMPORTS
+import { usePerformanceMonitor } from "../../hooks/usePerformanceMonitor";
+import { checkPerformanceBudget } from "../../utils/performanceBudget";
+import { trackSEOEvents } from "../../utils/analytics";
+import { optimizeImageUrl } from "../../utils/imageOptimizer";
+
+// 🔥 IMPORT WISHLIST SERVICES
+import {
+  addToWishlist,
+  removeFromWishlist,
+  checkWishlistStatus,
+} from "../../lib/mongo/services/wishlistService";
+
 const PropertyDetails = () => {
-  const { id: propertyId } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
 
   const [property, setProperty] = useState(null);
@@ -817,88 +1643,259 @@ const PropertyDetails = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [user, setUser] = useState(null);
 
-  // Transform API data to match component expectations
-  // const transformPropertyData = useCallback((apiData) => {
-  //   if (!apiData) return null;
+  // 🔥 WISHLIST STATES
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [wishlistError, setWishlistError] = useState(null);
 
-  //   return {
-  //     // Basic info
-  //     id: apiData._id,
-  //     title: apiData.title,
-  //     description: apiData.description,
-  //     price: apiData.price,
-  //     originalPrice: apiData.originalPrice,
+  // 🔥 INITIALIZE PERFORMANCE MONITORING
+  usePerformanceMonitor();
 
-  //     // Location - handle object structure
-  //     location:
-  //       typeof apiData.location === "string"
-  //         ? apiData.location
-  //         : apiData.location?.address ||
-  //           `${apiData.location?.city}, ${apiData.location?.state}`,
-  //     address:
-  //       typeof apiData.location === "string"
-  //         ? apiData.location
-  //         : apiData.location?.address,
-  //     pincode:
-  //       typeof apiData.location === "string" ? "" : apiData.location?.pincode,
-  //     coordinates:
-  //       typeof apiData.location === "string"
-  //         ? { lat: 0, lng: 0 }
-  //         : apiData.location?.coordinates || { lat: 0, lng: 0 },
+  // 🔥 GET USER FROM LOCALSTORAGE
+  const getUserFromStorage = useCallback(() => {
+    const token = localStorage.getItem("token");
+    const userData = localStorage.getItem("user");
 
-  //     // Status
-  //     status: apiData.status,
-  //     featured: apiData.featured,
+    if (token && userData) {
+      try {
+        return JSON.parse(userData);
+      } catch (e) {
+        console.error("Error parsing user data:", e);
+      }
+    }
+    return null;
+  }, []);
 
-  //     // Specifications
-  //     bedrooms: apiData.specifications?.bedrooms,
-  //     bathrooms: apiData.specifications?.bathrooms,
-  //     area: apiData.specifications?.area,
-  //     type: apiData.specifications?.type,
-  //     builtYear: apiData.specifications?.builtYear,
-  //     parking: apiData.specifications?.parking,
+  // 🔥 CHECK AUTHENTICATION STATUS
+  const isAuthenticated = useCallback(() => {
+    const token = localStorage.getItem("token");
+    return !!token;
+  }, []);
 
-  //     // Arrays
-  //     amenities: apiData.amenities || [],
-  //     features: apiData.features || [],
-  //     images: apiData.images || [],
+  // 🔥 ENHANCED SEO META TAGS
+  const getPropertyMetaTags = useCallback(() => {
+    if (!property) return null;
 
-  //     // Agent info - handle object structure
-  //     agent: {
-  //       id: apiData.postedBy?._id,
-  //       name: apiData.postedBy?.name,
-  //       designation: apiData.postedBy?.designation || "Property Consultant",
-  //       avatar: apiData.postedBy?.avatar,
-  //       avatarAlt: `Professional photo of ${apiData.postedBy?.name}`,
-  //       phone: apiData.postedBy?.phone || "+919876543210",
-  //       email: apiData.postedBy?.email,
-  //       location: apiData.postedBy?.location || "Mumbai",
-  //       // Handle rating object
-  //       rating:
-  //         typeof apiData.postedBy?.rating === "number"
-  //           ? apiData.postedBy.rating
-  //           : apiData.postedBy?.rating?.average || 0,
-  //       reviewCount:
-  //         typeof apiData.postedBy?.rating === "number"
-  //           ? 0
-  //           : apiData.postedBy?.rating?.totalReviews || 0,
-  //       propertiesSold: apiData.postedBy?.propertiesSold || 0,
-  //       experience: apiData.postedBy?.experience || "5+",
-  //       languages: apiData.postedBy?.languages || ["English", "Hindi"],
-  //     },
+    const title = `🏠 ${property.title} | ${property.bedrooms}BHK ${
+      property.type
+    } in ${property.location} | ₹${
+      property.price?.toLocaleString("en-IN") || "Price on Request"
+    }`;
 
-  //     // Additional fields for components
-  //     listedDate: apiData.listedDate || new Date().toISOString(),
-  //     propertyId: apiData.propertyId || `RC${apiData._id?.slice(-6)}`,
-  //   };
-  // }, []);
-  // Enhanced transform function that checks both agentInfo and postedBy
+    const description = `✅ Verified ${property.bedrooms}BHK ${
+      property.type
+    } in ${property.location}. ${property.area} sq ft • ${
+      property.bathrooms
+    } Bath • ${property.amenities?.slice(0, 3).join(" • ")}. 📞 Contact ${
+      property.agent?.name
+    } for viewing. Instant booking available.`;
+
+    const currentUrl = `${window.location.origin}/property/${slug}`;
+    const featuredImage = optimizeImageUrl(
+      property.images?.[0]?.url || "/images/property-og-default.jpg",
+      { width: 1200, quality: 85 }
+    );
+
+    return (
+      <Helmet>
+        {/* Primary Meta Tags */}
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        />
+        <meta
+          name="keywords"
+          content={`${property.type}, ${property.location}, real estate, property for sale, ${property.bedrooms} bedroom, ${property.area} sq ft, buy property, rent apartment`}
+        />
+
+        {/* Canonical URL */}
+        <link rel="canonical" href={currentUrl} />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="real_estate.property" />
+        <meta property="og:url" content={currentUrl} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={featuredImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta
+          property="og:image:alt"
+          content={`Main image of ${property.title}`}
+        />
+        <meta property="og:site_name" content="Premium Real Estate Platform" />
+        <meta property="og:locale" content="en_IN" />
+        <meta property="og:price:amount" content={property.price?.toString()} />
+        <meta property="og:price:currency" content="INR" />
+        <meta
+          property="og:availability"
+          content={property.status === "available" ? "instock" : "out of stock"}
+        />
+
+        {/* Twitter Cards */}
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content={currentUrl} />
+        <meta property="twitter:title" content={title} />
+        <meta property="twitter:description" content={description} />
+        <meta property="twitter:image" content={featuredImage} />
+        <meta
+          property="twitter:image:alt"
+          content={`Main image of ${property.title}`}
+        />
+        <meta property="twitter:site" content="@RealEstatePlatform" />
+        <meta property="twitter:creator" content="@RealEstatePlatform" />
+
+        {/* Enhanced Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "RealEstateListing",
+                "@id": `${currentUrl}#realestatelisting`,
+                name: property.title,
+                description: property.description || description,
+                url: currentUrl,
+                image: property.images?.map((img) =>
+                  optimizeImageUrl(img.url, { width: 800, quality: 85 })
+                ) || [featuredImage],
+                offers: {
+                  "@type": "Offer",
+                  price: property.price,
+                  priceCurrency: "INR",
+                  availability:
+                    property.status === "available"
+                      ? "https://schema.org/InStock"
+                      : "https://schema.org/OutOfStock",
+                  priceValidUntil: new Date(
+                    Date.now() + 90 * 24 * 60 * 60 * 1000
+                  )
+                    .toISOString()
+                    .split("T")[0],
+                  url: currentUrl,
+                  seller: {
+                    "@type": "RealEstateAgent",
+                    name: property.agent?.name,
+                    telephone: property.agent?.phone,
+                    email: property.agent?.email,
+                  },
+                },
+                address: {
+                  "@type": "PostalAddress",
+                  streetAddress: property.address || property.location,
+                  addressLocality:
+                    typeof property.location === "object"
+                      ? property.location.city
+                      : property.location,
+                  addressRegion:
+                    typeof property.location === "object"
+                      ? property.location.state
+                      : "",
+                  postalCode: property.pincode,
+                  addressCountry: "IN",
+                },
+                geo: {
+                  "@type": "GeoCoordinates",
+                  latitude: property.coordinates?.lat || 0,
+                  longitude: property.coordinates?.lng || 0,
+                },
+                numberOfRooms: property.bedrooms,
+                numberOfBathroomsTotal: property.bathrooms,
+                floorSize: {
+                  "@type": "QuantitativeValue",
+                  value: property.area,
+                  unitCode: property.areaUnit === "sqft" ? "FTK" : "MTK",
+                },
+                petsAllowed:
+                  property.amenities?.includes("Pet Friendly") || false,
+                yearBuilt: property.builtYear,
+                listingDate: property.listedDate,
+                provider: {
+                  "@type": "RealEstateAgent",
+                  name: property.agent?.name,
+                  telephone: property.agent?.phone,
+                  email: property.agent?.email,
+                  rating: {
+                    "@type": "AggregateRating",
+                    ratingValue: property.agent?.rating || 4.5,
+                    reviewCount: property.agent?.reviewCount || 25,
+                    bestRating: 5,
+                  },
+                },
+                amenityFeature: property.amenities?.map((amenity) => ({
+                  "@type": "LocationFeatureSpecification",
+                  name: amenity,
+                  value: true,
+                })),
+              },
+              {
+                "@type": "WebPage",
+                "@id": `${currentUrl}#webpage`,
+                url: currentUrl,
+                name: title,
+                description: description,
+                isPartOf: {
+                  "@id": `${window.location.origin}/#website`,
+                },
+                about: {
+                  "@id": `${currentUrl}#realestatelisting`,
+                },
+                datePublished: property.listedDate,
+                dateModified: new Date().toISOString(),
+                breadcrumb: {
+                  "@id": `${currentUrl}#breadcrumb`,
+                },
+                primaryImageOfPage: {
+                  "@type": "ImageObject",
+                  url: featuredImage,
+                  width: 1200,
+                  height: 630,
+                },
+                potentialAction: [
+                  {
+                    "@type": "ReadAction",
+                    target: [currentUrl],
+                  },
+                ],
+              },
+              {
+                "@type": "Organization",
+                "@id": `${window.location.origin}/#organization`,
+                name: "Premium Real Estate Platform",
+                url: window.location.origin,
+                logo: `${window.location.origin}/logo.png`,
+                description:
+                  "India's leading real estate platform for buying, selling, and renting properties",
+                address: {
+                  "@type": "PostalAddress",
+                  addressLocality: "Mumbai",
+                  addressRegion: "Maharashtra",
+                  addressCountry: "IN",
+                },
+                contactPoint: {
+                  "@type": "ContactPoint",
+                  telephone: "+91-XXXXXXXXXX",
+                  contactType: "customer service",
+                  areaServed: "IN",
+                  availableLanguage: ["English", "Hindi"],
+                },
+                sameAs: [
+                  "https://www.facebook.com/realestateplatform",
+                  "https://www.twitter.com/realestateplatform",
+                  "https://www.linkedin.com/company/realestateplatform",
+                ],
+              },
+            ],
+          })}
+        </script>
+      </Helmet>
+    );
+  }, [property, slug]);
+
   const transformPropertyData = useCallback((apiData) => {
     if (!apiData) return null;
-
-    console.log("Raw API data:", apiData);
-    console.log("Agent info:", apiData.agentInfo);
-    console.log("Posted by:", apiData.postedBy);
 
     // Determine which agent data to use
     let agentData = {};
@@ -908,7 +1905,6 @@ const PropertyDetails = () => {
       apiData.agentInfo.name &&
       apiData.agentInfo.name !== "Agent"
     ) {
-      // Use agentInfo from property schema (manual agent or auto-populated)
       agentData = {
         id: apiData.agentInfo?._id || apiData._id,
         name: apiData.agentInfo.name,
@@ -923,7 +1919,6 @@ const PropertyDetails = () => {
         languages: apiData.agentInfo.languages,
       };
     } else if (apiData.postedBy && typeof apiData.postedBy === "object") {
-      // Use postedBy user data
       agentData = {
         id: apiData.postedBy._id,
         name: apiData.postedBy.name,
@@ -940,7 +1935,6 @@ const PropertyDetails = () => {
         languages: apiData.postedBy.languages || ["English", "Hindi"],
       };
     } else {
-      // Fallback to default agent data
       agentData = {
         id: apiData._id,
         name: "Agent",
@@ -989,6 +1983,7 @@ const PropertyDetails = () => {
       bedrooms: apiData.specifications?.bedrooms,
       bathrooms: apiData.specifications?.bathrooms,
       area: apiData.specifications?.area,
+      areaUnit: apiData.specifications?.areaUnit || "sqft",
       type: apiData.specifications?.type,
       builtYear: apiData.specifications?.builtYear,
       parking: apiData.specifications?.parking,
@@ -996,9 +1991,14 @@ const PropertyDetails = () => {
       // Arrays
       amenities: apiData.amenities || [],
       features: apiData.features || [],
-      images: apiData.images || [],
+      // 🔥 ENHANCED: Optimized images
+      images:
+        apiData.images?.map((img) => ({
+          ...img,
+          url: optimizeImageUrl(img.url, { width: 1200, quality: 85 }),
+        })) || [],
 
-      // ✅ Use the determined agent data
+      // Agent data
       agent: {
         ...agentData,
         avatarAlt: `Professional photo of ${agentData.name}`,
@@ -1014,6 +2014,106 @@ const PropertyDetails = () => {
       propertyId: apiData.propertyId || `RC${apiData._id?.slice(-6)}`,
     };
   }, []);
+
+  // 🔥 CHECK WISHLIST STATUS WITH AUTH HANDLING
+  const checkWishlistStatusForProperty = useCallback(
+    async (propertyId) => {
+      if (!propertyId) return;
+
+      // 🔥 CHECK IF USER IS AUTHENTICATED FIRST
+      if (!isAuthenticated()) {
+        console.log("User not authenticated, skipping wishlist status check");
+        setIsWishlisted(false);
+        return;
+      }
+
+      try {
+        setWishlistLoading(true);
+        const response = await checkWishlistStatus(propertyId);
+        // 🔥 FIX: Use response.inWishlist instead of response.isWishlisted
+        setIsWishlisted(response.inWishlist || false);
+        setWishlistError(null);
+      } catch (err) {
+        console.error("Error checking wishlist status:", err);
+        // 🔥 HANDLE UNAUTHORIZED ERRORS GRACEFULLY
+        if (
+          err.message?.includes("log in") ||
+          err.message?.includes("unauthorized") ||
+          err.response?.status === 401
+        ) {
+          console.log("User not authenticated for wishlist features");
+          setIsWishlisted(false);
+        } else {
+          setWishlistError("Failed to check wishlist status");
+        }
+      } finally {
+        setWishlistLoading(false);
+      }
+    },
+    [isAuthenticated]
+  );
+
+  // 🔥 TOGGLE WISHLIST FUNCTION WITH AUTH HANDLING
+  const toggleWishlist = useCallback(async () => {
+    if (!property?.id) return;
+
+    // 🔥 CHECK AUTHENTICATION FIRST
+    if (!isAuthenticated()) {
+      navigate("/login", {
+        state: {
+          from: `/property/${slug}`,
+          message: "Please login to add properties to your wishlist",
+        },
+      });
+      return;
+    }
+
+    try {
+      setWishlistLoading(true);
+      setWishlistError(null);
+
+      if (isWishlisted) {
+        // Remove from wishlist
+        await removeFromWishlist(property.id);
+        setIsWishlisted(false);
+        trackSEOEvents.wishlistAction(property, "remove");
+      } else {
+        // Add to wishlist
+        await addToWishlist(property.id);
+        setIsWishlisted(true);
+        trackSEOEvents.wishlistAction(property, "add");
+      }
+    } catch (err) {
+      console.error("Error toggling wishlist:", err);
+
+      // 🔥 HANDLE SPECIFIC ERROR CASES
+      if (err.message?.includes("already in wishlist")) {
+        setIsWishlisted(true); // Sync state
+      } else if (err.message?.includes("not found in wishlist")) {
+        setIsWishlisted(false); // Sync state
+      } else if (
+        err.message?.includes("log in") ||
+        err.message?.includes("unauthorized")
+      ) {
+        setWishlistError("Please login to use wishlist features");
+        // Redirect to login
+        navigate("/login", {
+          state: {
+            from: `/property/${slug}`,
+            message: "Your session has expired. Please login again.",
+          },
+        });
+      } else {
+        setWishlistError(
+          err.message ||
+            `Failed to ${isWishlisted ? "remove from" : "add to"} wishlist`
+        );
+      }
+    } finally {
+      setWishlistLoading(false);
+    }
+  }, [property, isWishlisted, isAuthenticated, slug, navigate]);
+
   const tabs = useMemo(
     () => [
       { id: "overview", label: "Overview", icon: "Home" },
@@ -1027,19 +2127,17 @@ const PropertyDetails = () => {
     const fetchProperty = async () => {
       try {
         setLoading(true);
-        //console.log("Fetching property with ID:", property);
 
-        if (!propertyId) {
-          setError("No property ID found in URL");
+        if (!slug) {
+          setError("No property slug found in URL");
           setLoading(false);
           return;
         }
 
-        const res = await getPropertyById(propertyId);
+        const res = await getPropertyBySlug(slug);
+        console.log("API response for property:", res);
         const transformedProperty = transformPropertyData(res.property);
         setProperty(transformedProperty);
-        console.log("Transformed property:", transformedProperty.agent);
-        console.log("property:");
       } catch (err) {
         console.error("Error fetching property:", err);
         setError(err.message || "Failed to load property details.");
@@ -1050,29 +2148,42 @@ const PropertyDetails = () => {
 
     fetchProperty();
 
-    // Mock user data
-    setUser({
-      name: "John Doe",
-      email: "john.doe@example.com",
-      role: "buyer",
-    });
-  }, [propertyId, transformPropertyData]);
+    // 🔥 SET USER FROM LOCALSTORAGE
+    const currentUser = getUserFromStorage();
+    setUser(currentUser);
+  }, [slug, transformPropertyData, getUserFromStorage]);
+
+  // 🔥 CHECK WISHLIST STATUS WHEN PROPERTY LOADS
+  useEffect(() => {
+    if (property?.id) {
+      checkWishlistStatusForProperty(property.id);
+    }
+  }, [property, checkWishlistStatusForProperty]);
+
+  // 🔥 ADD TRACKING TO EFFECT
+  useEffect(() => {
+    if (property) {
+      trackSEOEvents.propertyView(property);
+
+      // Check performance after page loads
+      setTimeout(() => {
+        checkPerformanceBudget();
+      }, 2000);
+    }
+  }, [property]);
 
   const handleScheduleViewing = useCallback(
     () => setIsAppointmentModalOpen(true),
     []
   );
-
   const handleCloseAppointmentModal = useCallback(
     () => setIsAppointmentModalOpen(false),
     []
   );
-
   const handleToggleChat = useCallback(
     () => setIsChatOpen((prev) => !prev),
     []
   );
-
   const handleTabChange = useCallback((tabId) => setActiveTab(tabId), []);
   const handleBackToListings = useCallback(
     () => navigate("/property-listings"),
@@ -1083,9 +2194,11 @@ const PropertyDetails = () => {
     [navigate]
   );
 
-  // ✅ Simple WhatsApp contact like in commented code
+  // 🔥 ENHANCED CONTACT HANDLERS WITH TRACKING
   const handleWhatsAppContact = useCallback(() => {
     if (!property?.agent?.phone) return;
+
+    trackSEOEvents.contactAction(property, "whatsapp");
 
     const message = encodeURIComponent(
       `Hi ${property.agent.name}, I'm interested in the property: ${property.title}. Can we schedule a viewing?`
@@ -1094,9 +2207,10 @@ const PropertyDetails = () => {
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   }, [property]);
 
-  // ✅ Simple Email contact
   const handleEmailContact = useCallback(() => {
     if (!property?.agent?.email) return;
+
+    trackSEOEvents.contactAction(property, "email");
 
     const subject = encodeURIComponent(
       `Interest in Property: ${property.title}`
@@ -1123,35 +2237,59 @@ const PropertyDetails = () => {
       case "location":
         return <PropertyLocation property={property} />;
       case "similar":
-        return <SimilarProperties currentPropertyId={property?.id} />;
+        return <SimilarProperties currentProperty={property} />;
       default:
         return <PropertyInfo property={property} />;
     }
   }, [activeTab, property]);
 
+  // 🔥 WISHLIST BUTTON COMPONENT
+  const WishlistButton = useMemo(
+    () => (
+      <Button
+        variant={isWishlisted ? "primary" : "outline"}
+        size="sm"
+        onClick={toggleWishlist}
+        disabled={wishlistLoading}
+        iconName="Heart"
+        iconPosition="left"
+        className={`transition-smooth ${
+          isWishlisted
+            ? "bg-red-500 hover:bg-red-600 border-red-500 text-white"
+            : "border-border hover:border-red-300 hover:text-red-500"
+        } ${wishlistLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+      >
+        {wishlistLoading
+          ? "Loading..."
+          : isWishlisted
+          ? "Saved to Wishlist"
+          : "Add to Wishlist"}
+      </Button>
+    ),
+    [isWishlisted, wishlistLoading, toggleWishlist]
+  );
+
+  // 🔥 SKELETON LOADING
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading property details...</p>
-        </div>
-      </div>
-    );
+    return <PropertyDetailsSkeleton />;
   }
 
   if (error) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-6">
+        <Helmet>
+          <title>Property Not Found | Premium Real Estate Platform</title>
+          <meta
+            name="description"
+            content="The requested property could not be found."
+          />
+        </Helmet>
         <div className="text-center max-w-md">
-          {/* Error Icon */}
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center border border-red-100">
               <AlertCircle className="w-8 h-8 text-red-500" />
             </div>
           </div>
-
-          {/* Error Message */}
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
             Something went wrong
           </h2>
@@ -1159,8 +2297,6 @@ const PropertyDetails = () => {
           <p className="text-gray-600 text-sm mb-6">
             We encountered an issue while loading this page.
           </p>
-
-          {/* Action Button */}
           <Button
             onClick={handleBackToListings}
             variant="primary"
@@ -1176,6 +2312,13 @@ const PropertyDetails = () => {
   if (!property) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
+        <Helmet>
+          <title>Property Not Found | Premium Real Estate Platform</title>
+          <meta
+            name="description"
+            content="The requested property could not be found."
+          />
+        </Helmet>
         <div className="text-center">
           <p className="text-muted-foreground mb-4">No property found.</p>
           <Button onClick={handleBackToListings}>
@@ -1188,31 +2331,22 @@ const PropertyDetails = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* 🔥 SEO Meta Tags */}
+      {getPropertyMetaTags()}
+
       <Header
         user={user}
-        onLogout={() => navigate("/login")}
+        onLogout={() => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          navigate("/login");
+        }}
         onSearch={() => {}}
       />
 
       <main className="container mx-auto px-4 py-6">
-        {/* Breadcrumb */}
-        <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
-          <button
-            onClick={handleHomeNavigate}
-            className="hover:text-foreground transition-smooth"
-          >
-            Home
-          </button>
-          <Icon name="ChevronRight" size={16} />
-          <button
-            onClick={handleBackToListings}
-            className="hover:text-foreground transition-smooth"
-          >
-            Properties
-          </button>
-          <Icon name="ChevronRight" size={16} />
-          <span className="text-foreground">Property Details</span>
-        </div>
+        {/* 🔥 REPLACE OLD BREADCRUMB WITH ENHANCED BREADCRUMBTRAIL */}
+        <BreadcrumbTrail propertyData={property} user={user} />
 
         {/* Back Button */}
         <div className="mb-6">
@@ -1229,13 +2363,25 @@ const PropertyDetails = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            <PropertyImageGallery images={property.images} />
+            <PropertyImageGallery
+              images={property.images}
+              propertyTitle={property.title}
+              // 🔥 ADD WISHLIST BUTTON TO GALLERY
+              wishlistButton={WishlistButton}
+              isWishlisted={isWishlisted}
+              onWishlistToggle={toggleWishlist}
+              wishlistLoading={wishlistLoading}
+            />
 
             <div className="lg:hidden">
               <PropertyActions
                 property={property}
                 onScheduleViewing={handleScheduleViewing}
                 onWhatsAppContact={handleWhatsAppContact}
+                // 🔥 PASS WISHLIST PROPS
+                isWishlisted={isWishlisted}
+                onWishlistToggle={toggleWishlist}
+                wishlistLoading={wishlistLoading}
               />
             </div>
 
@@ -1263,9 +2409,8 @@ const PropertyDetails = () => {
             <div className="min-h-[400px]">{tabContent}</div>
           </div>
 
-          {/* Sidebar - Normal Position (No sticky/fixed) */}
+          {/* Sidebar */}
           <div className="space-y-6">
-            {/* Agent Card - Normal position, doesn't move with scroll */}
             <AgentCard
               agent={property.agent}
               onScheduleViewing={handleScheduleViewing}
@@ -1278,6 +2423,10 @@ const PropertyDetails = () => {
                 property={property}
                 onScheduleViewing={handleScheduleViewing}
                 onWhatsAppContact={handleWhatsAppContact}
+                // 🔥 PASS WISHLIST PROPS
+                isWishlisted={isWishlisted}
+                onWishlistToggle={toggleWishlist}
+                wishlistLoading={wishlistLoading}
               />
             </div>
 
@@ -1313,10 +2462,47 @@ const PropertyDetails = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Area</span>
-                  <span className="text-foreground">{property.area} sq ft</span>
+                  <span className="text-foreground">
+                    {property.area} {property.areaUnit}
+                  </span>
                 </div>
+                {/* 🔥 ADD WISHLIST STATUS - ONLY SHOW IF USER IS AUTHENTICATED */}
+                {isAuthenticated() && (
+                  <div className="flex justify-between items-center pt-2 border-t border-border">
+                    <span className="text-muted-foreground">
+                      Wishlist Status
+                    </span>
+                    <div className="flex items-center space-x-1">
+                      <Heart
+                        size={16}
+                        className={
+                          isWishlisted
+                            ? "text-red-500 fill-red-500"
+                            : "text-gray-400"
+                        }
+                      />
+                      <span
+                        className={`text-sm font-medium ${
+                          isWishlisted ? "text-red-500" : "text-foreground"
+                        }`}
+                      >
+                        {isWishlisted ? "Saved" : "Not Saved"}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* 🔥 WISHLIST ERROR MESSAGE */}
+            {wishlistError && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-center space-x-2 text-red-700">
+                  <AlertCircle size={16} />
+                  <span className="text-sm font-medium">{wishlistError}</span>
+                </div>
+              </div>
+            )}
 
             {/* Contact Support */}
             <div className="bg-muted/50 rounded-lg p-6 text-center">

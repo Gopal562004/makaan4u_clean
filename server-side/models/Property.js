@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import slugify from "slugify";
+import { generateSitemap } from "../scripts/generateSitemap.js";
 
 const propertySchema = new mongoose.Schema(
   {
@@ -556,13 +558,45 @@ propertySchema.pre("save", async function (next) {
   }
 
   // Generate slug from title
-  if (this.isModified("title") && !this.slug) {
-    this.slug = this.title
-      .toLowerCase()
-      .replace(/[^a-z0-9 -]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .substring(0, 100);
+  // if (this.isModified("title") && !this.slug) {
+  //   this.slug = this.title
+  //     .toLowerCase()
+  //     .replace(/[^a-z0-9 -]/g, "")
+  //     .replace(/\s+/g, "-")
+  //     .replace(/-+/g, "-")
+  //     .substring(0, 100);
+  // }
+
+  // // Update lastUpdated
+  // this.lastUpdated = new Date();
+  if (
+    this.isModified("title") ||
+    this.isModified("location.city") ||
+    !this.slug
+  ) {
+    const titlePart = slugify(this.title || "property", {
+      lower: true,
+      strict: true,
+    });
+
+    const cityPart = this.location?.city
+      ? slugify(this.location.city, { lower: true, strict: true })
+      : "";
+
+    let baseSlug = cityPart ? `${titlePart}-in-${cityPart}` : titlePart;
+
+    let slug = baseSlug;
+    let counter = 1;
+
+    const Property = mongoose.model("Property");
+
+    // Ensure uniqueness
+    while (await Property.exists({ slug })) {
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+
+    this.slug = slug;
   }
 
   // Update lastUpdated
@@ -634,6 +668,22 @@ propertySchema.index({
   "location.city": 1,
   "specifications.bedrooms": 1,
   "specifications.bathrooms": 1,
+});
+
+// Post-save hook to regenerate sitemap
+
+
+// ⭐ AUTO SITEMAP UPDATE HOOKS
+propertySchema.post("save", async function () {
+  await generateSitemap();
+});
+
+propertySchema.post("findOneAndUpdate", async function () {
+  await generateSitemap();
+});
+
+propertySchema.post("findOneAndDelete", async function () {
+  await generateSitemap();
 });
 
 export default mongoose.model("Property", propertySchema);

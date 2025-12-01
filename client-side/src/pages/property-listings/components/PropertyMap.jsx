@@ -467,7 +467,7 @@ const PropertyMap = ({
                   onClick={() =>
                     window.open(
                       `/property-details/${
-                        selectedProperty._id || selectedProperty.id
+                        selectedProperty.slug || selectedProperty.id
                       }`,
                       "_blank"
                     )

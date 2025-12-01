@@ -2,25 +2,110 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Makaan4U</title>
+    
+    <!-- 🔥 Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BKYZF93DS4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-BKYZF93DS4');
+    </script>
+    
+    <!-- 🔥 ENHANCED: Dynamic Title with Fallback -->
+    <title>Makaan4U - Find Your Dream Property | Premium Real Estate Platform</title>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#2563eb" />
+    
+    <!-- 🔥 ENHANCED: SEO Meta Description -->
     <meta
       name="description"
-      content="Find your dream property with Makaan4U - The best real estate platform"
+      content="Makaan4U - India's leading real estate platform. Find apartments, villas, plots for sale & rent. Verified properties with prices, photos & contact details. Buy, sell, rent properties across major cities."
     />
     
-    <!-- Simplified Favicon Links -->
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="manifest" href="/manifest.json" />
+    <!-- 🔥 ENHANCED: Keywords & SEO Meta Tags -->
+    <meta name="keywords" content="real estate, property, buy property, rent apartment, sell house, flats, villas, commercial property, residential property, India real estate" />
+    <meta name="author" content="Makaan4U" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <meta name="revisit-after" content="7 days" />
     
-    <!-- Preload critical resources -->
+    <!-- 🔥 ENHANCED: Open Graph Meta Tags -->
+    <meta property="og:title" content="Makaan4U - Find Your Dream Property | Premium Real Estate Platform" />
+    <meta property="og:description" content="India's leading real estate platform. Find apartments, villas, plots for sale & rent. Verified properties with prices, photos & contact details." />
+    <meta property="og:image" content="/images/makaan4u-og-image.jpg" />
+    <meta property="og:url" content="https://makaan4u.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Makaan4U" />
+    <meta property="og:locale" content="en_IN" />
+    
+    <!-- 🔥 ENHANCED: Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Makaan4U - Find Your Dream Property" />
+    <meta name="twitter:description" content="India's leading real estate platform. Find apartments, villas, plots for sale & rent." />
+    <meta name="twitter:image" content="/images/makaan4u-twitter-image.jpg" />
+    <meta name="twitter:site" content="@makaan4u" />
+    <meta name="twitter:creator" content="@makaan4u" />
+    
+    <!-- 🔥 ENHANCED: SVG Favicon & App Icons -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    
+    <!-- Fallback for older browsers -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    
+    <!-- Apple Touch Icon (optional - create if you have SVG to PNG converter) -->
+    <!-- <link rel="apple-touch-icon" href="/apple-touch-icon.png"> -->
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="apple-mobile-web-app-title" content="Makaan4U">
+    <meta name="application-name" content="Makaan4U">
+    
+    <!-- 🔥 ENHANCED: Preload & Preconnect for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://maps.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml">
+    
+    <!-- 🔥 ENHANCED: Canonical URL -->
+    <link rel="canonical" href="https://makaan4u.com" />
+    
+    <!-- 🔥 ENHANCED: Structured Data for Homepage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "RealEstateAgent",
+      "name": "Makaan4U",
+      "description": "India's leading real estate platform for buying, selling, and renting properties",
+      "url": "https://makaan4u.com",
+      "logo": "https://makaan4u.com/logo.svg",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IN"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "availableLanguage": ["English", "Hindi"]
+      },
+      "sameAs": [
+        "https://www.facebook.com/makaan4u",
+        "https://www.twitter.com/makaan4u",
+        "https://www.linkedin.com/company/makaan4u"
+      ]
+    }
+    </script>
   </head>
 
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>
+      <strong>You need to enable JavaScript to run Makaan4U. Please enable JavaScript in your browser settings.</strong>
+    </noscript>
     <div class="dhiwise-code" id="root"></div>
     <script type="module" src="/src/index.jsx"></script>
   </body>

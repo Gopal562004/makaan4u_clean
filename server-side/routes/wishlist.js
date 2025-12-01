@@ -10,7 +10,7 @@ import { protect, authorize } from "../middlewares/auth.js";
 const router = express.Router();
 
 router.use(protect);
-router.use(authorize("customer"));
+router.use(authorize("customer", "employee", "admin"));
 
 router.post("/", addToWishlist);
 router.get("/", getWishlist);
