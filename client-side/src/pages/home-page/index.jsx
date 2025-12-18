@@ -473,7 +473,7 @@ const HomePage = () => {
         <FloatingChat isOpen={isChatOpen} onToggle={handleChatToggle} />
 
         {/* Scroll to Top Button */}
-        {isScrolled && (
+        /* {isScrolled && (
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="fixed bottom-6 right-6 w-10 h-10 bg-gray-800 text-white rounded-full shadow-lg flex items-center justify-center z-40 hover:bg-gray-700 transition-colors duration-200"
@@ -481,7 +481,7 @@ const HomePage = () => {
           >
             <ArrowUp className="w-5 h-5" />
           </button>
-        )}
+        )} */
       </div>
     </>
   );
