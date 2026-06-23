@@ -1,3 +1,4 @@
+import apminsight from "apminsight"; // Must be the first import for APM monitoring
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -16,6 +17,7 @@ import routes from "./routes/index.js";
 
 // Import middleware
 import { generalLimiter } from "./middlewares/rateLimit.js";
+import { expressMiddleware } from "lognexis-node"; 
 
 // Connect to database
 connectDB();
@@ -57,6 +59,12 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
+// ⭐ LogNexis API Monitoring SDK
+app.use(expressMiddleware({ 
+  apiKey: process.env.MONITOR_API_KEY,
+  debug: process.env.NODE_ENV === "development"
+}));
+
 // ⭐ Force HTTPS in Production (SEO Boost)
 app.use((req, res, next) => {
   if (
@@ -71,11 +79,6 @@ app.use((req, res, next) => {
 // ⭐ Enable GZIP compression (Better SEO + Faster Pages)
 app.use(compression());
 
-// ⭐ Improve SEO and Performance with caching
-// app.use((req, res, next) => {
-//   res.set("Cache-Control", "public, max-age=86400"); // Cache for 1 day
-//   next();
-// });
 // ❌ Disable all caching for all API responses
 app.use((req, res, next) => {
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
@@ -84,7 +87,6 @@ app.use((req, res, next) => {
   res.setHeader("Surrogate-Control", "no-store");
   next();
 });
-
 
 // ⭐ Rate Limiter
 app.use(generalLimiter);
@@ -160,4 +162,5 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`🌐 LAN: http://192.168.1.34:${PORT}`);
   console.log(`📁 Uploads: ${path.join(__dirname, "uploads")}`);
+  console.log(`📊 LogNexis API Monitoring: ACTIVE`);
 });

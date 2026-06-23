@@ -199,6 +199,306 @@ import path from "path";
 //     });
 //   }
 // };
+// export const getAllProperties = async (req, res) => {
+//   try {
+//     const {
+//       page = 1,
+//       limit = 12,
+//       type,
+//       minPrice,
+//       maxPrice,
+//       city,
+//       bedrooms,
+//       bathrooms,
+//       sortBy = "createdAt",
+//       sortOrder = "desc",
+//       search,
+//       searchQuery,
+//       agent,
+//       amenities,
+//       status, // Remove default value - handle "all" case
+//       category,
+//       constructionStatus,
+//       furnishing,
+//     } = req.query;
+
+//     // Build filter object - FIXED: Don't filter by status by default
+//     const filter = {
+//       isActive: true,
+//     };
+
+//     // FIXED: Handle status filter properly
+//     if (status && status !== "all") {
+//       // Support multiple statuses (comma-separated)
+//       if (status.includes(",")) {
+//         const statuses = status.split(",").map((s) => s.trim());
+//         filter.status = { $in: statuses };
+//       } else {
+//         filter.status = status;
+//       }
+//     }
+//     // If status is "all" or not provided, don't filter by status
+
+//     // Property Type filter
+//     if (type && type !== "all") {
+//       if (type.includes(",")) {
+//         // Handle multiple types
+//         const types = type.split(",").map((t) => t.trim());
+//         filter["specifications.type"] = { $in: types };
+//       } else {
+//         filter["specifications.type"] = type;
+//       }
+//     }
+
+//     // Category filter
+//     if (category && category !== "all") {
+//       filter["specifications.category"] = category;
+//     }
+
+//     // Construction Status filter
+//     if (constructionStatus && constructionStatus !== "all") {
+//       filter["specifications.constructionStatus"] = constructionStatus;
+//     }
+
+//     // Furnishing filter
+//     if (furnishing && furnishing !== "all") {
+//       filter["specifications.furnishing"] = furnishing;
+//     }
+
+//     // Location filter - handle city search
+//     const locationSearch = city;
+//     if (locationSearch && locationSearch !== "all") {
+//       filter.$or = [
+//         { "location.city": new RegExp(locationSearch, "i") },
+//         { "location.address": new RegExp(locationSearch, "i") },
+//         { "location.locality": new RegExp(locationSearch, "i") },
+//       ];
+//     }
+
+//     // Search filter - handle both search and searchQuery parameters
+//     const searchTerm = search || searchQuery;
+//     if (searchTerm) {
+//       if (!filter.$or) filter.$or = [];
+
+//       filter.$or.push(
+//         { title: new RegExp(searchTerm, "i") },
+//         { description: new RegExp(searchTerm, "i") },
+//         { "location.city": new RegExp(searchTerm, "i") },
+//         { "location.address": new RegExp(searchTerm, "i") },
+//         { "location.state": new RegExp(searchTerm, "i") },
+//         { "location.locality": new RegExp(searchTerm, "i") },
+//         { "specifications.type": new RegExp(searchTerm, "i") }
+//       );
+//     }
+
+//     // Bedrooms filter - handle both string and number
+//     if (bedrooms && bedrooms !== "all") {
+//       if (bedrooms === "4+") {
+//         filter["specifications.bedrooms"] = { $gte: 4 };
+//       } else {
+//         const bedNum = parseInt(bedrooms);
+//         if (!isNaN(bedNum)) {
+//           filter["specifications.bedrooms"] = bedNum;
+//         }
+//       }
+//     }
+
+//     // Bathrooms filter - handle both string and number
+//     if (bathrooms && bathrooms !== "all") {
+//       if (bathrooms === "4+") {
+//         filter["specifications.bathrooms"] = { $gte: 4 };
+//       } else {
+//         const bathNum = parseInt(bathrooms);
+//         if (!isNaN(bathNum)) {
+//           filter["specifications.bathrooms"] = bathNum;
+//         }
+//       }
+//     }
+
+//     // Price filter
+//     if (minPrice || maxPrice) {
+//       filter.price = {};
+//       if (minPrice) {
+//         const min = parseInt(minPrice);
+//         if (!isNaN(min)) filter.price.$gte = min;
+//       }
+//       if (maxPrice) {
+//         const max = parseInt(maxPrice);
+//         if (!isNaN(max)) filter.price.$lte = max;
+//       }
+//     }
+
+//     // Agent filter
+//     if (agent && agent !== "all") {
+//       // Handle both agent ID and agent name search
+//       if (mongoose.Types.ObjectId.isValid(agent)) {
+//         filter.postedBy = agent;
+//       } else {
+//         filter.$or = filter.$or || [];
+//         filter.$or.push(
+//           { "agentInfo.name": new RegExp(agent, "i") },
+//           { "agentInfo.email": new RegExp(agent, "i") }
+//         );
+//       }
+//     }
+
+//     // Amenities filter
+//     if (amenities && amenities !== "all") {
+//       const amenitiesArray = Array.isArray(amenities)
+//         ? amenities
+//         : amenities.split(",");
+
+//       // Clean and trim amenity values
+//       const cleanAmenities = amenitiesArray.map((a) => a.trim().toLowerCase());
+
+//       if (cleanAmenities.length > 0) {
+//         filter.amenities = {
+//           $all: cleanAmenities.map(
+//             (amenity) => new RegExp(`^${amenity}$`, "i")
+//           ),
+//         };
+//       }
+//     }
+
+//     // Sort options
+//     const sortOptions = {};
+
+//     // Map frontend sort values to database fields
+//     const sortFieldMap = {
+//       relevance: "createdAt",
+//       "price-low": "price",
+//       "price-high": "price",
+//       newest: "createdAt",
+//       oldest: "createdAt",
+//       "area-large": "specifications.area",
+//       "area-small": "specifications.area",
+//       bedrooms: "specifications.bedrooms",
+//       bathrooms: "specifications.bathrooms",
+//       featured: "featured",
+//       views: "views",
+//     };
+
+//     const actualSortBy = sortFieldMap[sortBy] || sortBy || "createdAt";
+
+//     // Determine sort order based on the sort type
+//     let actualSortOrder = sortOrder === "desc" ? -1 : 1;
+
+//     // Specific sort order handling for certain fields
+//     if (sortBy === "price-low") actualSortOrder = 1;
+//     else if (sortBy === "price-high") actualSortOrder = -1;
+//     else if (sortBy === "area-large") actualSortOrder = -1;
+//     else if (sortBy === "area-small") actualSortOrder = 1;
+//     else if (sortBy === "bedrooms") actualSortOrder = -1;
+//     else if (sortBy === "bathrooms") actualSortOrder = -1;
+//     else if (sortBy === "newest") actualSortOrder = -1;
+//     else if (sortBy === "oldest") actualSortOrder = 1;
+
+//     sortOptions[actualSortBy] = actualSortOrder;
+
+//     // Add secondary sort for consistent results
+//     if (actualSortBy !== "createdAt") {
+//       sortOptions.createdAt = -1;
+//     }
+
+//     // Calculate pagination with validation
+//     const pageNum = Math.max(1, parseInt(page) || 1);
+//     const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 12));
+//     const skip = (pageNum - 1) * limitNum;
+
+//     console.log("🔍 FINAL Property filter:", JSON.stringify(filter, null, 2));
+//     console.log("📊 Sort options:", sortOptions);
+//     console.log("📄 Pagination:", { page: pageNum, limit: limitNum, skip });
+
+//     // Execute query with population
+//     const properties = await Property.find(filter)
+//       .populate(
+//         "postedBy",
+//         "name email phone avatar designation experience languages rating performance"
+//       )
+//       .sort(sortOptions)
+//       .limit(limitNum)
+//       .skip(skip)
+//       .lean();
+
+
+
+
+//     // Get total count for pagination
+//     const total = await Property.countDocuments(filter);
+
+//     // Log the actual properties found for debugging
+//     console.log("🏠 Properties found:", properties.length);
+//     properties.forEach((prop, index) => {
+//       console.log(
+//         `  ${index + 1}. ${prop.title} (${prop.status}) - ${prop.propertyId}`
+//       );
+//     });
+
+//     // Format response
+//     const response = {
+//       success: true,
+//       count: properties.length,
+//       total,
+//       page: pageNum,
+//       pages: Math.ceil(total / limitNum),
+//       hasNextPage: pageNum < Math.ceil(total / limitNum),
+//       hasPrevPage: pageNum > 1,
+//       filters: {
+//         type,
+//         minPrice,
+//         maxPrice,
+//         city,
+//         bedrooms,
+//         bathrooms,
+//         status,
+//         category,
+//         constructionStatus,
+//         furnishing,
+//       },
+//       properties: properties.map((property) => ({
+//         _id: property._id,
+//         title: property.title,
+//         slug: property.slug,
+//         description: property.description,
+//         price: property.price,
+//         originalPrice: property.originalPrice,
+//         priceNegotiable: property.priceNegotiable,
+//         location: property.location,
+//         status: property.status,
+//         featured: property.featured,
+//         priority: property.priority,
+//         specifications: property.specifications,
+//         amenities: property.amenities,
+//         features: property.features,
+//         images: property.images,
+//         agentInfo: property.agentInfo,
+//         postedBy: property.postedBy,
+//         propertyId: property.propertyId,
+//         listedDate: property.listedDate,
+//         views: property.views,
+//         contactInfo: property.contactInfo,
+//         createdAt: property.createdAt,
+//         updatedAt: property.updatedAt,
+//         pricePerSqft: property.specifications?.area
+//           ? Math.round(property.price / property.specifications.area)
+//           : null,
+//       })),
+//     };
+
+//     res.status(200).json(response);
+//   } catch (error) {
+//     console.error("❌ Error fetching properties:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Server error while fetching properties",
+//       error: process.env.NODE_ENV === "development" ? error.message : undefined,
+//     });
+//   }
+// };
+
+// Helper delay function
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const getAllProperties = async (req, res) => {
   try {
     const {
@@ -216,20 +516,16 @@ export const getAllProperties = async (req, res) => {
       searchQuery,
       agent,
       amenities,
-      status, // Remove default value - handle "all" case
+      status,
       category,
       constructionStatus,
       furnishing,
     } = req.query;
 
-    // Build filter object - FIXED: Don't filter by status by default
-    const filter = {
-      isActive: true,
-    };
+    const filter = { isActive: true };
 
-    // FIXED: Handle status filter properly
+    // Status filter
     if (status && status !== "all") {
-      // Support multiple statuses (comma-separated)
       if (status.includes(",")) {
         const statuses = status.split(",").map((s) => s.trim());
         filter.status = { $in: statuses };
@@ -237,12 +533,10 @@ export const getAllProperties = async (req, res) => {
         filter.status = status;
       }
     }
-    // If status is "all" or not provided, don't filter by status
 
-    // Property Type filter
+    // Type filter
     if (type && type !== "all") {
       if (type.includes(",")) {
-        // Handle multiple types
         const types = type.split(",").map((t) => t.trim());
         filter["specifications.type"] = { $in: types };
       } else {
@@ -250,32 +544,28 @@ export const getAllProperties = async (req, res) => {
       }
     }
 
-    // Category filter
     if (category && category !== "all") {
       filter["specifications.category"] = category;
     }
 
-    // Construction Status filter
     if (constructionStatus && constructionStatus !== "all") {
       filter["specifications.constructionStatus"] = constructionStatus;
     }
 
-    // Furnishing filter
     if (furnishing && furnishing !== "all") {
       filter["specifications.furnishing"] = furnishing;
     }
 
-    // Location filter - handle city search
-    const locationSearch = city;
-    if (locationSearch && locationSearch !== "all") {
+    // Location filter
+    if (city && city !== "all") {
       filter.$or = [
-        { "location.city": new RegExp(locationSearch, "i") },
-        { "location.address": new RegExp(locationSearch, "i") },
-        { "location.locality": new RegExp(locationSearch, "i") },
+        { "location.city": new RegExp(city, "i") },
+        { "location.address": new RegExp(city, "i") },
+        { "location.locality": new RegExp(city, "i") },
       ];
     }
 
-    // Search filter - handle both search and searchQuery parameters
+    // Search filter
     const searchTerm = search || searchQuery;
     if (searchTerm) {
       if (!filter.$or) filter.$or = [];
@@ -291,7 +581,7 @@ export const getAllProperties = async (req, res) => {
       );
     }
 
-    // Bedrooms filter - handle both string and number
+    // Bedrooms
     if (bedrooms && bedrooms !== "all") {
       if (bedrooms === "4+") {
         filter["specifications.bedrooms"] = { $gte: 4 };
@@ -303,7 +593,7 @@ export const getAllProperties = async (req, res) => {
       }
     }
 
-    // Bathrooms filter - handle both string and number
+    // Bathrooms
     if (bathrooms && bathrooms !== "all") {
       if (bathrooms === "4+") {
         filter["specifications.bathrooms"] = { $gte: 4 };
@@ -315,22 +605,15 @@ export const getAllProperties = async (req, res) => {
       }
     }
 
-    // Price filter
+    // Price
     if (minPrice || maxPrice) {
       filter.price = {};
-      if (minPrice) {
-        const min = parseInt(minPrice);
-        if (!isNaN(min)) filter.price.$gte = min;
-      }
-      if (maxPrice) {
-        const max = parseInt(maxPrice);
-        if (!isNaN(max)) filter.price.$lte = max;
-      }
+      if (minPrice) filter.price.$gte = parseInt(minPrice);
+      if (maxPrice) filter.price.$lte = parseInt(maxPrice);
     }
 
-    // Agent filter
+    // Agent
     if (agent && agent !== "all") {
-      // Handle both agent ID and agent name search
       if (mongoose.Types.ObjectId.isValid(agent)) {
         filter.postedBy = agent;
       } else {
@@ -342,28 +625,25 @@ export const getAllProperties = async (req, res) => {
       }
     }
 
-    // Amenities filter
+    // Amenities
     if (amenities && amenities !== "all") {
       const amenitiesArray = Array.isArray(amenities)
         ? amenities
         : amenities.split(",");
 
-      // Clean and trim amenity values
-      const cleanAmenities = amenitiesArray.map((a) => a.trim().toLowerCase());
+      const cleanAmenities = amenitiesArray.map((a) =>
+        a.trim().toLowerCase()
+      );
 
-      if (cleanAmenities.length > 0) {
-        filter.amenities = {
-          $all: cleanAmenities.map(
-            (amenity) => new RegExp(`^${amenity}$`, "i")
-          ),
-        };
-      }
+      filter.amenities = {
+        $all: cleanAmenities.map(
+          (a) => new RegExp(`^${a}$`, "i")
+        ),
+      };
     }
 
-    // Sort options
+    // Sorting
     const sortOptions = {};
-
-    // Map frontend sort values to database fields
     const sortFieldMap = {
       relevance: "createdAt",
       "price-low": "price",
@@ -378,120 +658,56 @@ export const getAllProperties = async (req, res) => {
       views: "views",
     };
 
-    const actualSortBy = sortFieldMap[sortBy] || sortBy || "createdAt";
-
-    // Determine sort order based on the sort type
+    const actualSortBy = sortFieldMap[sortBy] || sortBy;
     let actualSortOrder = sortOrder === "desc" ? -1 : 1;
 
-    // Specific sort order handling for certain fields
     if (sortBy === "price-low") actualSortOrder = 1;
     else if (sortBy === "price-high") actualSortOrder = -1;
     else if (sortBy === "area-large") actualSortOrder = -1;
     else if (sortBy === "area-small") actualSortOrder = 1;
-    else if (sortBy === "bedrooms") actualSortOrder = -1;
-    else if (sortBy === "bathrooms") actualSortOrder = -1;
     else if (sortBy === "newest") actualSortOrder = -1;
     else if (sortBy === "oldest") actualSortOrder = 1;
 
     sortOptions[actualSortBy] = actualSortOrder;
 
-    // Add secondary sort for consistent results
     if (actualSortBy !== "createdAt") {
       sortOptions.createdAt = -1;
     }
 
-    // Calculate pagination with validation
-    const pageNum = Math.max(1, parseInt(page) || 1);
-    const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 12));
+    // Pagination
+    const pageNum = Math.max(1, parseInt(page));
+    const limitNum = Math.min(100, parseInt(limit));
     const skip = (pageNum - 1) * limitNum;
 
-    console.log("🔍 FINAL Property filter:", JSON.stringify(filter, null, 2));
-    console.log("📊 Sort options:", sortOptions);
-    console.log("📄 Pagination:", { page: pageNum, limit: limitNum, skip });
-
-    // Execute query with population
+    // Query
     const properties = await Property.find(filter)
-      .populate(
-        "postedBy",
-        "name email phone avatar designation experience languages rating performance"
-      )
+      .populate("postedBy", "name email")
       .sort(sortOptions)
       .limit(limitNum)
       .skip(skip)
       .lean();
 
-
-
-
-    // Get total count for pagination
     const total = await Property.countDocuments(filter);
 
-    // Log the actual properties found for debugging
-    console.log("🏠 Properties found:", properties.length);
-    properties.forEach((prop, index) => {
-      console.log(
-        `  ${index + 1}. ${prop.title} (${prop.status}) - ${prop.propertyId}`
-      );
-    });
-
-    // Format response
     const response = {
       success: true,
       count: properties.length,
       total,
       page: pageNum,
       pages: Math.ceil(total / limitNum),
-      hasNextPage: pageNum < Math.ceil(total / limitNum),
-      hasPrevPage: pageNum > 1,
-      filters: {
-        type,
-        minPrice,
-        maxPrice,
-        city,
-        bedrooms,
-        bathrooms,
-        status,
-        category,
-        constructionStatus,
-        furnishing,
-      },
-      properties: properties.map((property) => ({
-        _id: property._id,
-        title: property.title,
-        slug: property.slug,
-        description: property.description,
-        price: property.price,
-        originalPrice: property.originalPrice,
-        priceNegotiable: property.priceNegotiable,
-        location: property.location,
-        status: property.status,
-        featured: property.featured,
-        priority: property.priority,
-        specifications: property.specifications,
-        amenities: property.amenities,
-        features: property.features,
-        images: property.images,
-        agentInfo: property.agentInfo,
-        postedBy: property.postedBy,
-        propertyId: property.propertyId,
-        listedDate: property.listedDate,
-        views: property.views,
-        contactInfo: property.contactInfo,
-        createdAt: property.createdAt,
-        updatedAt: property.updatedAt,
-        pricePerSqft: property.specifications?.area
-          ? Math.round(property.price / property.specifications.area)
-          : null,
-      })),
+      properties,
     };
 
-    res.status(200).json(response);
+    // ✅ 2-second delay for testing
+    await delay(3000);
+
+    return res.status(200).json(response);
+
   } catch (error) {
-    console.error("❌ Error fetching properties:", error);
-    res.status(500).json({
+    console.error("Error fetching properties:", error);
+    return res.status(500).json({
       success: false,
-      message: "Server error while fetching properties",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      message: "Server error",
     });
   }
 };

@@ -1,0 +1,40 @@
+service: real-estate-backend
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-south-1
+  stage: prod
+  timeout: 10
+  memorySize: 512
+  environment:
+    NODE_ENV: production
+
+    # Database
+    MONGODB_URI: ${param:MONGODB_URI}
+
+    # JWT
+    JWT_SECRET: ${param:JWT_SECRET}
+    JWT_EXPIRES_IN: ${param:JWT_EXPIRES_IN}
+    JWT_REFRESH_SECRET: ${param:JWT_REFRESH_SECRET}
+    JWT_REFRESH_EXPIRES_IN: ${param:JWT_REFRESH_EXPIRES_IN}
+    JWT_COOKIE_EXPIRES: ${param:JWT_COOKIE_EXPIRES}
+
+    # Cloudinary
+    CLOUDINARY_CLOUD_NAME: ${param:CLOUDINARY_CLOUD_NAME}
+    CLOUDINARY_API_KEY: ${param:CLOUDINARY_API_KEY}
+    CLOUDINARY_API_SECRET: ${param:CLOUDINARY_API_SECRET}
+
+    # Email
+    EMAIL_USER: ${param:EMAIL_USER}
+    EMAIL_PASS: ${param:EMAIL_PASS}
+
+    # Rate limiting
+    RATE_LIMIT_WINDOW_MS: ${param:RATE_LIMIT_WINDOW_MS}
+    RATE_LIMIT_MAX_REQUESTS: ${param:RATE_LIMIT_MAX_REQUESTS}
+
+functions:
+  api:
+    handler: aws/handler.handler
+    events:
+      - httpApi: "*"

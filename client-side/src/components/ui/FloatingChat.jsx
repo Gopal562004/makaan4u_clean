@@ -126,7 +126,7 @@ const FloatingChat = ({ isOpen = false, onToggle }) => {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-999 w-80 sm:w-96">
+    <div className="fixed bottom-6 right-6 z-999 w-80 sm:w-96 z-10 bg-white">
       <div className="bg-card border border-border rounded-lg shadow-prominent overflow-hidden">
         {/* Header */}
         <div className="bg-primary text-primary-foreground p-4 flex items-center justify-between">

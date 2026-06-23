@@ -12,6 +12,28 @@
       gtag('config', 'G-BKYZF93DS4');
     </script>
     
+    <!-- <script>
+  (function(w,d,s,k){
+    w['_rumConfig'] = { 
+      apiKey: k, 
+      endpoint: 'http://localhost:5000/api/rum/ingest/' + k 
+    };
+    var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;
+    j.src='http://localhost:5000/rum-sdk.js';f.parentNode.insertBefore(j,f);
+  })(window,document,'script','ak_32f29668ba7b43d5aa55187acea93316');
+</script> -->
+
+<script>
+  (function(w,d,s,k){
+    w['_rumConfig']={
+      apiKey:k,
+      baseUrl:'https://lognexis-node.onrender.com',
+      endpoint:'https://lognexis-node.onrender.com/api/v1/m/e/'+k
+    };
+    var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;
+    j.src='https://lognexis-node.onrender.com/core.js';f.parentNode.insertBefore(j,f);
+  })(window,document,'script','ak_32f29668ba7b43d5aa55187acea93316');
+</script>
     <!-- 🔥 ENHANCED: Dynamic Title with Fallback -->
     <title>Makaan4U - Find Your Dream Property | Premium Real Estate Platform</title>
     

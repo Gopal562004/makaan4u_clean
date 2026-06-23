@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
@@ -321,7 +321,7 @@ const useURLParams = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const getURLParams = () => {
+  const getURLParams = useCallback(() => {
     const params = new URLSearchParams(location.search);
     return {
       search: params.get("search") || "",
@@ -340,28 +340,32 @@ const useURLParams = () => {
         : [],
       agent: params.get("agent") || "",
     };
-  };
+  }, [location.search]);
 
-  const updateURLParams = (updates) => {
-    const currentParams = getURLParams();
-    const newParams = { ...currentParams, ...updates };
-
-    const params = new URLSearchParams();
+  const updateURLParams = useCallback((updates) => {
+    const params = new URLSearchParams(location.search);
 
     // Only add non-empty parameters to URL
-    Object.entries(newParams).forEach(([key, value]) => {
-      if (key === "page" && value === 1) return; // Don't show page=1 in URL
+    Object.entries(updates).forEach(([key, value]) => {
+      if (key === "page" && value === 1) {
+        params.delete(key);
+        return;
+      }
       if (
         value === "" ||
         value === null ||
         value === undefined ||
         (Array.isArray(value) && value.length === 0)
-      )
+      ) {
+        params.delete(key);
         return;
+      }
 
       if (Array.isArray(value)) {
         if (value.length > 0) {
           params.set(key, value.join(","));
+        } else {
+          params.delete(key);
         }
       } else if (typeof value === "boolean") {
         params.set(key, value.toString());
@@ -375,7 +379,7 @@ const useURLParams = () => {
 
     // Use replace instead of push to avoid adding to browser history for every filter change
     navigate(newUrl, { replace: true });
-  };
+  }, [location.pathname, location.search, navigate]);
 
   return { getURLParams, updateURLParams };
 };
@@ -394,22 +398,22 @@ const PropertyListings = () => {
   });
 
   // Initialize state from URL parameters
-  const urlParams = getURLParams();
+  const initialParams = useMemo(() => getURLParams(), []);
 
   const [filters, setFilters] = useState({
-    priceRange: { min: urlParams.price_min, max: urlParams.price_max },
-    location: urlParams.location,
-    propertyType: urlParams.type,
-    bedrooms: urlParams.bedrooms,
-    bathrooms: urlParams.bathrooms,
-    amenities: urlParams.amenities,
-    agent: urlParams.agent,
+    priceRange: { min: initialParams.price_min, max: initialParams.price_max },
+    location: initialParams.location,
+    propertyType: initialParams.type,
+    bedrooms: initialParams.bedrooms,
+    bathrooms: initialParams.bathrooms,
+    amenities: initialParams.amenities,
+    agent: initialParams.agent,
   });
 
-  const [searchQuery, setSearchQuery] = useState(urlParams.search);
-  const [sortBy, setSortBy] = useState(urlParams.sort);
-  const [viewMode, setViewMode] = useState(urlParams.view);
-  const [showMapView, setShowMapView] = useState(urlParams.map);
+  const [searchQuery, setSearchQuery] = useState(initialParams.search);
+  const [sortBy, setSortBy] = useState(initialParams.sort);
+  const [viewMode, setViewMode] = useState(initialParams.view);
+  const [showMapView, setShowMapView] = useState(initialParams.map);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -424,7 +428,7 @@ const PropertyListings = () => {
     bedrooms: [],
     bathrooms: [],
   });
-  const [page, setPage] = useState(urlParams.page);
+  const [page, setPage] = useState(initialParams.page);
   const [totalPages, setTotalPages] = useState(1);
 
   // Helper functions for sorting
@@ -454,25 +458,25 @@ const PropertyListings = () => {
     return descendingSorts.includes(sortValue) ? "desc" : "asc";
   };
 
-  const fetchProperties = async () => {
+  const fetchProperties = async (params = getURLParams()) => {
     setLoading(true);
     try {
-      // Map frontend filters to backend API parameters
+      // Map params to backend API parameters
       const queryFilters = {
-        page,
+        page: params.page,
         limit: 12,
-        search: searchQuery,
-        type: filters.propertyType[0] || "",
-        city: filters.location[0] || "",
-        minPrice: filters.priceRange.min || "",
-        maxPrice: filters.priceRange.max || "",
-        bedrooms: filters.bedrooms,
-        bathrooms: filters.bathrooms,
-        agent: filters.agent,
-        sortBy: getSortField(sortBy),
-        sortOrder: getSortOrder(sortBy),
+        search: params.search,
+        type: params.type[0] || "",
+        city: params.location[0] || "",
+        minPrice: params.price_min || "",
+        maxPrice: params.price_max || "",
+        bedrooms: params.bedrooms,
+        bathrooms: params.bathrooms,
+        agent: params.agent,
+        sortBy: getSortField(params.sort),
+        sortOrder: getSortOrder(params.sort),
         amenities:
-          filters.amenities.length > 0 ? filters.amenities.join(",") : "",
+          params.amenities.length > 0 ? params.amenities.join(",") : "",
       };
 
       // Remove empty filters
@@ -506,39 +510,18 @@ const PropertyListings = () => {
     }
   };
 
-  // Update URL when filters change
-  const updateFiltersInURL = useCallback(
-    (newFilters) => {
-      updateURLParams({
-        search: searchQuery,
-        sort: sortBy,
-        view: viewMode,
-        map: showMapView,
-        page: page > 1 ? page : 1,
-        price_min: newFilters.priceRange.min,
-        price_max: newFilters.priceRange.max,
-        location: newFilters.location.join(","),
-        type: newFilters.propertyType.join(","),
-        bedrooms: newFilters.bedrooms,
-        bathrooms: newFilters.bathrooms,
-        amenities: newFilters.amenities.join(","),
-        agent: newFilters.agent,
-      });
-    },
-    [searchQuery, sortBy, viewMode, showMapView, page, updateURLParams]
-  );
-
-  // Handle URL parameter changes
+  // Handle URL parameter changes and sync state
   useEffect(() => {
     const params = getURLParams();
 
-    // Update state from URL parameters
+    // Update individual states ONLY if they differ from URL
     if (params.search !== searchQuery) setSearchQuery(params.search);
     if (params.sort !== sortBy) setSortBy(params.sort);
     if (params.view !== viewMode) setViewMode(params.view);
     if (params.map !== showMapView) setShowMapView(params.map);
     if (params.page !== page) setPage(params.page);
 
+    // Deep compare filters to avoid unnecessary state updates
     const newFilters = {
       priceRange: { min: params.price_min, max: params.price_max },
       location: params.location,
@@ -549,26 +532,34 @@ const PropertyListings = () => {
       agent: params.agent,
     };
 
-    setFilters(newFilters);
-  }, [location.search]); // Only depend on location.search
+    if (JSON.stringify(newFilters) !== JSON.stringify(filters)) {
+      setFilters(newFilters);
+    }
+
+    // Trigger fetch directly from URL params
+    fetchProperties(params);
+  }, [location.search]); // Depend only on URL change
 
   useEffect(() => {
     fetchFilterOptions();
   }, []);
 
-  useEffect(() => {
-    fetchProperties();
-  }, [filters, searchQuery, sortBy, page]);
-
+  // Event Handlers - ONLY update the URL, let the effect handle state & fetching
   const handleFiltersChange = (newFilters) => {
-    setFilters(newFilters);
-    setPage(1);
-    updateFiltersInURL(newFilters);
+    updateURLParams({
+      price_min: newFilters.priceRange.min,
+      price_max: newFilters.priceRange.max,
+      location: newFilters.location,
+      type: newFilters.propertyType,
+      bedrooms: newFilters.bedrooms,
+      bathrooms: newFilters.bathrooms,
+      amenities: newFilters.amenities,
+      agent: newFilters.agent,
+      page: 1,
+    });
   };
 
   const handleSearchChange = (query) => {
-    setSearchQuery(query);
-    setPage(1);
     updateURLParams({
       search: query,
       page: 1,
@@ -576,29 +567,24 @@ const PropertyListings = () => {
   };
 
   const handleSortChange = (newSortBy) => {
-    setSortBy(newSortBy);
     updateURLParams({
       sort: newSortBy,
     });
   };
 
   const handleViewModeChange = (newViewMode) => {
-    setViewMode(newViewMode);
     updateURLParams({
       view: newViewMode,
     });
   };
 
   const handleMapToggle = () => {
-    const newMapView = !showMapView;
-    setShowMapView(newMapView);
     updateURLParams({
-      map: newMapView,
+      map: !showMapView,
     });
   };
 
   const handlePageChange = (newPage) => {
-    setPage(newPage);
     updateURLParams({
       page: newPage > 1 ? newPage : 1,
     });
@@ -798,27 +784,19 @@ const PropertyListings = () => {
         transition={{ duration: 0.3 }}
       >
         {/* Desktop Filter Sidebar */}
-        <div className="hidden lg:block">
-          <FilterSidebar
-            filters={filters}
-            onFiltersChange={handleFiltersChange}
-            propertyCount={properties.length}
-            filterOptions={filterOptions}
-          />
-        </div>
+        {!showMapView && (
+          <aside className="hidden lg:block w-80 xl:w-96 bg-white border-r border-gray-200 overflow-y-auto custom-scrollbar">
+            <FilterSidebar
+              filters={filters}
+              onChange={handleFiltersChange}
+              options={filterOptions}
+              loading={loading}
+            />
+          </aside>
+        )}
 
-        {/* Mobile Filter Sidebar */}
-        <FilterSidebar
-          filters={filters}
-          onFiltersChange={handleFiltersChange}
-          propertyCount={properties.length}
-          filterOptions={filterOptions}
-          isOpen={isMobileFilterOpen}
-          onClose={() => setIsMobileFilterOpen(false)}
-          isMobile
-        />
-
-        <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Main Listings Area */}
+        <main className="flex-1 flex flex-col min-w-0 bg-slate-50 dark:bg-gray-950 overflow-hidden">
           <SearchAndSortMemo
             searchQuery={searchQuery}
             onSearchChange={handleSearchChange}
@@ -832,83 +810,51 @@ const PropertyListings = () => {
             onMapToggle={handleMapToggle}
           />
 
-          <div className="flex-1 overflow-hidden bg-white">
+          <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-6">
             {showMapView ? (
-              <div className="h-full flex">
-                <div className="w-1/2 overflow-y-auto border-r border-slate-200 custom-scrollbar">
-                  <PropertyGrid
-                    properties={properties}
-                    viewMode={viewMode}
-                    onWishlistToggle={handleWishlistToggle}
-                    wishlistedProperties={wishlistedProperties}
-                    loading={loading}
-                    currentPage={page}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                  />
-                </div>
-                <div className="w-1/2">
-                  <PropertyMap
-                    properties={properties}
-                    onPropertySelect={setSelectedMapProperty}
-                    selectedProperty={selectedMapProperty}
-                  />
-                </div>
-              </div>
+              <PropertyMap
+                properties={properties}
+                loading={loading}
+                selectedProperty={selectedMapProperty}
+                onPropertySelect={setSelectedMapProperty}
+              />
             ) : (
-              <div className="h-full overflow-y-auto custom-scrollbar">
-                <PropertyGrid
-                  properties={properties}
-                  viewMode={viewMode}
-                  onWishlistToggle={handleWishlistToggle}
-                  wishlistedProperties={wishlistedProperties}
-                  loading={loading}
-                  currentPage={page}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                />
-              </div>
+              <PropertyGrid
+                properties={properties}
+                loading={loading}
+                viewMode={viewMode}
+                onWishlistToggle={handleWishlistToggle}
+                wishlistedProperties={wishlistedProperties}
+                page={page}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
             )}
           </div>
-        </div>
+        </main>
       </motion.div>
 
-      <FloatingChat
-        isOpen={isChatOpen}
-        onToggle={() => setIsChatOpen(!isChatOpen)}
+      {/* Mobile Filter Sidebar */}
+      <FilterSidebar
+        filters={filters}
+        onChange={handleFiltersChange}
+        options={filterOptions}
+        isMobile={true}
+        isOpen={isMobileFilterOpen}
+        onClose={() => setIsMobileFilterOpen(false)}
+        loading={loading}
       />
 
-      <Button
-        variant="outline"
-        size="icon"
-        className="fixed bottom-6 right-6 z-40 bg-white border-slate-300 shadow-lg hover:shadow-xl hover:border-slate-400"
+      <FloatingChat isOpen={isChatOpen} onToggle={() => setIsChatOpen(!isChatOpen)} />
+      
+      {/* Back to top button */}
+      <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className="fixed bottom-6 right-20 p-3 bg-primary text-white rounded-full shadow-lg hover:bg-primary/90 transition-all z-40 lg:hidden"
+        aria-label="Back to top"
       >
-        <ArrowUp size={18} />
-      </Button>
-
-      {/* Scrollbar styles */}
-      <style>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f8fafc;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #cbd5e1;
-          border-radius: 10px;
-          border: 2px solid #f8fafc;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #94a3b8;
-        }
-        .custom-scrollbar {
-          scrollbar-width: thin;
-          scrollbar-color: #cbd5e1 #f8fafc;
-        }
-      `}</style>
+        <ArrowUp size={20} />
+      </button>
     </div>
   );
 };
