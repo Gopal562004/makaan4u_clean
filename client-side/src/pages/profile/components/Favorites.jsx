@@ -172,6 +172,7 @@ import {
 } from "lucide-react";
 import { wishlistService } from "../../../lib/mongo/services/wishlistService";
 import { Link } from "react-router-dom";
+import { useCurrencyFormatter } from "../../../hooks/useCurrencyFormatter";
 
 const Favorites = () => {
   const { user } = useProfileContext();
@@ -180,6 +181,7 @@ const Favorites = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [removingId, setRemovingId] = useState(null);
+  const { formatPrice } = useCurrencyFormatter();
 
   // Fetch wishlist properties
   const fetchWishlist = async () => {
@@ -200,7 +202,7 @@ const Favorites = () => {
             item.property?.images?.[0]?.url ||
             "/images/property-placeholder.jpg",
           price: item.property?.price
-            ? `₹${item.property.price.toLocaleString("en-IN")}`
+            ? formatPrice(item.property.price)
             : "Price on Request",
           location:
             item.property?.location?.address ||
@@ -446,17 +448,17 @@ const Favorites = () => {
                 </div>
 
                 {/* Property Features */}
-                <div className="flex items-center justify-between text-xs text-gray-600 mb-6 border border-gray-100 p-3 font-bold uppercase tracking-widest mt-auto">
-                  <div className="flex items-center">
-                    <Bed className="w-4 h-4 mr-2 text-blue-600" strokeWidth={1.5} />
-                    <span>{property.beds}</span>
+                <div className="flex items-center justify-between text-xs text-gray-600 mb-6 border border-gray-100 p-3 font-bold uppercase tracking-widest mt-auto min-w-0 gap-2">
+                  <div className="flex items-center min-w-0 flex-1">
+                    <Bed className="w-4 h-4 mr-2 text-blue-600 flex-shrink-0" strokeWidth={1.5} />
+                    <span className="truncate">{property.beds}</span>
                   </div>
-                  <div className="flex items-center">
-                    <Bath className="w-4 h-4 mr-2 text-blue-600" strokeWidth={1.5} />
-                    <span>{property.baths}</span>
+                  <div className="flex items-center min-w-0 flex-1 justify-center border-l border-gray-100 pl-2">
+                    <Bath className="w-4 h-4 mr-2 text-blue-600 flex-shrink-0" strokeWidth={1.5} />
+                    <span className="truncate">{property.baths}</span>
                   </div>
-                  <div className="flex items-center">
-                    <Square className="w-4 h-4 mr-2 text-blue-600" strokeWidth={1.5} />
+                  <div className="flex items-center min-w-0 flex-1 justify-end border-l border-gray-100 pl-2">
+                    <Square className="w-4 h-4 mr-2 text-blue-600 flex-shrink-0" strokeWidth={1.5} />
                     <span className="truncate">{property.area}</span>
                   </div>
                 </div>

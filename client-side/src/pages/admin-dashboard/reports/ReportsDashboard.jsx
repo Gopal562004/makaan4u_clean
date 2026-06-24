@@ -3,6 +3,7 @@ import Button from "../../../components/ui/Button";
 import ExportModal from "../components/ExportModal";
 import adminDashboardServices from "../../../lib/mongo/services/adminDashboardServices";
 import Icon from "../../../components/AppIcon";
+import { toast } from "react-toastify";
 
 const ReportsDashboard = () => {
   const [isExportOpen, setIsExportOpen] = useState(false);
@@ -87,7 +88,6 @@ const ReportsDashboard = () => {
       recordCount: summary.totalReviews,
     },
   ];
-
   // ✅ Handle export (no reload, no looping)
   const handleExport = async (config) => {
     setLoading(true);
@@ -95,7 +95,7 @@ const ReportsDashboard = () => {
       await adminDashboardServices.exportReportsData(config);
     } catch (error) {
       console.error("Export failed:", error);
-      alert("Failed to export reports. Check console for details.");
+      toast.error("Failed to export reports. Check console for details.");
     } finally {
       setLoading(false);
     }

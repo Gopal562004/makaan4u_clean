@@ -4,6 +4,7 @@ import { deleteProperty } from "../../../lib/mongo/services/propertyService";
 import { useNavigate } from "react-router-dom";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
+import { toast } from "react-toastify";
 
 const PropertyDashboard = () => {
   const [properties, setProperties] = useState([]);
@@ -36,7 +37,7 @@ const PropertyDashboard = () => {
       );
     } catch (error) {
       console.error("Failed to update status", error);
-      alert("Failed to update property status.");
+      toast.error("Failed to update property status.");
     }
   };
 
@@ -47,7 +48,7 @@ const PropertyDashboard = () => {
         setProperties((prev) => prev.filter((p) => p._id !== propertyId));
       } catch (error) {
         console.error("Failed to delete property", error);
-        alert("Failed to delete property.");
+        toast.error("Failed to delete property.");
       }
     }
   };

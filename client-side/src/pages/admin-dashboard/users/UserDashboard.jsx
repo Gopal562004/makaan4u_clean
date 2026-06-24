@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchAllUsers, updateUserStatus } from "../../../lib/mongo/services/adminDashboardServices";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
+import { toast } from "react-toastify";
 
 const UserDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -33,7 +34,7 @@ const UserDashboard = () => {
       );
     } catch (error) {
       console.error("Failed to update status", error);
-      alert("Failed to update user status.");
+      toast.error("Failed to update user status.");
     }
   };
 

@@ -4,6 +4,7 @@ import Icon from "../../../components/AppIcon";
 import Image from "../../../components/AppImage";
 import Button from "../../../components/ui/Button";
 import { optimizeImageUrl } from "../../../utils/imageOptimizer";
+import { useCurrencyFormatter } from "../../../hooks/useCurrencyFormatter";
 
 const PropertyCard = ({
   property,
@@ -16,19 +17,7 @@ const PropertyCard = ({
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
   const navigate = useNavigate();
-
-  const formatPrice = (price) => {
-    if (!price || price === 0) return "Price on request";
-    if (price >= 10000000) {
-      const crorePrice = price / 10000000;
-      return `₹${crorePrice % 1 === 0 ? crorePrice.toFixed(0) : crorePrice.toFixed(1)} Cr`;
-    }
-    if (price >= 100000) {
-      const lakhPrice = price / 100000;
-      return `₹${lakhPrice % 1 === 0 ? lakhPrice.toFixed(0) : lakhPrice.toFixed(1)} L`;
-    }
-    return `₹${price?.toLocaleString("en-IN")}`;
-  };
+  const { formatPrice } = useCurrencyFormatter();
 
   const formatLocation = () => {
     if (!property?.location) return "Location not available";

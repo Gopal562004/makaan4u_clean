@@ -6,19 +6,15 @@ import Button from "../../../components/ui/Button";
 import { getAllProperties } from "../../../lib/mongo/services/propertyService";
 import SimilarPropertiesSkeleton from "../../../components/loading/SimilarPropertiesSkeleton"; // Import skeleton
 import PropertyCard from "../../property-listings/components/PropertyCard";
+import { useCurrencyFormatter } from "../../../hooks/useCurrencyFormatter";
 
 const SimilarProperties = ({ currentProperty }) => {
   const navigate = useNavigate();
   const [similarProperties, setSimilarProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { formatPrice } = useCurrencyFormatter();
 
   console.log("Current property in SimilarProperties:", currentProperty);
-
-  const formatPrice = (price) => {
-    if (price >= 10000000) return `₹${(price / 10000000).toFixed(1)} Cr`;
-    if (price >= 100000) return `₹${(price / 100000).toFixed(1)} L`;
-    return `₹${price?.toLocaleString("en-IN")}`;
-  };
 
   const fetchSimilarProperties = async () => {
     try {

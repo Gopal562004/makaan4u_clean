@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/ui/Button";
 import { exportDashboardData } from "../../../lib/mongo/services/adminDashboardServices";
+import { toast } from "react-toastify";
 
 const QuickActions = () => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const QuickActions = () => {
           });
         } catch (err) {
           console.error("Download failed:", err);
-          alert("Failed to download data.");
+          toast.error("Failed to download data.");
         }
       },
     },

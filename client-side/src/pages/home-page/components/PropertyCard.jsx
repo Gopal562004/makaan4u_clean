@@ -190,6 +190,7 @@ import {
   Star,
 } from "lucide-react";
 import Button from "../../../components/ui/Button";
+import { useCurrencyFormatter } from "../../../hooks/useCurrencyFormatter";
 
 // Utility to optimize Cloudinary URLs for much faster loading
 const optimizeCloudinaryUrl = (url) => {
@@ -208,8 +209,8 @@ const PropertyCard = memo(
     toggleWishlist,
     handleViewDetails,
     handleContactAgent,
-    formatPrice,
   }) => {
+    const { formatPrice } = useCurrencyFormatter();
     const [imageLoaded, setImageLoaded] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [avatarError, setAvatarError] = useState(false);

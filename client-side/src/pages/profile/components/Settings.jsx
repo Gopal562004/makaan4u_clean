@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useProfileContext } from "../ProfileLayout";
+import { usePreferences } from "../../../contexts/PreferencesContext";
+import { toast } from "react-toastify";
 import {
   Bell,
   Shield,
@@ -12,6 +14,8 @@ import {
 
 const Settings = () => {
   const { user, onUserUpdate } = useProfileContext();
+  const { currency, setCurrency, language, setLanguage } = usePreferences();
+  
   const [settings, setSettings] = useState({
     notifications: {
       email: true,
@@ -24,16 +28,11 @@ const Settings = () => {
       showEmail: false,
       showPhone: false,
     },
-    preferences: {
-      theme: "light",
-      language: "en",
-      currency: "INR",
-    },
   });
 
   const handleSave = () => {
     console.log("Settings saved:", settings);
-    alert("Settings saved successfully!");
+    toast("Settings saved successfully!");
   };
 
   return (
@@ -159,16 +158,8 @@ const Settings = () => {
               </label>
               <div className="relative">
                 <select
-                  value={settings.preferences.language}
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      preferences: {
-                        ...settings.preferences,
-                        language: e.target.value,
-                      },
-                    })
-                  }
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
                   className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors appearance-none font-medium text-black cursor-pointer rounded-none text-sm"
                 >
                   <option value="en">English</option>
@@ -189,16 +180,8 @@ const Settings = () => {
               </label>
               <div className="relative">
                 <select
-                  value={settings.preferences.currency}
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      preferences: {
-                        ...settings.preferences,
-                        currency: e.target.value,
-                      },
-                    })
-                  }
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
                   className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors appearance-none font-medium text-black cursor-pointer rounded-none text-sm"
                 >
                   <option value="INR">Indian Rupee (₹)</option>

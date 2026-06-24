@@ -518,31 +518,16 @@
 
 import React from "react";
 import Icon from "../../../components/AppIcon";
+import { useCurrencyFormatter } from "../../../hooks/useCurrencyFormatter";
 
 const PropertyInfo = ({ property }) => {
-  // Enhanced price formatting
-  const formatPrice = (price) => {
-    if (!price || price === 0) return "Price on Request";
-    if (price >= 10000000) {
-      const crorePrice = price / 10000000;
-      return `₹${
-        crorePrice % 1 === 0 ? crorePrice.toFixed(0) : crorePrice.toFixed(1)
-      } Cr`;
-    }
-    if (price >= 100000) {
-      const lakhPrice = price / 100000;
-      return `₹${
-        lakhPrice % 1 === 0 ? lakhPrice.toFixed(0) : lakhPrice.toFixed(1)
-      } L`;
-    }
-    return `₹${price?.toLocaleString("en-IN")}`;
-  };
+  const { formatPrice } = useCurrencyFormatter();
 
   // Calculate price per sq ft
   const getPricePerSqFt = () => {
     if (!property?.price || !property?.area || property.area === 0) return null;
     const pricePerSqFt = Math.round(property.price / property.area);
-    return `₹${pricePerSqFt?.toLocaleString("en-IN")} per sq ft`;
+    return `${formatPrice(pricePerSqFt)} per sq ft`;
   };
 
   // Format location details

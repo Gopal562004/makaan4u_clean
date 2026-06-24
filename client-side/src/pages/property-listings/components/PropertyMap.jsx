@@ -193,6 +193,7 @@
 import React, { useState, useEffect } from "react";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
+import { useCurrencyFormatter } from "../../../hooks/useCurrencyFormatter";
 
 const PropertyMap = ({
   properties = [],
@@ -202,14 +203,7 @@ const PropertyMap = ({
 }) => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const defaultCenter = { lat: 19.076, lng: 72.8777 }; // Mumbai coordinates
-
-  // Format price for display
-  const formatPrice = (price) => {
-    if (!price) return "Price on request";
-    if (price >= 10000000) return `₹${(price / 10000000)?.toFixed(1)}Cr`;
-    if (price >= 100000) return `₹${(price / 100000)?.toFixed(1)}L`;
-    return `₹${price?.toLocaleString()}`;
-  };
+  const { formatPrice } = useCurrencyFormatter();
 
   // Get property coordinates (fallback to calculated positions if not available)
   const getPropertyCoordinates = (property, index) => {

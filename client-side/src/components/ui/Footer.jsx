@@ -150,6 +150,7 @@ import {
 import Button from "./Button";
 import Input from "./Input";
 import Logo from "./Logo";
+import { toast } from "react-toastify";
 
 const Footer = ({ className = "" }) => {
   const navigate = useNavigate();
@@ -211,7 +212,7 @@ const Footer = ({ className = "" }) => {
   const handleNewsletterSubmit = (e) => {
     e?.preventDefault();
     if (email?.trim()) {
-      alert("Thank you for subscribing!");
+      toast.success("Thank you for subscribing!");
       setEmail("");
     }
   };

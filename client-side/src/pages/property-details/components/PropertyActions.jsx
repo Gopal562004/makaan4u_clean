@@ -134,6 +134,7 @@ import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
 import { wishlistService } from "../../../lib/mongo/services/wishlistService";
 import EmiCalculatorModal from "./EmiCalculatorModal";
+import { toast } from "react-toastify";
 
 const PropertyActions = ({
   property,
@@ -185,7 +186,7 @@ const PropertyActions = ({
         });
       } else {
         await navigator.clipboard.writeText(window.location.href);
-        alert("Link copied!");
+        toast.success("Link copied!");
       }
     } catch (error) {
       console.error("Error sharing:", error);

@@ -492,9 +492,9 @@ const Header = ({ onSearch }) => {
               <div className="hidden lg:block relative" ref={profileRef}>
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center space-x-2 pl-2 pr-3 py-1.5 rounded-full hover:bg-gray-100 transition-colors border border-transparent hover:border-gray-200"
+                  className="flex items-center space-x-2 pl-2 pr-3 py-1.5 rounded-md hover:bg-gray-100 transition-colors border border-transparent hover:border-gray-200"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-sm">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-md flex items-center justify-center shadow-sm">
                     <span className="text-xs font-bold text-white">
                       {user.name?.charAt(0)?.toUpperCase() || "U"}
                     </span>
@@ -503,10 +503,10 @@ const Header = ({ onSearch }) => {
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute top-14 right-0 w-64 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95">
+                  <div className="absolute top-14 right-0 w-64 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-md shadow-lg z-50 overflow-hidden animate-in fade-in zoom-in-95">
                     <div className="p-5 bg-gray-50/80 border-b border-gray-100">
                       <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-md">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-md flex items-center justify-center shadow-md">
                           <span className="text-lg font-bold text-white">
                             {user.name?.charAt(0)?.toUpperCase() || "U"}
                           </span>
@@ -633,7 +633,13 @@ const Header = ({ onSearch }) => {
                 </div>
               ) : (
                 <div className="flex flex-col space-y-3">
-                  <div className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-100 shadow-sm">
+                  <div 
+                    onClick={() => {
+                      navigate("/profile");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-100 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"
+                  >
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-md flex items-center justify-center shadow-sm">
                       <span className="text-sm font-bold text-white">
                         {user.name?.charAt(0)?.toUpperCase() || "U"}
@@ -647,6 +653,7 @@ const Header = ({ onSearch }) => {
                         {user.email}
                       </p>
                     </div>
+                    <ChevronRight size={16} className="text-gray-400" />
                   </div>
                   <Button
                     variant="ghost"

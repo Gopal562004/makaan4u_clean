@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import MetricsCard from "../components/MetricsCard";
 import PropertyChart from "../components/PropertyChart";
 import QuickActions from "../components/QuickActions";
@@ -136,10 +137,10 @@ const AdminDashboard = () => {
         formats: ["pdf", "excel"],
         emailDelivery: false,
       });
-      alert("✅ Data export successful!");
+      toast.success("✅ Data export successful!");
     } catch (err) {
       console.error("❌ Export failed:", err);
-      alert("Export failed. Please check backend logs.");
+      toast.error("Export failed. Please check backend logs.");
     }
   };
 

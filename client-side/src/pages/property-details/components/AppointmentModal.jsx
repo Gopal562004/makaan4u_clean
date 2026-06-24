@@ -3,6 +3,7 @@ import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import Select from "../../../components/ui/Select";
+import { toast } from "react-toastify";
 
 const AppointmentModal = ({ isOpen, onClose, property, agent }) => {
   const [formData, setFormData] = useState({
@@ -45,7 +46,7 @@ const AppointmentModal = ({ isOpen, onClose, property, agent }) => {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Show success message and close modal
-    alert(
+    toast.success(
       "Appointment scheduled successfully! You will receive a confirmation email shortly."
     );
     setIsSubmitting(false);
