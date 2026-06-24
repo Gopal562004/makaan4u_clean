@@ -52,11 +52,13 @@
 // };
 
 // export default BlogShowcase;
-import React from "react";
+import React, { useState } from "react";
 import BlogCard from "./BlogCard";
 import BlogListCard from "./BlogListCard";
 
 const BlogShowcase = ({ posts, currentView }) => {
+  const [visibleCount, setVisibleCount] = useState(6);
+
   if (posts.length === 0) {
     return (
       <div className="text-center py-12 sm:py-16">
@@ -73,6 +75,9 @@ const BlogShowcase = ({ posts, currentView }) => {
     );
   }
 
+  const visiblePosts = posts.slice(0, visibleCount);
+  const hasMore = visibleCount < posts.length;
+
   return (
     <div>
       {/* Header Section */}
@@ -82,34 +87,37 @@ const BlogShowcase = ({ posts, currentView }) => {
             Latest Insights
           </h2>
           <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
-            {posts.length} {posts.length === 1 ? "story" : "stories"} to explore
+            {posts.length} {posts.length === 1 ? "story" : "stories"} available
           </p>
         </div>
 
         <div className="text-xs sm:text-sm text-gray-500">
-          Showing {posts.length} of {posts.length} results
+          Showing {visiblePosts.length} of {posts.length} results
         </div>
       </div>
 
       {/* Content Grid/List */}
       {currentView === "grid" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-          {posts.map((post) => (
+          {visiblePosts.map((post) => (
             <BlogCard key={post.id} post={post} />
           ))}
         </div>
       ) : (
         <div className="space-y-4 sm:space-y-6">
-          {posts.map((post) => (
+          {visiblePosts.map((post) => (
             <BlogListCard key={post.id} post={post} />
           ))}
         </div>
       )}
 
-      {/* Load More / Pagination Placeholder */}
-      {posts.length > 6 && (
+      {/* Load More Button */}
+      {hasMore && (
         <div className="flex justify-center mt-8 sm:mt-12">
-          <button className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200 text-sm sm:text-base">
+          <button 
+            onClick={() => setVisibleCount(prev => prev + 6)}
+            className="px-6 py-3 bg-gray-100 text-gray-700 rounded font-medium hover:bg-gray-200 transition-colors duration-200 text-sm sm:text-base"
+          >
             Load More Stories
           </button>
         </div>

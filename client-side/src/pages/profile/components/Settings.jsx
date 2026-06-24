@@ -46,7 +46,7 @@ const Settings = () => {
         </div>
         <button
           onClick={handleSave}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors mt-4 sm:mt-0"
+          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors mt-4 sm:mt-0"
         >
           <Save className="w-4 h-4 mr-2" />
           Save Changes
@@ -55,7 +55,7 @@ const Settings = () => {
 
       <div className="space-y-6">
         {/* Notifications */}
-        <div className="bg-gray-50 rounded-lg p-6">
+        <div className="bg-gray-50 rounded p-6">
           <div className="flex items-center mb-4">
             <Bell className="w-5 h-5 text-blue-600 mr-3" />
             <h3 className="text-lg font-semibold text-gray-900">
@@ -99,7 +99,7 @@ const Settings = () => {
         </div>
 
         {/* Privacy */}
-        <div className="bg-gray-50 rounded-lg p-6">
+        <div className="bg-gray-50 rounded p-6">
           <div className="flex items-center mb-4">
             <Shield className="w-5 h-5 text-green-600 mr-3" />
             <h3 className="text-lg font-semibold text-gray-900">Privacy</h3>
@@ -141,7 +141,7 @@ const Settings = () => {
         </div>
 
         {/* Preferences */}
-        <div className="bg-gray-50 rounded-lg p-6">
+        <div className="bg-gray-50 rounded p-6">
           <div className="flex items-center mb-4">
             <Globe className="w-5 h-5 text-purple-600 mr-3" />
             <h3 className="text-lg font-semibold text-gray-900">Preferences</h3>
@@ -164,7 +164,7 @@ const Settings = () => {
                     },
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
@@ -189,7 +189,7 @@ const Settings = () => {
                     },
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="en">English</option>
                 <option value="hi">Hindi</option>
@@ -213,7 +213,7 @@ const Settings = () => {
                     },
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="INR">Indian Rupee (₹)</option>
                 <option value="USD">US Dollar ($)</option>

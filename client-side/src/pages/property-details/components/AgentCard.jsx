@@ -13,7 +13,7 @@
 //   };
 
 //   return (
-//     <div className="bg-card border border-border rounded-lg p-6">
+//     <div className="bg-card border border-border rounded p-6">
 //       <div className="text-center mb-6">
 //         <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden">
 //           <Image
@@ -169,7 +169,7 @@ const AgentCard = ({ agent, onScheduleViewing, onWhatsAppContact }) => {
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl p-5">
+    <div className="bg-white border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-md p-6">
       {/* Header with Agent Info */}
       <div className="flex items-start space-x-4 mb-5">
         <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20 flex-shrink-0">
@@ -183,14 +183,14 @@ const AgentCard = ({ agent, onScheduleViewing, onWhatsAppContact }) => {
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between mb-1">
-            <h3 className="text-lg font-semibold text-foreground truncate">
+            <h3 className="text-lg font-extrabold text-gray-900 truncate tracking-tight">
               {agent?.name || "Agent Name"}
             </h3>
             {agent?.verified && (
               <Icon
                 name="Verified"
                 size={16}
-                className="text-blue-500 flex-shrink-0 ml-1"
+                className="text-blue-600 flex-shrink-0 ml-1"
               />
             )}
           </div>
@@ -237,64 +237,23 @@ const AgentCard = ({ agent, onScheduleViewing, onWhatsAppContact }) => {
         </div>
       </div>
 
-      {/* Agent Stats Grid */}
-      <div className="grid grid-cols-3 gap-3 mb-5">
-        <div className="text-center p-2 bg-muted/30 rounded-lg">
-          <p className="text-lg font-bold text-primary mb-1">
-            {agent?.propertiesSold || 0}
-          </p>
-          <p className="text-xs text-muted-foreground">Sold</p>
-        </div>
-        <div className="text-center p-2 bg-muted/30 rounded-lg">
-          <p className="text-lg font-bold text-primary mb-1">
-            {agent?.experience || 0}
-          </p>
-          <p className="text-xs text-muted-foreground">Years Exp</p>
-        </div>
-        <div className="text-center p-2 bg-muted/30 rounded-lg">
-          <p className="text-lg font-bold text-primary mb-1">
-            {agent?.activeListings || 0}
-          </p>
-          <p className="text-xs text-muted-foreground">Active</p>
-        </div>
-      </div>
-
-      {/* Performance Metrics */}
-      <div className="grid grid-cols-2 gap-3 mb-5">
-        <div className="flex items-center justify-between p-2 bg-muted/20 rounded-lg">
-          <span className="text-xs text-muted-foreground">Response Rate</span>
-          <span
-            className={`text-xs font-semibold ${getResponseRateColor(
-              agent?.responseRate || 0
-            )}`}
-          >
-            {agent?.responseRate || 0}%
-          </span>
-        </div>
-        <div className="flex items-center justify-between p-2 bg-muted/20 rounded-lg">
-          <span className="text-xs text-muted-foreground">Response Time</span>
-          <span className="text-xs font-semibold text-foreground">
-            {agent?.responseTime || "N/A"}
-          </span>
-        </div>
-      </div>
 
       {/* Contact Information */}
       <div className="space-y-2 mb-5">
-        <div className="flex items-center space-x-3 p-2 bg-muted/20 rounded-lg">
+        <div className="flex items-center space-x-3 p-2 bg-muted/20 rounded">
           <Icon name="Phone" size={14} className="text-primary flex-shrink-0" />
           <span className="text-sm text-foreground truncate">
             {agent?.phone || "Not provided"}
           </span>
         </div>
-        <div className="flex items-center space-x-3 p-2 bg-muted/20 rounded-lg">
+        <div className="flex items-center space-x-3 p-2 bg-muted/20 rounded">
           <Icon name="Mail" size={14} className="text-primary flex-shrink-0" />
           <span className="text-sm text-foreground truncate">
             {agent?.email || "Not provided"}
           </span>
         </div>
         {agent?.location && (
-          <div className="flex items-center space-x-3 p-2 bg-muted/20 rounded-lg">
+          <div className="flex items-center space-x-3 p-2 bg-muted/20 rounded">
             <Icon
               name="MapPin"
               size={14}
@@ -332,36 +291,35 @@ const AgentCard = ({ agent, onScheduleViewing, onWhatsAppContact }) => {
       )}
 
       {/* Action Buttons */}
-      <div className="space-y-2.5">
+      <div className="space-y-3 mt-6">
         <Button
-          variant="default"
           fullWidth
-          size="sm"
           iconName="Calendar"
           iconPosition="left"
           onClick={onScheduleViewing}
+          className="bg-gray-900 hover:bg-gray-800 text-white border-none shadow-sm py-3 rounded font-semibold tracking-wide transition-all duration-300"
         >
           Schedule Viewing
         </Button>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 mt-2">
           <Button
             variant="outline"
-            size="sm"
             iconName="MessageCircle"
             iconPosition="left"
             onClick={onWhatsAppContact}
             disabled={!agent?.phone}
+            className="border-gray-200 text-gray-700 hover:bg-gray-50 font-semibold text-xs rounded"
           >
             WhatsApp
           </Button>
           <Button
             variant="outline"
-            size="sm"
             iconName="Phone"
             iconPosition="left"
             onClick={handleCall}
             disabled={!agent?.phone}
+            className="border-gray-200 text-gray-700 hover:bg-gray-50 font-semibold text-xs rounded"
           >
             Call Now
           </Button>
@@ -370,11 +328,11 @@ const AgentCard = ({ agent, onScheduleViewing, onWhatsAppContact }) => {
         <Button
           variant="ghost"
           fullWidth
-          size="sm"
           iconName="Mail"
           iconPosition="left"
           onClick={handleEmail}
           disabled={!agent?.email}
+          className="bg-gray-100 text-gray-800 hover:bg-gray-200 font-semibold text-xs mt-2 rounded"
         >
           Send Email
         </Button>

@@ -118,19 +118,19 @@ const PerformanceChart = ({
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg p-6">
+    <div className="bg-card border border-border rounded p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
             <Icon name={icon} size={20} className="text-primary" />
           </div>
           <h3 className="font-semibold text-foreground">{title}</h3>
         </div>
         <div className="flex space-x-2">
-          <button className="p-2 hover:bg-muted rounded-lg transition-smooth">
+          <button className="p-2 hover:bg-muted rounded transition-smooth">
             <Icon name="Download" size={16} className="text-muted-foreground" />
           </button>
-          <button className="p-2 hover:bg-muted rounded-lg transition-smooth">
+          <button className="p-2 hover:bg-muted rounded transition-smooth">
             <Icon
               name="Maximize2"
               size={16}

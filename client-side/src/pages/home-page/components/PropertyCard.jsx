@@ -26,7 +26,7 @@
 
 //     return (
 //       <div
-//         className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden group transition-all duration-300 hover:-translate-y-1 text-sm"
+//         className="bg-white rounded-md shadow-sm border border-slate-100 overflow-hidden group transition-all duration-300 hover:-translate-y-1 text-sm"
 //         onMouseEnter={() => setIsHovered(true)}
 //         onMouseLeave={() => setIsHovered(false)}
 //       >
@@ -99,7 +99,7 @@
 //           </div>
 
 //           {/* Features */}
-//           <div className="flex justify-between mb-4 text-xs text-slate-600 bg-slate-50 rounded-lg p-3">
+//           <div className="flex justify-between mb-4 text-xs text-slate-600 bg-slate-50 rounded p-3">
 //             <div className="flex flex-col items-center">
 //               <Bed className="w-3 h-3 mb-1 text-slate-500" />
 //               <span className="font-medium">{property.bedrooms}</span>
@@ -120,7 +120,7 @@
 //           </div>
 
 //           {/* Agent */}
-//           <div className="flex items-center justify-between mb-4 p-3 bg-slate-50 rounded-lg">
+//           <div className="flex items-center justify-between mb-4 p-3 bg-slate-50 rounded">
 //             <div className="flex items-center min-w-0">
 //               <img
 //                 src={property.agent.avatar}
@@ -141,7 +141,7 @@
 //                 e.stopPropagation();
 //                 handleContactAgent(property.agent.phone);
 //               }}
-//               className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg p-2"
+//               className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded p-2"
 //             >
 //               <MessageCircle className="w-3 h-3" />
 //             </Button>
@@ -151,7 +151,7 @@
 //           <div className="flex space-x-2">
 //             <Button
 //               variant="outline"
-//               className="flex-1 border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs py-2"
+//               className="flex-1 border-slate-300 text-slate-700 hover:bg-slate-50 rounded text-xs py-2"
 //               onClick={() => handleViewDetails(property.id)}
 //             >
 //               {t.viewDetails}
@@ -163,7 +163,7 @@
 //                 e.stopPropagation();
 //                 handleContactAgent(property.agent.phone);
 //               }}
-//               className="text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg border border-slate-200 p-2"
+//               className="text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded border border-slate-200 p-2"
 //             >
 //               <Phone className="w-3 h-3" />
 //             </Button>
@@ -191,6 +191,15 @@ import {
 } from "lucide-react";
 import Button from "../../../components/ui/Button";
 
+// Utility to optimize Cloudinary URLs for much faster loading
+const optimizeCloudinaryUrl = (url) => {
+  if (!url || !url.includes('cloudinary.com')) return url;
+  // If it already has transformations, don't double apply
+  if (url.includes('/upload/f_auto')) return url;
+  // Insert WebP/AVIF auto-format, auto-quality, and resize to 500px width
+  return url.replace('/upload/', '/upload/f_auto,q_auto,w_500,c_fill/');
+};
+
 const PropertyCard = memo(
   ({
     property,
@@ -216,14 +225,14 @@ const PropertyCard = memo(
 
     return (
       <div
-        className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden group transition-all hover:-translate-y-1"
+        className="bg-white rounded-md shadow-sm border border-slate-100 overflow-hidden group transition-all hover:-translate-y-1"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Image */}
         <div className="relative h-48 bg-slate-100 overflow-hidden">
           <img
-            src={primaryImage?.url}
+            src={optimizeCloudinaryUrl(primaryImage?.url)}
             alt={primaryImage?.altText || property.title}
             className={`w-full h-full object-cover transition-transform duration-500 ${
               imageLoaded && isHovered ? "scale-105" : "scale-100"
@@ -267,7 +276,7 @@ const PropertyCard = memo(
           </div>
 
           {/* Specs */}
-          <div className="flex justify-between mt-4 p-3 bg-slate-50 rounded-lg text-xs text-slate-600">
+          <div className="flex justify-between mt-4 p-3 bg-slate-50 rounded text-xs text-slate-600">
             <div className="flex flex-col items-center">
               <Bed className="w-3 h-3 mb-1" />
               {property.specifications?.bedrooms}
@@ -288,7 +297,7 @@ const PropertyCard = memo(
           </div>
 
           {/* Agent */}
-          <div className="flex items-center justify-between mt-4 bg-slate-50 p-3 rounded-lg">
+          <div className="flex items-center justify-between mt-4 bg-slate-50 p-3 rounded">
             <div className="flex items-center min-w-0">
               {/* Fallback Avatar */}
               {showFallbackAvatar ? (
@@ -319,7 +328,7 @@ const PropertyCard = memo(
                 e.stopPropagation();
                 handleContactAgent(property.agentInfo?.phone);
               }}
-              className="text-blue-600 hover:bg-blue-50 p-2 rounded-lg"
+              className="text-blue-600 hover:bg-blue-50 p-2 rounded"
             >
               <MessageCircle className="w-3 h-3" />
             </Button>
@@ -338,7 +347,7 @@ const PropertyCard = memo(
             <Button
               variant="ghost"
               size="icon"
-              className="border rounded-lg p-2"
+              className="border rounded p-2"
               onClick={(e) => {
                 e.stopPropagation();
                 handleContactAgent(property.agentInfo?.phone);

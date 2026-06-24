@@ -523,6 +523,7 @@ export const getAllProperties = async (req, res) => {
     } = req.query;
 
     const filter = { isActive: true };
+    const andConditions = [];
 
     // Status filter
     if (status && status !== "all") {
@@ -558,27 +559,34 @@ export const getAllProperties = async (req, res) => {
 
     // Location filter
     if (city && city !== "all") {
-      filter.$or = [
-        { "location.city": new RegExp(city, "i") },
-        { "location.address": new RegExp(city, "i") },
-        { "location.locality": new RegExp(city, "i") },
-      ];
+      const cityRegex = city.includes(",") ? city.split(",").map(c => c.trim()).join("|") : city;
+      andConditions.push({
+        $or: [
+          { "location.city": new RegExp(cityRegex, "i") },
+          { "location.address": new RegExp(cityRegex, "i") },
+          { "location.locality": new RegExp(cityRegex, "i") },
+        ]
+      });
     }
 
     // Search filter
     const searchTerm = search || searchQuery;
     if (searchTerm) {
-      if (!filter.$or) filter.$or = [];
+      andConditions.push({
+        $or: [
+          { title: new RegExp(searchTerm, "i") },
+          { description: new RegExp(searchTerm, "i") },
+          { "location.city": new RegExp(searchTerm, "i") },
+          { "location.address": new RegExp(searchTerm, "i") },
+          { "location.state": new RegExp(searchTerm, "i") },
+          { "location.locality": new RegExp(searchTerm, "i") },
+          { "specifications.type": new RegExp(searchTerm, "i") }
+        ]
+      });
+    }
 
-      filter.$or.push(
-        { title: new RegExp(searchTerm, "i") },
-        { description: new RegExp(searchTerm, "i") },
-        { "location.city": new RegExp(searchTerm, "i") },
-        { "location.address": new RegExp(searchTerm, "i") },
-        { "location.state": new RegExp(searchTerm, "i") },
-        { "location.locality": new RegExp(searchTerm, "i") },
-        { "specifications.type": new RegExp(searchTerm, "i") }
-      );
+    if (andConditions.length > 0) {
+      filter.$and = andConditions;
     }
 
     // Bedrooms
@@ -698,8 +706,6 @@ export const getAllProperties = async (req, res) => {
       properties,
     };
 
-    // ✅ 2-second delay for testing
-    await delay(3000);
 
     return res.status(200).json(response);
 

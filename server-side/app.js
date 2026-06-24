@@ -4,31 +4,26 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import compression from "compression";
+import helmet from "helmet";
 import cookieParser from "cookie-parser";
-// Load env vars locally (Lambda uses environment directly)
+
+// Load env vars
 dotenv.config();
 
-// DB
+// Connect DB
 import connectDB from "./config/database.js";
+connectDB();
 
-// Cloudinary (auto config on import)
 import "./config/cloudinary.js";
-
-// Routes & middleware
 import routes from "./routes/index.js";
 import { generalLimiter } from "./middlewares/rateLimit.js";
-import { expressMiddleware } from "lognexis-node";
-
-// Connect DB (cached for Lambda)
-connectDB();
+import { expressMiddleware } from "lognexis-node"; 
 
 const app = express();
 
-// ES module dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Allowed Origins
 const allowedOrigins = [
   "http://localhost:3000",
   "http://192.168.1.35:3000",
@@ -36,7 +31,10 @@ const allowedOrigins = [
   "https://makaan4u-clean.vercel.app",
 ];
 
-// CORS (FIRST)
+// Security headers
+app.use(helmet());
+
+// CORS
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -50,21 +48,32 @@ app.use(
   })
 );
 
-// Body parsers
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ⭐ LogNexis API Monitoring SDK
+// LogNexis API Monitoring SDK
 app.use(expressMiddleware({ 
   apiKey: process.env.MONITOR_API_KEY,
+  baseUrl: "https://lognexis-node.onrender.com",
   debug: process.env.NODE_ENV === "development"
 }));
 
-// Compression
+// Force HTTPS in Production (SEO Boost)
+app.use((req, res, next) => {
+  if (
+    process.env.NODE_ENV === "production" &&
+    req.headers["x-forwarded-proto"] !== "https"
+  ) {
+    return res.redirect(`https://${req.headers.host}${req.url}`);
+  }
+  next();
+});
+
+// Enable GZIP compression
 app.use(compression());
 
-// Disable caching (API safety)
+// Disable caching
 app.use((req, res, next) => {
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
   res.setHeader("Pragma", "no-cache");
@@ -75,7 +84,7 @@ app.use((req, res, next) => {
 // Rate limiter
 app.use(generalLimiter);
 
-// Static files (uploads won’t persist on Lambda – OK)
+// Static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -91,7 +100,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// Cloudinary status
 app.get("/cloudinary-status", (req, res) => {
   res.json({
     success: true,
@@ -106,12 +114,10 @@ app.get("/cloudinary-status", (req, res) => {
   });
 });
 
-// Health check
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok", uptime: process.uptime() });
 });
 
-// 404
 app.all("*", (req, res) => {
   res.status(404).json({
     success: false,
@@ -119,12 +125,12 @@ app.all("*", (req, res) => {
   });
 });
 
-// Global error handler
 app.use((err, req, res, next) => {
-  console.error("💥 Server Error:", err);
+  console.error("💥 Server Error:", err.stack);
   res.status(500).json({
     success: false,
     message: "Something went wrong!",
+    error: process.env.NODE_ENV === "production" ? {} : err.stack,
   });
 });
 

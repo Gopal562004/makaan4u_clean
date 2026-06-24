@@ -53,7 +53,7 @@ const RecentActivity = () => {
   }
 
   return (
-    <div className="bg-card border border-border rounded-lg p-6 shadow-subtle">
+    <div className="bg-card border border-border rounded p-6 shadow-subtle">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-foreground">
@@ -83,7 +83,7 @@ const RecentActivity = () => {
             return (
               <div
                 key={activity._id || activity.id}
-                className="flex items-start space-x-3 p-3 hover:bg-muted/50 rounded-lg transition-all"
+                className="flex items-start space-x-3 p-3 hover:bg-muted/50 rounded transition-all"
               >
                 <div
                   className={`w-8 h-8 rounded-full bg-muted flex items-center justify-center ${config.color}`}

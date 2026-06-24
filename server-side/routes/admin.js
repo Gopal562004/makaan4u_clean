@@ -32,7 +32,8 @@ import {
   getDataByDateRange,
   getQuickActionsSummary,
   exportReports,
-  
+  manageProperties,
+  updatePropertyStatus,
 } from "../controllers/adminController.js";
 import { protect, authorize } from "../middlewares/auth.js";
 
@@ -57,5 +58,9 @@ router.post("/export-reports", exportReports);
 // User management
 router.get("/users", manageUsers);
 router.put("/users/:id", updateUserStatus);
+
+// Property management
+router.get("/properties", manageProperties);
+router.put("/properties/:id", updatePropertyStatus);
 
 export default router;

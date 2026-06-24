@@ -371,16 +371,16 @@ const HomePage = () => {
               : "bg-white"
           }`}
         >
-          {/* <Header
+          <Header
             user={user}
             notificationCount={3}
             onLogout={handleLogout}
             onSearch={handleSearch}
-          /> */}
+          />
         </div>
 
         {/* Main Content */}
-        <main className="pt-16">
+        <main className="pt-14 lg:pt-16">
           {/* Hero Section */}
           <HeroSection />
 
@@ -391,7 +391,7 @@ const HomePage = () => {
                 {stats.map((stat, index) => (
                   <div key={stat.label} className="text-center">
                     <div className="flex justify-center mb-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <div className="w-10 h-10 bg-blue-100 rounded flex items-center justify-center">
                         <stat.icon className="w-5 h-5 text-blue-600" />
                       </div>
                     </div>
@@ -405,31 +405,35 @@ const HomePage = () => {
             </div>
           </section> */}
 
-          {/* Features Section - Compact */}
-          <section className="py-12">
-            <div className="max-w-7xl mx-auto px-4">
-              <div className="text-center mb-8">
-                <h1 className="text-2xl font-bold text-gray-900 mb-3">
+          {/* Features Section - Premium */}
+          <section className="py-16 bg-white relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-b from-blue-50 to-transparent rounded-full blur-3xl opacity-50 -z-10"></div>
+            <div className="max-w-7xl mx-auto px-4 lg:px-8 relative z-10">
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-blue-50 text-blue-600 rounded-sm text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-3 border border-blue-100 shadow-sm">
+                  <Shield className="w-3.5 h-3.5" />
+                  Makaan4U Advantage
+                </div>
+                <h2 className="text-2xl md:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">
                   Why Choose Makaan4U
-                </h1>
-                <p className="text-gray-600 max-w-xl mx-auto text-sm">
-                  Experience seamless property hunting with our trusted
-                  platform.
+                </h2>
+                <p className="text-base text-gray-600 font-light max-w-2xl mx-auto">
+                  Experience seamless property hunting with our trusted, premium platform designed for your success.
                 </p>
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {features.map((feature, index) => (
-                  <div key={feature.title} className="text-center p-4">
-                    <div className="flex justify-center mb-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <feature.icon className="w-5 h-5 text-blue-600" />
+                  <div key={feature.title} className="bg-white border border-gray-100 p-6 rounded-md shadow-sm hover:shadow-xl transition-all duration-300 group">
+                    <div className="flex justify-start mb-5">
+                      <div className="w-12 h-12 bg-gray-50 border border-gray-200 rounded-md flex items-center justify-center group-hover:bg-blue-600 group-hover:border-blue-600 transition-colors duration-300 shadow-sm">
+                        <feature.icon className="w-5 h-5 text-gray-700 group-hover:text-white transition-colors duration-300" />
                       </div>
                     </div>
-                    <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 tracking-tight">
                       {feature.title}
-                    </h2>
-                    <p className="text-gray-600 text-sm leading-relaxed">
+                    </h3>
+                    <p className="text-gray-500 text-sm leading-relaxed font-light">
                       {feature.description}
                     </p>
                   </div>
@@ -444,21 +448,23 @@ const HomePage = () => {
           {/* Testimonials */}
           <TestimonialsSection />
 
-          {/* CTA Section - Compact */}
-          <section className="py-12 bg-gray-900">
-            <div className="max-w-7xl mx-auto px-4 text-center">
-              <h2 className="text-2xl font-bold text-white mb-3">
+          {/* CTA Section - Premium */}
+          <section className="py-16 relative overflow-hidden bg-gray-900">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center opacity-20"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"></div>
+            
+            <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight drop-shadow-md">
                 Ready to Find Your Dream Home?
               </h2>
-              <p className="text-gray-300 mb-6 max-w-xl mx-auto text-sm">
-                Join thousands of satisfied customers who found their perfect
-                property.
+              <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto font-light">
+                Join thousands of satisfied customers who found their perfect property. Start your journey today with Makaan4U.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button className="px-5 py-2 bg-white text-gray-900 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200 text-sm">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button className="px-6 py-3 bg-white text-gray-900 rounded-md font-bold uppercase tracking-wider hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-xl text-xs">
                   Browse Properties
                 </button>
-                <button className="px-5 py-2 border border-white text-white rounded-lg font-semibold hover:bg-white hover:text-gray-900 transition-colors duration-200 text-sm">
+                <button className="px-6 py-3 border border-white/30 text-white rounded-md font-bold uppercase tracking-wider hover:bg-white/10 backdrop-blur-sm transition-all duration-300 text-xs">
                   Contact Agent
                 </button>
               </div>

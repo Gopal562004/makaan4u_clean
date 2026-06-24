@@ -10,6 +10,7 @@ import notificationRoutes from "./notifications.js";
 import leadRoutes from "./leads.js";
 import adminRoutes from "./admin.js";
 import reportRoutes from "./reports.js";
+import newsRoutes from "./news.js";
 
 const router = express.Router();
 
@@ -24,5 +25,6 @@ router.use("/notifications", notificationRoutes);
 router.use("/leads", leadRoutes);
 router.use("/admin", adminRoutes);
 router.use("/reports", reportRoutes);
+router.use("/news", newsRoutes);
 
 export default router;

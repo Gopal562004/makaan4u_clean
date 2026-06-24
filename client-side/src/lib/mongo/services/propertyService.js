@@ -165,6 +165,7 @@ export const deleteProperty = async (id) => {
   }
 };
 
+
 // Get featured properties
 export const getFeaturedProperties = async () => {
   try {
@@ -268,3 +269,4 @@ export const getTopFeaturedProperties = async () => {
 
 
 export default propertyService;
+// Cache bust

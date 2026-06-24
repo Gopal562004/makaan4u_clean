@@ -1,0 +1,208 @@
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "events"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::prototype.addListener 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "http"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::createServer 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Server 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::request 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::get 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "https"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::createServer 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Server 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::request 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::get 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "http2"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::createSecureServer 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Http2ServerRequest.prototype.setTimeout 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Http2ServerResponse.prototype.end 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Http2ServerResponse.prototype.setTimeout 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Http2ServerResponse.prototype.createPushResponse 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "net"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Server.prototype.getConnections 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Server.prototype.close 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Socket.prototype.setTimeout 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Socket.prototype.write 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Socket.prototype.connect 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::createConnection 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Server.prototype.listen 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "fs"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::access 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::ftruncate 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::mkdir 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::mkdtemp 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::readdir 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::readFile 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::readlink 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::realpath 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::truncate 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::appendFile 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::symlink 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::copyFile 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::open 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::writeFile 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::chmod 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::fchmod 
+[25/6/2026 1:54:59] [INFO] lchmod is undefined in module::fs 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::link 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::rename 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::chown 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::fchown 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::lchown 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::futimes 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::utimes 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::close 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::exists 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::fdatasync 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::fstat 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::fsync 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::lstat 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::stat 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::rmdir 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::unlink 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::read 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::write 
+[25/6/2026 1:54:59] [INFO] realpath.native is undefined in module::fs 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "dns"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::lookupService 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::lookup 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::resolve 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::resolve4 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::resolve6 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::resolveCname 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::resolveMx 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::resolveNaptr 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::resolveNs 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::resolvePtr 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::resolveSoa 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::resolveSrv 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::resolveTxt 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::resolveAny 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::reverse 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "crypto"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::pbkdf2 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::randomBytes 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::randomFill 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::generateKeyPair 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::scrypt 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "domain"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Domain.prototype.bind 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Domain.prototype.intercept 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "zlib"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Deflate.prototype.close 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Inflate.prototype.close 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Gzip.prototype.close 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Gunzip.prototype.close 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::DeflateRaw.prototype.close 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::InflateRaw.prototype.close 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Unzip.prototype.close 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Deflate.prototype.flush 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Inflate.prototype.flush 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Gzip.prototype.flush 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Gunzip.prototype.flush 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::DeflateRaw.prototype.flush 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::InflateRaw.prototype.flush 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Unzip.prototype.flush 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Deflate.prototype.params 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::deflate 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::deflateRaw 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::gunzip 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::gzip 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::inflate 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::inflateRaw 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::unzip 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "child_process"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::exec 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::execFile 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "cluster"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::disconnect 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Worker.prototype.send 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "process"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::send 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::nextTick 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "dgram"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Socket.prototype.bind 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Socket.prototype.close 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Socket.prototype.send 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::createSocket 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "tls"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::connect 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::TLSSocket.prototype.renegotiate 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "stream"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Writable.prototype.write 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Writable.prototype.end 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::finished 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::pipeline 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "global"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::setImmediate 
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::setTimeout 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "inspector"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Session.prototype.post 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "worker_threads"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Worker.prototype.terminate 
+[25/6/2026 1:54:59] [INFO] Instrumenting module:: "readline"
+[25/6/2026 1:54:59] [INFO] Instrumenting function ::Interface.prototype.question 
+[25/6/2026 1:54:59] [INFO] Dependencies : {"apminsight":"^5.2.1","axios":"^1.15.2","bcryptjs":"^2.4.3","cloudinary":"^1.41.0","compression":"^1.8.1","cookie-parser":"^1.4.7","cors":"^2.8.5","dotenv":"^16.3.1","exceljs":"^4.4.0","express":"^4.18.2","express-rate-limit":"^7.1.5","express-validator":"^7.0.1","helmet":"^7.1.0","json2csv":"^6.0.0-alpha.2","jsonwebtoken":"^9.0.2","lognexis-node":"^1.0.2","mongoose":"^8.0.3","morgan":"^1.10.0","multer":"^1.4.5-lts.1","multer-storage-cloudinary":"^4.0.0","nodemailer":"^6.10.1","pdfkit":"^0.17.2","serverless-http":"^4.0.0","slugify":"^1.6.6","validator":"^13.11.0"} 
+[25/6/2026 1:54:59] [INFO]  No time limit restriction for response code ::910 
+[25/6/2026 1:54:59] [INFO] Application not hosted in Kubernetes. 
+[25/6/2026 1:55:0] [INFO] Instrumenting module::mongodb 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::MongoClient.connect 
+[25/6/2026 1:55:0] [INFO] Db.prototype.open is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Db.prototype.close is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Db.prototype.logout is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Db.prototype.executeDbAdminCommand is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.find 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Db.prototype.createCollection 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Db.prototype.stats 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Db.prototype.command 
+[25/6/2026 1:55:0] [INFO] Db.prototype.eval is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Db.prototype.collection 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Db.prototype.renameCollection 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Db.prototype.dropCollection 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Db.prototype.dropDatabase 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Db.prototype.collections 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Db.prototype.createIndex 
+[25/6/2026 1:55:0] [INFO] Db.prototype.ensureIndex is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Db.prototype.addUser is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Db.prototype.removeUser 
+[25/6/2026 1:55:0] [INFO] Db.prototype.authenticate is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Db.prototype.indexInformation 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.insertOne 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.insertMany 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.bulkWrite 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.insert is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.updateOne 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.replaceOne 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.updateMany 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.update is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.deleteOne 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.deleteMany 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.remove is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.save is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.rename 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.drop 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.options 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.isCapped 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.createIndex 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.createIndexes 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.dropIndex 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.dropIndexes 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.reIndex is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.ensureIndex is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.indexExists 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.indexInformation 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.count 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.distinct 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.indexes 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.stats is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.findOne 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.findOneAndDelete 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.findOneAndReplace 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.findOneAndUpdate 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.findAndModify is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.findAndRemove is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Instrumenting function ::Collection.prototype.aggregate 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.parallelCollectionScan is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.geoNear is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.geoHaystackSearch is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.group is undefined in module::mongodb 
+[25/6/2026 1:55:0] [INFO] Collection.prototype.mapReduce is undefined in module::mongodb 
+[25/6/2026 1:55:3] [ERROR] HTTP request error: socket hang up 

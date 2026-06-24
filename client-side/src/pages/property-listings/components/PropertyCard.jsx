@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Icon from "../../../components/AppIcon";
 import Image from "../../../components/AppImage";
 import Button from "../../../components/ui/Button";
-import { optimizeImageUrl } from "../../../utils/imageOptimizer"; // 🔥 ADD THIS IMPORT
+import { optimizeImageUrl } from "../../../utils/imageOptimizer";
 
 const PropertyCard = ({
   property,
@@ -17,43 +17,27 @@ const PropertyCard = ({
   const [imageError, setImageError] = useState(false);
   const navigate = useNavigate();
 
-  // Enhanced price formatting with currency symbols
   const formatPrice = (price) => {
     if (!price || price === 0) return "Price on request";
     if (price >= 10000000) {
       const crorePrice = price / 10000000;
-      return `₹${
-        crorePrice % 1 === 0 ? crorePrice.toFixed(0) : crorePrice.toFixed(1)
-      } Cr`;
+      return `₹${crorePrice % 1 === 0 ? crorePrice.toFixed(0) : crorePrice.toFixed(1)} Cr`;
     }
     if (price >= 100000) {
       const lakhPrice = price / 100000;
-      return `₹${
-        lakhPrice % 1 === 0 ? lakhPrice.toFixed(0) : lakhPrice.toFixed(1)
-      } L`;
+      return `₹${lakhPrice % 1 === 0 ? lakhPrice.toFixed(0) : lakhPrice.toFixed(1)} L`;
     }
     return `₹${price?.toLocaleString("en-IN")}`;
   };
 
-  // Format location text
   const formatLocation = () => {
     if (!property?.location) return "Location not available";
-
-    if (typeof property.location === "string") {
-      return property.location;
-    }
-
-    const parts = [
-      property.location?.address,
-      property.location?.city,
-      property.location?.state,
-    ].filter(Boolean);
-
+    if (typeof property.location === "string") return property.location;
+    const parts = [property.location?.address, property.location?.city, property.location?.state].filter(Boolean);
     return parts.join(", ") || "Location not available";
   };
 
   const handleViewDetails = () => {
-    console.log("Navigating to slug:", property);
     navigate(`/property-details/${property?.slug}`);
   };
 
@@ -62,76 +46,44 @@ const PropertyCard = ({
     onWishlistToggle?.(property?._id);
   };
 
-  // Enhanced WhatsApp contact with better message
   const handleWhatsAppContact = useCallback(
     (e) => {
       e?.stopPropagation();
-
-      if (!property?.agentInfo?.phone) {
-        console.warn("No agent phone number available");
-        return;
-      }
+      if (!property?.agentInfo?.phone) return;
 
       const agentName = property?.agentInfo?.name || "there";
       const propertyTitle = property?.title || "your property";
       const propertyPrice = property?.price ? formatPrice(property.price) : "";
       const location = formatLocation();
 
-      const message = `Hi ${agentName}! 
-
-I'm interested in your property: 
-🏠 ${propertyTitle}
-💰 ${propertyPrice}
-📍 ${location}
-
-Could you please provide more details and available viewing schedules?`;
+      const message = `Hi ${agentName}! \n\nI'm interested in your property: \n🏠 ${propertyTitle}\n💰 ${propertyPrice}\n📍 ${location}\n\nCould you please provide more details and available viewing schedules?`;
 
       const phoneNumber = property.agentInfo.phone.replace(/\D/g, "");
+      if (!phoneNumber) return;
 
-      if (!phoneNumber) {
-        console.warn("Invalid phone number format");
-        return;
-      }
-
-      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-        message
-      )}`;
+      const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, "_blank");
     },
     [property]
   );
 
-  // Calculate price per unit area
   const getPricePerUnit = () => {
-    if (
-      !property?.price ||
-      !property?.specifications?.area ||
-      property.specifications.area === 0
-    )
-      return null;
-
-    const pricePerUnit = Math.round(
-      property.price / property.specifications.area
-    );
-    return `₹${pricePerUnit?.toLocaleString("en-IN")} per ${
-      property.specifications.areaUnit
-    }`;
+    if (!property?.price || !property?.specifications?.area || property.specifications.area === 0) return null;
+    const pricePerUnit = Math.round(property.price / property.specifications.area);
+    return `₹${pricePerUnit?.toLocaleString("en-IN")}/${property.specifications.areaUnit}`;
   };
 
-  // Get status color and text
   const getStatusInfo = () => {
     const status = property?.status || "available";
     const statusConfig = {
-      available: { color: "success", text: "Available" },
-      sold: { color: "error", text: "Sold" },
-      rented: { color: "warning", text: "Rented" },
-      "under-maintenance": { color: "muted", text: "Maintenance" },
+      available: { bg: "bg-emerald-50 text-emerald-600 border border-emerald-200/60", text: "Available" },
+      sold: { bg: "bg-red-50 text-red-600 border border-red-200/60", text: "Sold" },
+      rented: { bg: "bg-amber-50 text-amber-600 border border-amber-200/60", text: "Rented" },
+      "under-maintenance": { bg: "bg-slate-50 text-slate-600 border border-slate-200/60", text: "Maintenance" },
     };
-
     return statusConfig[status] || statusConfig.available;
   };
 
-  // Handle image load and error
   const handleImageLoad = () => {
     setImageLoading(false);
     setImageError(false);
@@ -142,52 +94,28 @@ Could you please provide more details and available viewing schedules?`;
     setImageError(true);
   };
 
-  // 🔥 ENHANCED: Optimized image source with WebP support
   const getImageSrc = () => {
-    if (imageError || !property?.images?.[0]?.url) {
-      return "/images/property-placeholder.jpg";
-    }
-
-    // Use optimized image URL with WebP format
-    return optimizeImageUrl(property.images[0].url, {
-      width: viewMode === "list" ? 400 : 600,
-      quality: 80,
-    });
+    if (imageError || !property?.images?.[0]?.url) return "/images/property-placeholder.jpg";
+    return optimizeImageUrl(property.images[0].url, { width: viewMode === "list" ? 400 : 600, quality: 80 });
   };
 
-  // 🔥 ADD: Generate SEO-friendly alt text
   const generateImageAltText = () => {
-    return (
-      property?.images?.[0]?.altText ||
-      `${property?.title} - ${
-        property?.specifications?.type
-      } in ${formatLocation()}` ||
-      "Property image"
-    );
+    return property?.images?.[0]?.altText || `${property?.title} - ${property?.specifications?.type} in ${formatLocation()}` || "Property image";
   };
 
-  // 🔥 ADD: Generate property schema for structured data
   const generatePropertySchema = () => {
     if (!property) return null;
-
     return {
       "@type": "RealEstateListing",
       name: property.title,
-      description:
-        property.description ||
-        `${property.specifications?.bedrooms} BHK ${
-          property.specifications?.type
-        } in ${formatLocation()}`,
+      description: property.description || `${property.specifications?.bedrooms} BHK ${property.specifications?.type} in ${formatLocation()}`,
       url: `${window.location.origin}/property-details/${property.slug}`,
       image: getImageSrc(),
       offers: {
         "@type": "Offer",
         price: property.price,
         priceCurrency: "INR",
-        availability:
-          property.status === "available"
-            ? "https://schema.org/InStock"
-            : "https://schema.org/OutOfStock",
+        availability: property.status === "available" ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       },
       numberOfRooms: property.specifications?.bedrooms,
       numberOfBathroomsTotal: property.specifications?.bathrooms,
@@ -199,240 +127,117 @@ Could you please provide more details and available viewing schedules?`;
     };
   };
 
-  // ====== LIST VIEW ======
-  if (viewMode === "list") {
-    const statusInfo = getStatusInfo();
+  const statusInfo = getStatusInfo();
 
+  if (viewMode === "list") {
     return (
       <article
-        className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-3 md:p-4 hover:shadow-lg transition-all duration-300 cursor-pointer group hover:border-primary/20"
+        className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm rounded hover:shadow-md transition-all duration-300 cursor-pointer group flex flex-col sm:flex-row overflow-hidden"
         onClick={handleViewDetails}
         itemScope
         itemType="https://schema.org/RealEstateListing"
-        // 🔥 ADD: Hidden structured data
         data-schema={JSON.stringify(generatePropertySchema())}
       >
-        <div className="flex flex-col md:flex-row md:space-x-4 space-y-3 md:space-y-0">
-          {/* Image - Reduced height */}
-          <div className="w-full md:w-48 lg:w-56 xl:w-64 h-40 md:h-32 lg:h-36 flex-shrink-0 overflow-hidden rounded-lg relative">
-            {/* Loading skeleton */}
-            {imageLoading && (
-              <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-lg" />
-            )}
-
-            <Image
-              src={getImageSrc()}
-              alt={generateImageAltText()}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              onLoad={handleImageLoad}
-              onError={handleImageError}
-              loading="lazy"
-              itemProp="image"
-            />
-
-            {/* Badges overlay */}
-            <div className="absolute top-2 left-2 flex flex-col space-y-1">
-              {/* Status Badge */}
-              <span
-                className={`px-2 py-1 text-xs font-semibold rounded-full backdrop-blur-sm ${
-                  statusInfo.color === "success"
-                    ? "bg-green-500/90 text-white"
-                    : statusInfo.color === "error"
-                    ? "bg-red-500/90 text-white"
-                    : statusInfo.color === "warning"
-                    ? "bg-orange-500/90 text-white"
-                    : "bg-gray-500/90 text-white"
-                }`}
-                itemProp="availability"
-              >
-                {statusInfo.text}
+        <div className="relative w-full sm:w-64 md:w-72 h-48 sm:h-auto flex-shrink-0">
+          {imageLoading && <div className="absolute inset-0 bg-slate-100 dark:bg-gray-800 animate-pulse" />}
+          <Image
+            src={getImageSrc()}
+            alt={generateImageAltText()}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            onLoad={handleImageLoad}
+            onError={handleImageError}
+            loading="lazy"
+            itemProp="image"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          
+          <div className="absolute top-3 left-3 flex flex-col space-y-1.5 z-10">
+            <span className={`px-2.5 py-1 text-[10px] uppercase tracking-wider font-semibold rounded bg-white/90 shadow-sm ${statusInfo.bg}`}>
+              {statusInfo.text}
+            </span>
+            {showFeaturedBadge && property?.featured && (
+              <span className="px-2.5 py-1 bg-gray-900 text-white text-[10px] uppercase tracking-wider font-semibold rounded shadow-sm">
+                Featured
               </span>
-
-              {/* Featured Badge */}
-              {showFeaturedBadge && property?.featured && (
-                <span className="px-2 py-1 bg-blue-500/90 text-white text-xs font-semibold rounded-full backdrop-blur-sm">
-                  Featured
-                </span>
-              )}
-            </div>
-
-            {/* Wishlist Button */}
-            <button
-              onClick={handleWishlistClick}
-              className={`absolute top-2 right-2 p-2 rounded-full backdrop-blur-sm transition-all duration-300 ${
-                isWishlisted
-                  ? "bg-red-500/90 text-white shadow-lg"
-                  : "bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-300 hover:bg-red-500/90 hover:text-white"
-              }`}
-              aria-label={
-                isWishlisted ? "Remove from wishlist" : "Add to wishlist"
-              }
-            >
-              <Icon
-                name="Heart"
-                size={16}
-                fill={isWishlisted ? "currentColor" : "none"}
-              />
-            </button>
+            )}
           </div>
 
-          {/* Content */}
-          <div className="flex-1 min-w-0 space-y-2 md:space-y-3">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-1 sm:space-y-0">
-              <div className="min-w-0 flex-1 space-y-1">
-                {/* Title */}
-                <h3
-                  className="text-base md:text-lg lg:text-xl font-bold text-gray-900 dark:text-white line-clamp-2 leading-tight"
-                  itemProp="name"
-                >
-                  {property?.title || "Untitled Property"}
-                </h3>
 
-                {/* Location */}
-                <p
-                  className="text-xs md:text-sm text-gray-600 dark:text-gray-300 flex items-start"
-                  itemProp="address"
-                >
-                  <Icon
-                    name="MapPin"
-                    size={14}
-                    className="mr-1.5 mt-0.5 flex-shrink-0"
-                  />
-                  <span className="line-clamp-2">{formatLocation()}</span>
-                </p>
-              </div>
+        </div>
 
-              {/* Price - Desktop */}
-              <div className="hidden sm:block text-right min-w-0">
-                <p
-                  className="text-xl lg:text-2xl font-bold text-primary"
-                  itemProp="offers"
-                  itemScope
-                  itemType="https://schema.org/Offer"
-                >
-                  <span itemProp="price" content={property?.price}>
-                    {formatPrice(property?.price)}
-                  </span>
-                  <meta itemProp="priceCurrency" content="INR" />
-                </p>
-                {getPricePerUnit() && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    {getPricePerUnit()}
-                  </p>
-                )}
-              </div>
+        <div className="flex-1 p-4 sm:p-5 flex flex-col">
+          <div className="flex flex-col sm:flex-row sm:justify-between items-start mb-2 gap-2">
+            <div className="min-w-0 flex-1">
+              <h3 className="text-base md:text-lg font-bold text-gray-900 dark:text-white leading-tight group-hover:text-blue-700 transition-colors truncate" itemProp="name">
+                {property?.title || "Untitled Property"}
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center" itemProp="address">
+                <Icon name="MapPin" size={14} className="mr-1.5 text-gray-400 flex-shrink-0" />
+                <span className="truncate">{formatLocation()}</span>
+              </p>
             </div>
-
-            {/* Property Details */}
-            <div className="flex items-center space-x-3 md:space-x-4 text-xs text-gray-600 dark:text-gray-400">
-              {property?.specifications?.bedrooms && (
-                <span className="flex items-center space-x-1 bg-gray-50 dark:bg-gray-800 px-2 py-1.5 rounded-md">
-                  <Icon name="Bed" size={14} />
-                  <span className="font-medium" itemProp="numberOfRooms">
-                    {property.specifications.bedrooms} Beds
-                  </span>
-                </span>
-              )}
-              {property?.specifications?.bathrooms && (
-                <span className="flex items-center space-x-1 bg-gray-50 dark:bg-gray-800 px-2 py-1.5 rounded-md">
-                  <Icon name="Bath" size={14} />
-                  <span
-                    className="font-medium"
-                    itemProp="numberOfBathroomsTotal"
-                  >
-                    {property.specifications.bathrooms} Baths
-                  </span>
-                </span>
-              )}
-              {property?.specifications?.area && (
-                <span className="flex items-center space-x-1 bg-gray-50 dark:bg-gray-800 px-2 py-1.5 rounded-md">
-                  <Icon name="Square" size={14} />
-                  <span className="font-medium">
-                    <span
-                      itemProp="floorSize"
-                      itemScope
-                      itemType="https://schema.org/QuantitativeValue"
-                    >
-                      <span itemProp="value">
-                        {property.specifications.area.toLocaleString("en-IN")}
-                      </span>
-                      <span itemProp="unitCode">
-                        {property.specifications.areaUnit === "sqft"
-                          ? "FTK"
-                          : "MTK"}
-                      </span>
-                    </span>{" "}
-                    {property.specifications.areaUnit}
-                  </span>
-                </span>
-              )}
-            </div>
-
-            {/* Price - Mobile */}
-            <div className="sm:hidden">
-              <p
-                className="text-xl font-bold text-primary"
-                itemProp="offers"
-                itemScope
-                itemType="https://schema.org/Offer"
-              >
-                <span itemProp="price" content={property?.price}>
-                  {formatPrice(property?.price)}
-                </span>
+            <div className="mt-3 sm:mt-0 text-left sm:text-right flex-shrink-0">
+              <p className="text-xl md:text-2xl font-bold text-gray-900" itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                <span itemProp="price" content={property?.price}>{formatPrice(property?.price)}</span>
                 <meta itemProp="priceCurrency" content="INR" />
               </p>
-              {getPricePerUnit() && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  {getPricePerUnit()}
-                </p>
-              )}
+              {getPricePerUnit() && <p className="text-xs font-medium text-gray-400 mt-0.5">{getPricePerUnit()}</p>}
             </div>
+          </div>
 
-            {/* Agent Info & Actions */}
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-2 lg:space-y-0">
-              {/* Agent Info */}
-              {property?.agentInfo?.name && (
-                <div className="flex items-center space-x-2 min-w-0">
-                  <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                    <span className="text-xs font-bold text-white">
-                      {property.agentInfo.name.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                      {property.agentInfo.name}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                      {property.agentInfo.designation}
-                      {property.agentInfo.experience &&
-                        ` • ${property.agentInfo.experience} experience`}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="flex space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleWhatsAppContact}
-                  iconName="MessageCircle"
-                  iconPosition="left"
-                  className="flex-1 sm:flex-none text-xs"
-                >
-                  <span className="hidden sm:inline">WhatsApp</span>
-                  <span className="sm:hidden">Chat</span>
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={handleViewDetails}
-                  className="flex-1 sm:flex-none text-xs"
-                >
-                  View Details
-                </Button>
+          <div className="flex items-center space-x-4 my-4">
+            {property?.specifications?.bedrooms && (
+              <div className="flex items-center text-gray-700 dark:text-gray-300">
+                <Icon name="BedDouble" size={16} className="mr-1.5 text-gray-400" />
+                <span className="text-sm font-semibold">{property.specifications.bedrooms} <span className="font-normal text-xs text-gray-500">Beds</span></span>
               </div>
+            )}
+            {property?.specifications?.bathrooms && (
+              <>
+                <div className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
+                <div className="flex items-center text-gray-700 dark:text-gray-300">
+                  <Icon name="Bath" size={16} className="mr-1.5 text-gray-400" />
+                  <span className="text-sm font-semibold">{property.specifications.bathrooms} <span className="font-normal text-xs text-gray-500">Baths</span></span>
+                </div>
+              </>
+            )}
+            {property?.specifications?.area && (
+              <>
+                <div className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
+                <div className="flex items-center text-gray-700 dark:text-gray-300">
+                  <Icon name="Maximize" size={16} className="mr-1.5 text-gray-400" />
+                  <span className="text-sm font-semibold">{property.specifications.area.toLocaleString("en-IN")} <span className="font-normal text-xs text-gray-500">{property.specifications.areaUnit}</span></span>
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between gap-4">
+            {property?.agentInfo?.name ? (
+              <div className="flex items-center space-x-2 min-w-0">
+                <div className="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded flex items-center justify-center text-gray-600 font-semibold text-xs border border-gray-200 dark:border-gray-700 flex-shrink-0">
+                  {property.agentInfo.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-gray-900 dark:text-white leading-none truncate">{property.agentInfo.name}</p>
+                  <p className="text-[10px] text-gray-500 mt-1 truncate">{property.agentInfo.designation}</p>
+                </div>
+              </div>
+            ) : <div />}
+
+            <div className="flex space-x-2 flex-shrink-0">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleWhatsAppContact}
+                iconName="MessageCircle"
+                className="text-xs px-3 rounded border-gray-200 hover:bg-gray-50 font-semibold text-gray-700"
+              >
+                Chat
+              </Button>
+              <Button size="sm" onClick={handleViewDetails} className="text-xs px-4 rounded bg-gray-900 hover:bg-gray-800 text-white border-none font-semibold">
+                Details
+              </Button>
             </div>
           </div>
         </div>
@@ -440,236 +245,123 @@ Could you please provide more details and available viewing schedules?`;
     );
   }
 
-  // ====== GRID VIEW ======
-  const statusInfo = getStatusInfo();
-
   return (
     <article
-      className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer h-full flex flex-col hover:border-primary/20"
+      className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm rounded hover:shadow-md transition-all duration-300 group cursor-pointer h-full flex flex-col overflow-hidden"
       onClick={handleViewDetails}
       itemScope
       itemType="https://schema.org/RealEstateListing"
-      // 🔥 ADD: Hidden structured data
       data-schema={JSON.stringify(generatePropertySchema())}
     >
-      {/* Image Container - Reduced height */}
-      <div className="relative overflow-hidden h-40 sm:h-44 md:h-40 lg:h-44 flex-shrink-0">
-        {/* Loading skeleton */}
-        {imageLoading && (
-          <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse" />
-        )}
-
+      <div className="relative overflow-hidden h-52 sm:h-48 md:h-52 lg:h-56 flex-shrink-0">
+        {imageLoading && <div className="absolute inset-0 bg-slate-100 dark:bg-gray-800 animate-pulse" />}
         <Image
           src={getImageSrc()}
           alt={generateImageAltText()}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           onLoad={handleImageLoad}
           onError={handleImageError}
           loading="lazy"
           itemProp="image"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-        {/* Badges overlay */}
-        <div className="absolute top-2 left-2 flex flex-col space-y-1">
-          {/* Status Badge */}
-          <span
-            className={`px-2 py-1 text-xs font-semibold rounded-full backdrop-blur-sm ${
-              statusInfo.color === "success"
-                ? "bg-green-500/90 text-white"
-                : statusInfo.color === "error"
-                ? "bg-red-500/90 text-white"
-                : statusInfo.color === "warning"
-                ? "bg-orange-500/90 text-white"
-                : "bg-gray-500/90 text-white"
-            }`}
-            itemProp="availability"
-          >
+        <div className="absolute top-3 left-3 flex flex-col space-y-1.5 z-10">
+          <span className={`px-2.5 py-1 text-[10px] uppercase tracking-wider font-semibold rounded bg-white/90 shadow-sm ${statusInfo.bg}`}>
             {statusInfo.text}
           </span>
-
-          {/* Featured Badge */}
           {showFeaturedBadge && property?.featured && (
-            <span className="px-2 py-1 bg-blue-500/90 text-white text-xs font-semibold rounded-full backdrop-blur-sm">
+            <span className="px-2.5 py-1 bg-gray-900 text-white text-[10px] uppercase tracking-wider font-semibold rounded shadow-sm">
               Featured
             </span>
           )}
         </div>
 
-        {/* Wishlist Button */}
-        {/* <button
-          onClick={handleWishlistClick}
-          className={`absolute top-2 right-2 p-2 rounded-full backdrop-blur-sm transition-all duration-300 ${
-            isWishlisted
-              ? "bg-red-500/90 text-white shadow-lg"
-              : "bg-white/90 dark:bg-gray-800/90 text-gray-600 dark:text-gray-300 hover:bg-red-500/90 hover:text-white"
-          }`}
-          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-        >
-          <Icon
-            name="Heart"
-            size={16}
-            fill={isWishlisted ? "currentColor" : "none"}
-          />
-        </button> */}
 
-        {/* Property Type Badge */}
+
         {property?.specifications?.type && (
-          <div className="absolute bottom-2 left-2">
-            <span className="bg-black/70 backdrop-blur-sm text-white px-2 py-1 text-xs font-semibold rounded-full capitalize">
+          <div className="absolute bottom-3 left-3 z-10">
+            <span className="bg-white/20 border border-white/30 backdrop-blur-md text-white px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold rounded-md shadow-sm">
               {property.specifications.type}
             </span>
           </div>
         )}
-
-        {/* Quick View Overlay */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <span className="text-white font-semibold text-xs bg-black/50 px-3 py-1.5 rounded-full backdrop-blur-sm">
-            Click to View Details
-          </span>
-        </div>
       </div>
 
-      {/* Content - Reduced padding and spacing */}
-      <div className="p-3 sm:p-4 flex-1 flex flex-col space-y-3">
-        {/* Header */}
-        <div className="space-y-1.5 flex-1">
-          <h3
-            className="text-base sm:text-lg font-bold text-gray-900 dark:text-white line-clamp-2 leading-tight group-hover:text-primary transition-colors"
-            itemProp="name"
-          >
+      <div className="p-4 sm:p-5 flex-1 flex flex-col">
+        <div className="mb-3 min-w-0">
+          <div className="flex justify-between items-start mb-1">
+            <p className="text-xl font-bold text-gray-900" itemProp="offers" itemScope itemType="https://schema.org/Offer">
+              <span itemProp="price" content={property?.price}>{formatPrice(property?.price)}</span>
+              <meta itemProp="priceCurrency" content="INR" />
+            </p>
+          </div>
+          {getPricePerUnit() && <p className="text-[11px] font-semibold text-gray-500 mb-2 uppercase tracking-wide">{getPricePerUnit()}</p>}
+          <h3 className="text-base font-bold text-gray-900 dark:text-white leading-snug group-hover:text-blue-700 transition-colors truncate" itemProp="name">
             {property?.title || "Untitled Property"}
           </h3>
-
-          <p
-            className="text-xs text-gray-600 dark:text-gray-300 flex items-start"
-            itemProp="address"
-          >
-            <Icon
-              name="MapPin"
-              size={12}
-              className="mr-1 mt-0.5 flex-shrink-0"
-            />
-            <span className="line-clamp-2">{formatLocation()}</span>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center" itemProp="address">
+            <Icon name="MapPin" size={12} className="mr-1.5 text-gray-400" />
+            <span className="truncate">{formatLocation()}</span>
           </p>
         </div>
 
-        {/* Property Details */}
-        <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            {property?.specifications?.bedrooms && (
-              <span className="flex items-center space-x-1">
-                <Icon name="Bed" size={12} className="sm:w-3 sm:h-3" />
-                <span className="font-medium" itemProp="numberOfRooms">
-                  {property.specifications.bedrooms}
-                </span>
-              </span>
-            )}
-            {property?.specifications?.bathrooms && (
-              <span className="flex items-center space-x-1">
-                <Icon name="Bath" size={12} className="sm:w-3 sm:h-3" />
-                <span className="font-medium" itemProp="numberOfBathroomsTotal">
-                  {property.specifications.bathrooms}
-                </span>
-              </span>
-            )}
-            {property?.specifications?.area && (
-              <span className="flex items-center space-x-1">
-                <Icon name="Square" size={12} className="sm:w-3 sm:h-3" />
-                <span className="font-medium">
-                  <span
-                    itemProp="floorSize"
-                    itemScope
-                    itemType="https://schema.org/QuantitativeValue"
-                  >
-                    <span itemProp="value">
-                      {property.specifications.area.toLocaleString("en-IN")}
-                    </span>
-                    <span itemProp="unitCode">
-                      {property.specifications.areaUnit === "sqft"
-                        ? "FTK"
-                        : "MTK"}
-                    </span>
-                  </span>{" "}
-                  {property.specifications.areaUnit}
-                </span>
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Price */}
-        <div className="space-y-0.5">
-          <p
-            className="text-lg sm:text-xl font-bold text-primary"
-            itemProp="offers"
-            itemScope
-            itemType="https://schema.org/Offer"
-          >
-            <span itemProp="price" content={property?.price}>
-              {formatPrice(property?.price)}
-            </span>
-            <meta itemProp="priceCurrency" content="INR" />
-          </p>
-          {getPricePerUnit() && (
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              {getPricePerUnit()}
-            </p>
+        <div className="flex items-center justify-between py-3 border-y border-gray-100 dark:border-gray-800 mb-4">
+          {property?.specifications?.bedrooms && (
+            <div className="flex flex-col items-center">
+              <Icon name="BedDouble" size={16} className="text-gray-400 mb-1" />
+              <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{property.specifications.bedrooms} <span className="font-normal text-gray-400">Beds</span></span>
+            </div>
+          )}
+          {property?.specifications?.bathrooms && (
+            <>
+              <div className="w-px h-6 bg-gray-200 dark:bg-gray-700" />
+              <div className="flex flex-col items-center">
+                <Icon name="Bath" size={16} className="text-gray-400 mb-1" />
+                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{property.specifications.bathrooms} <span className="font-normal text-gray-400">Baths</span></span>
+              </div>
+            </>
+          )}
+          {property?.specifications?.area && (
+            <>
+              <div className="w-px h-6 bg-gray-200 dark:bg-gray-700" />
+              <div className="flex flex-col items-center">
+                <Icon name="Maximize" size={16} className="text-gray-400 mb-1" />
+                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">{property.specifications.area.toLocaleString("en-IN")} <span className="font-normal text-gray-400">{property.specifications.areaUnit}</span></span>
+              </div>
+            </>
           )}
         </div>
 
-        {/* Agent Info */}
-        {property?.agentInfo?.name && (
-          <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded-md">
-            <div className="flex items-center space-x-2 min-w-0 flex-1">
-              <div className="w-6 h-6 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                <span className="text-xs font-bold text-white">
-                  {property.agentInfo.name.charAt(0).toUpperCase()}
-                </span>
+        <div className="mt-auto flex items-center justify-between gap-3 min-w-0">
+          {property?.agentInfo?.name ? (
+            <div className="flex items-center space-x-2 min-w-0">
+               <div className="w-7 h-7 bg-gray-100 dark:bg-gray-800 rounded flex items-center justify-center text-gray-600 font-semibold text-xs border border-gray-200 dark:border-gray-700 flex-shrink-0">
+                {property.agentInfo.name.charAt(0).toUpperCase()}
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
-                  {property.agentInfo.name}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                  {property.agentInfo.designation}
-                </p>
+              <div className="truncate min-w-0">
+                <p className="text-[11px] font-semibold text-gray-900 dark:text-white uppercase tracking-wide leading-none truncate">{property.agentInfo.name}</p>
+                <p className="text-[10px] text-gray-500 mt-0.5 truncate">{property.agentInfo.designation}</p>
               </div>
             </div>
-            {showQuickActions && (
-              <Button
-                variant="ghost"
+          ) : <div />}
+
+          {showQuickActions && (
+            <div className="flex space-x-2 flex-shrink-0">
+               <Button
+                variant="outline"
                 size="sm"
                 onClick={handleWhatsAppContact}
-                iconName="MessageCircle"
-                className="flex-shrink-0 text-xs p-1.5"
+                className="w-8 h-8 p-0 rounded border-gray-200 hover:bg-green-50 hover:text-green-600 hover:border-green-200"
+                title="WhatsApp"
               >
-                <span className="hidden xs:inline">Chat</span>
+                <Icon name="MessageCircle" size={14} />
               </Button>
-            )}
-          </div>
-        )}
-
-        {/* Action Buttons */}
-        <div className="flex space-x-2 mt-auto">
-          <Button
-            variant="outline"
-            fullWidth
-            onClick={handleWhatsAppContact}
-            iconName="MessageCircle"
-            iconPosition="left"
-            size="sm"
-            className="text-xs"
-          >
-            WhatsApp
-          </Button>
-          <Button
-            fullWidth
-            onClick={handleViewDetails}
-            size="sm"
-            className="text-xs"
-          >
-            View Details
-          </Button>
+              <Button size="sm" onClick={handleViewDetails} className="h-8 px-3 rounded bg-gray-900 hover:bg-gray-800 text-white text-xs border-transparent shadow-sm">
+                Details
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </article>

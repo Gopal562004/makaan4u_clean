@@ -107,7 +107,7 @@ const Profile = () => {
         {!isEditing ? (
           <button
             onClick={() => setIsEditing(true)}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors mt-4 sm:mt-0"
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors mt-4 sm:mt-0"
             disabled={loading}
           >
             <Edit3 className="w-4 h-4 mr-2" />
@@ -117,7 +117,7 @@ const Profile = () => {
           <div className="flex space-x-2 mt-4 sm:mt-0">
             <button
               onClick={handleSave}
-              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
               disabled={loading}
             >
               <Save className="w-4 h-4 mr-2" />
@@ -125,7 +125,7 @@ const Profile = () => {
             </button>
             <button
               onClick={handleCancel}
-              className="flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+              className="flex items-center px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
               disabled={loading}
             >
               <X className="w-4 h-4 mr-2" />
@@ -216,11 +216,11 @@ const Profile = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   disabled={loading}
                 />
               ) : (
-                <div className="flex items-center p-2 bg-gray-50 rounded-lg">
+                <div className="flex items-center p-2 bg-gray-50 rounded">
                   <User className="w-4 h-4 text-gray-400 mr-2" />
                   <span>{user.name}</span>
                 </div>
@@ -239,11 +239,11 @@ const Profile = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   disabled={loading}
                 />
               ) : (
-                <div className="flex items-center p-2 bg-gray-50 rounded-lg">
+                <div className="flex items-center p-2 bg-gray-50 rounded">
                   <Mail className="w-4 h-4 text-gray-400 mr-2" />
                   <span>{user.email}</span>
                 </div>
@@ -262,11 +262,11 @@ const Profile = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, phone: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   disabled={loading}
                 />
               ) : (
-                <div className="flex items-center p-2 bg-gray-50 rounded-lg">
+                <div className="flex items-center p-2 bg-gray-50 rounded">
                   <Phone className="w-4 h-4 text-gray-400 mr-2" />
                   <span>{user.phone || "Not specified"}</span>
                 </div>
@@ -285,11 +285,11 @@ const Profile = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, location: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   disabled={loading}
                 />
               ) : (
-                <div className="flex items-center p-2 bg-gray-50 rounded-lg">
+                <div className="flex items-center p-2 bg-gray-50 rounded">
                   <MapPin className="w-4 h-4 text-gray-400 mr-2" />
                   <span>{user.location || "Not specified"}</span>
                 </div>
@@ -308,12 +308,12 @@ const Profile = () => {
                     setFormData({ ...formData, bio: e.target.value })
                   }
                   rows="4"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Tell us about yourself and your property preferences..."
                   disabled={loading}
                 />
               ) : (
-                <div className="p-3 bg-gray-50 rounded-lg">
+                <div className="p-3 bg-gray-50 rounded">
                   <p className="text-gray-700">
                     {user.bio ||
                       "No bio added yet. Tell us about yourself and your property preferences."}

@@ -12,7 +12,7 @@
 //   ];
 
 //   return (
-//     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+//     <div className="bg-white rounded-md shadow-sm border border-gray-200 p-6">
 //       <div className="flex items-center justify-between mb-6">
 //         <h3 className="text-lg font-bold text-gray-900 flex items-center">
 //           <TrendingUp className="w-5 h-5 mr-2 text-orange-500" />
@@ -28,7 +28,7 @@
 //         {trendingTags.map((tag, index) => (
 //           <div
 //             key={index}
-//             className="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-blue-50 transition-colors group cursor-pointer"
+//             className="flex items-center justify-between p-3 rounded-md bg-gray-50 hover:bg-blue-50 transition-colors group cursor-pointer"
 //           >
 //             <div className="flex items-center space-x-3">
 //               <div
@@ -54,12 +54,12 @@
 //           {posts.slice(0, 3).map((post) => (
 //             <div
 //               key={post.id}
-//               className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer group"
+//               className="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors cursor-pointer group"
 //             >
 //               <img
 //                 src={post.image}
 //                 alt={post.title}
-//                 className="w-12 h-12 rounded-lg object-cover"
+//                 className="w-12 h-12 rounded object-cover"
 //               />
 //               <div className="flex-1 min-w-0">
 //                 <p className="text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
@@ -96,7 +96,7 @@ const TrendingTopics = ({ posts }) => {
   ];
 
   return (
-    <div className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-5 md:p-6">
+    <div className="bg-white rounded sm:rounded-md md:rounded-md shadow-sm border border-gray-200 p-4 sm:p-5 md:p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-4 sm:mb-5 md:mb-6">
         <h3 className="text-base sm:text-lg font-bold text-gray-900 flex items-center">
@@ -114,7 +114,7 @@ const TrendingTopics = ({ posts }) => {
         {trendingTags.map((tag, index) => (
           <div
             key={index}
-            className="flex items-center justify-between p-2 sm:p-3 rounded-lg md:rounded-xl bg-gray-50 hover:bg-blue-50 transition-colors duration-200 group cursor-pointer"
+            className="flex items-center justify-between p-2 sm:p-3 rounded md:rounded-md bg-gray-50 hover:bg-blue-50 transition-colors duration-200 group cursor-pointer"
           >
             <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
               <div
@@ -142,12 +142,12 @@ const TrendingTopics = ({ posts }) => {
           {posts.slice(0, 3).map((post) => (
             <div
               key={post.id}
-              className="flex items-center space-x-2 sm:space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer group"
+              className="flex items-center space-x-2 sm:space-x-3 p-2 rounded hover:bg-gray-50 transition-colors duration-200 cursor-pointer group"
             >
               <img
                 src={post.image}
                 alt={post.title}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover flex-shrink-0"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded object-cover flex-shrink-0"
               />
               <div className="flex-1 min-w-0">
                 <p className="text-xs sm:text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors leading-tight">

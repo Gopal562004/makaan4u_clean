@@ -4,17 +4,11 @@ import Header from "../../components/ui/Header";
 import FloatingChat from "../../components/ui/FloatingChat";
 import Footer from "../../components/ui/Footer";
 import Icon from "../../components/AppIcon";
-import DateRangeFilter from "./components/DateRangeFilter";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [dateRange, setDateRange] = useState({
-    startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-    endDate: new Date(),
-    range: "30days",
-  });
 
   // Mock user data
   const user = {
@@ -27,11 +21,6 @@ const AdminLayout = () => {
     localStorage.removeItem("user");
     navigate("/login");
   }, [navigate]);
-
-  const handleDateRangeChange = useCallback((newRange) => {
-    setDateRange(newRange);
-    console.log("Date range changed:", newRange);
-  }, []);
 
   const handleToggleChat = useCallback(() => {
     setIsChatOpen((prev) => !prev);
@@ -93,10 +82,10 @@ const AdminLayout = () => {
         onSearch={() => {}}
       />
 
-      <div className="flex flex-1 overflow-hidden">
-        {/* Fixed Sidebar */}
-        <div className="hidden lg:block w-64 bg-card border-r border-border flex-shrink-0 fixed top-20 bottom-0 left-0 z-30">
-          <div className="p-6 h-full flex flex-col">
+      <div className="flex flex-1">
+        {/* Sticky Sidebar */}
+        <div className="hidden lg:block w-64 bg-card border-r border-border flex-shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar z-30">
+          <div className="p-6 flex flex-col min-h-full">
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-6">
                 Admin Dashboard
@@ -124,33 +113,23 @@ const AdminLayout = () => {
               </nav>
             </div>
 
-            {/* Date Range Filter at bottom of sidebar */}
-            <div className="mt-auto pt-6 border-t border-border">
-              <DateRangeFilter onDateRangeChange={handleDateRangeChange} />
-            </div>
+
           </div>
         </div>
 
-        {/* Main Content Area with custom scrollbar */}
-        <div className="flex-1 lg:ml-64 min-h-0">
-          <div className="h-full overflow-y-auto custom-scrollbar">
-            <div className="min-h-full flex flex-col">
-              {/* Outlet content with proper spacing */}
-              <div className="flex-1">
-                <Outlet />
-              </div>
-
-              {/* Footer */}
-              <Footer />
-            </div>
-          </div>
+        {/* Main Content Area */}
+        <div className="flex-1 min-w-0">
+          <Outlet />
         </div>
       </div>
+
+      {/* Footer spans the entire width below sidebar and content */}
+      <Footer />
 
       <FloatingChat isOpen={isChatOpen} onToggle={handleToggleChat} />
 
       {/* Custom Scrollbar Styles */}
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .custom-scrollbar::-webkit-scrollbar {
           width: 6px;
         }
@@ -164,7 +143,7 @@ const AdminLayout = () => {
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: #94a3b8;
         }
-      `}</style>
+      `}} />
     </div>
   );
 };

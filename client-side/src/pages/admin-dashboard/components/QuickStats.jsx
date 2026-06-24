@@ -7,7 +7,7 @@ const QuickStats = ({ stats }) => {
       {stats?.map((stat) => (
         <div
           key={stat?.id}
-          className="bg-card border border-border rounded-lg p-6 hover:shadow-moderate transition-smooth"
+          className="bg-card border border-border rounded p-6 hover:shadow-moderate transition-smooth"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -43,7 +43,7 @@ const QuickStats = ({ stats }) => {
               )}
             </div>
             <div
-              className={`w-12 h-12 rounded-lg flex items-center justify-center ${stat?.color}`}
+              className={`w-12 h-12 rounded flex items-center justify-center ${stat?.color}`}
             >
               <Icon name={stat?.icon} size={24} color="white" />
             </div>

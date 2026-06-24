@@ -5,6 +5,7 @@ import Image from "../../../components/AppImage";
 import Button from "../../../components/ui/Button";
 import { getAllProperties } from "../../../lib/mongo/services/propertyService";
 import SimilarPropertiesSkeleton from "../../../components/loading/SimilarPropertiesSkeleton"; // Import skeleton
+import PropertyCard from "../../property-listings/components/PropertyCard";
 
 const SimilarProperties = ({ currentProperty }) => {
   const navigate = useNavigate();
@@ -126,82 +127,29 @@ const SimilarProperties = ({ currentProperty }) => {
   }
 
   return (
-    <div className="space-y-6">
-      <h3 className="text-xl font-semibold text-foreground">
-        Similar Properties
-      </h3>
+    <div className="bg-white border border-gray-200 shadow-sm rounded-md p-6 animate-in fade-in duration-500 mt-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+            Similar Properties
+          </h3>
+          <p className="text-gray-500 text-sm mt-1 font-medium">Explore other properties you might love</p>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {similarProperties.map((property) => (
-          <div
-            key={property._id}
-            className="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200"
-          >
-            <div className="relative h-48 overflow-hidden">
-              <Image
-                src={property.images?.[0]?.url}
-                alt={property.images?.[0]?.altText || property.title}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-
-            <div className="p-4">
-              <h4 className="font-semibold text-foreground mb-2 line-clamp-2">
-                {property.title}
-              </h4>
-
-              <div className="flex items-center text-muted-foreground mb-3">
-                <Icon name="MapPin" size={14} className="mr-1" />
-                <span className="text-sm">
-                  {property.location?.address ||
-                    property.location?.city ||
-                    "N/A"}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xl font-bold text-primary">
-                  {formatPrice(property.price)}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {property.specifications?.type}
-                </span>
-              </div>
-
-              <div className="flex items-center space-x-4 mb-4 text-sm text-muted-foreground">
-                <div className="flex items-center space-x-1">
-                  <Icon name="Bed" size={14} />
-                  <span>{property.specifications?.bedrooms}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Icon name="Bath" size={14} />
-                  <span>{property.specifications?.bathrooms}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Icon name="Square" size={14} />
-                  <span>{property.specifications?.area} sq ft</span>
-                </div>
-              </div>
-
-              <Button
-                variant="outline"
-                size="sm"
-                fullWidth
-                onClick={() => handleViewProperty(property.slug)}
-              >
-                View Details
-              </Button>
-            </div>
-          </div>
+          <PropertyCard key={property._id} property={property} viewMode="grid" />
         ))}
       </div>
 
-      <div className="text-center">
+      <div className="text-center mt-10">
         <Button
           variant="outline"
           onClick={() => navigate("/property-listings")}
           iconName="ArrowRight"
           iconPosition="right"
+          className="border-gray-300 text-gray-800 hover:bg-gray-50 hover:text-gray-900 rounded font-semibold uppercase tracking-wider px-8 py-3 transition-all duration-300 text-xs"
         >
           View More Properties
         </Button>

@@ -37,7 +37,7 @@ const PropertyDetailsSkeleton = () => {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Image Gallery Skeleton */}
-            <div className="bg-white rounded-xl border border-border overflow-hidden">
+            <div className="bg-white rounded-md border border-border overflow-hidden">
               <div className="aspect-[4/3] bg-gray-200 rounded-t-xl"></div>
               <div className="p-4">
                 <div className="flex space-x-2 overflow-hidden">
@@ -52,10 +52,10 @@ const PropertyDetailsSkeleton = () => {
             </div>
 
             {/* Property Actions Skeleton (Mobile) */}
-            <div className="lg:hidden bg-white rounded-xl border border-border p-6">
+            <div className="lg:hidden bg-white rounded-md border border-border p-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="h-12 bg-gray-200 rounded-lg"></div>
-                <div className="h-12 bg-gray-200 rounded-lg"></div>
+                <div className="h-12 bg-gray-200 rounded"></div>
+                <div className="h-12 bg-gray-200 rounded"></div>
               </div>
               <div className="mt-4 h-4 bg-gray-200 rounded w-3/4"></div>
             </div>
@@ -76,7 +76,7 @@ const PropertyDetailsSkeleton = () => {
             </div>
 
             {/* Tab Content Skeleton */}
-            <div className="min-h-[400px] bg-white rounded-xl border border-border p-6">
+            <div className="min-h-[400px] bg-white rounded-md border border-border p-6">
               {/* Property Title */}
               <div className="mb-6">
                 <div className="h-8 bg-gray-200 rounded w-3/4 mb-2"></div>
@@ -123,7 +123,7 @@ const PropertyDetailsSkeleton = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Agent Card Skeleton */}
-            <div className="bg-white rounded-xl border border-border p-6">
+            <div className="bg-white rounded-md border border-border p-6">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="w-16 h-16 bg-gray-200 rounded-full"></div>
                 <div className="flex-1">
@@ -146,8 +146,8 @@ const PropertyDetailsSkeleton = () => {
             </div>
 
             {/* Property Actions Skeleton (Desktop) */}
-            <div className="hidden lg:block bg-white rounded-xl border border-border p-6">
-              <div className="h-12 bg-gray-200 rounded-lg mb-3"></div>
+            <div className="hidden lg:block bg-white rounded-md border border-border p-6">
+              <div className="h-12 bg-gray-200 rounded mb-3"></div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="h-10 bg-gray-200 rounded"></div>
                 <div className="h-10 bg-gray-200 rounded"></div>
@@ -156,7 +156,7 @@ const PropertyDetailsSkeleton = () => {
             </div>
 
             {/* Quick Information Skeleton */}
-            <div className="bg-white rounded-xl border border-border p-6">
+            <div className="bg-white rounded-md border border-border p-6">
               <div className="h-6 bg-gray-200 rounded w-32 mb-4"></div>
               <div className="space-y-3">
                 {[...Array(5)].map((_, i) => (
@@ -169,7 +169,7 @@ const PropertyDetailsSkeleton = () => {
             </div>
 
             {/* Contact Support Skeleton */}
-            <div className="bg-muted/50 rounded-xl p-6 text-center">
+            <div className="bg-muted/50 rounded-md p-6 text-center">
               <div className="w-8 h-8 bg-gray-200 rounded-full mx-auto mb-3"></div>
               <div className="h-5 bg-gray-200 rounded w-24 mx-auto mb-2"></div>
               <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto mb-4"></div>

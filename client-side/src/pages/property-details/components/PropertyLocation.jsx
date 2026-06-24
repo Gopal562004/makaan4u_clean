@@ -153,33 +153,35 @@ const PropertyLocation = ({ property }) => {
         </h3>
 
         {/* Complete Address */}
-        <div className="bg-muted/30 rounded-lg p-4 mb-4">
-          <div className="flex items-start space-x-3">
-            <Icon
-              name="MapPin"
-              size={20}
-              className="text-primary mt-0.5 flex-shrink-0"
-            />
+        <div className="bg-gradient-to-r from-blue-50/50 to-white border border-gray-200 shadow-sm rounded-md p-6 mb-8 hover:shadow-md transition-shadow">
+          <div className="flex items-start space-x-4">
+            <div className="w-12 h-12 rounded-md bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center flex-shrink-0 mt-0.5 border border-blue-100 shadow-sm">
+              <Icon
+                name="MapPin"
+                size={22}
+                className="text-blue-600"
+              />
+            </div>
             <div className="min-w-0 flex-1">
-              <p className="font-semibold text-foreground mb-1">
+              <p className="font-bold text-gray-900 mb-1.5 text-lg">
                 Complete Address
               </p>
-              <p className="text-foreground leading-relaxed">
+              <p className="text-gray-700 leading-relaxed text-sm">
                 {getCompleteAddress()}
               </p>
 
               {/* Additional Location Details */}
-              <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-border/50">
+              <div className="grid grid-cols-2 gap-4 mt-5 pt-5 border-t border-gray-100">
                 {locationData?.landmark && (
                   <div className="flex items-center space-x-2">
                     <Icon
                       name="Navigation"
                       size={14}
-                      className="text-muted-foreground"
+                      className="text-blue-500 flex-shrink-0"
                     />
-                    <span className="text-sm text-muted-foreground">
-                      <span className="font-medium">Landmark:</span>{" "}
-                      {locationData.landmark}
+                    <span className="text-sm text-gray-700 truncate">
+                      <span className="font-bold uppercase tracking-wider text-[10px] text-gray-400 mr-1">Landmark:</span>{" "}
+                      <span className="font-bold">{locationData.landmark}</span>
                     </span>
                   </div>
                 )}
@@ -188,11 +190,11 @@ const PropertyLocation = ({ property }) => {
                     <Icon
                       name="Compass"
                       size={14}
-                      className="text-muted-foreground"
+                      className="text-blue-500 flex-shrink-0"
                     />
-                    <span className="text-sm text-muted-foreground">
-                      <span className="font-medium">Locality:</span>{" "}
-                      {locationData.locality}
+                    <span className="text-sm text-gray-700 truncate">
+                      <span className="font-bold uppercase tracking-wider text-[10px] text-gray-400 mr-1">Locality:</span>{" "}
+                      <span className="font-bold">{locationData.locality}</span>
                     </span>
                   </div>
                 )}
@@ -201,11 +203,11 @@ const PropertyLocation = ({ property }) => {
                     <Icon
                       name="Map"
                       size={14}
-                      className="text-muted-foreground"
+                      className="text-blue-500 flex-shrink-0"
                     />
-                    <span className="text-sm text-muted-foreground">
-                      <span className="font-medium">Area:</span>{" "}
-                      {locationData.area}
+                    <span className="text-sm text-gray-700 truncate">
+                      <span className="font-bold uppercase tracking-wider text-[10px] text-gray-400 mr-1">Area:</span>{" "}
+                      <span className="font-bold">{locationData.area}</span>
                     </span>
                   </div>
                 )}
@@ -214,11 +216,11 @@ const PropertyLocation = ({ property }) => {
                     <Icon
                       name="Building"
                       size={14}
-                      className="text-muted-foreground"
+                      className="text-blue-500 flex-shrink-0"
                     />
-                    <span className="text-sm text-muted-foreground">
-                      <span className="font-medium">City:</span>{" "}
-                      {locationData.city}
+                    <span className="text-sm text-gray-700 truncate">
+                      <span className="font-bold uppercase tracking-wider text-[10px] text-gray-400 mr-1">City:</span>{" "}
+                      <span className="font-bold">{locationData.city}</span>
                     </span>
                   </div>
                 )}
@@ -228,17 +230,17 @@ const PropertyLocation = ({ property }) => {
         </div>
 
         {/* Interactive Map */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="text-lg font-medium text-foreground">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-xl font-bold text-gray-900">
               Property Location
             </h4>
-            <button className="flex items-center space-x-1 text-sm text-primary hover:text-primary/80">
+            <button className="flex items-center space-x-1 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">
               <Icon name="Navigation" size={14} />
               <span>Open in Maps</span>
             </button>
           </div>
-          <div className="w-full h-64 rounded-lg overflow-hidden border border-border bg-muted/20">
+          <div className="w-full h-80 rounded-md overflow-hidden border border-gray-200 shadow-md ring-1 ring-gray-900/5 bg-gray-50 relative group">
             <iframe
               width="100%"
               height="100%"
@@ -246,10 +248,10 @@ const PropertyLocation = ({ property }) => {
               title={`Location of ${property?.title}`}
               referrerPolicy="no-referrer-when-downgrade"
               src={getMapUrl()}
-              className="w-full h-full"
+              className="w-full h-full border-0 grayscale-[20%] contrast-125 transition-all duration-700 group-hover:grayscale-0 group-hover:contrast-100"
             />
-            <div className="bg-background/80 backdrop-blur-sm p-2 text-center border-t">
-              <p className="text-xs text-muted-foreground">
+            <div className="absolute bottom-0 inset-x-0 bg-white/95 backdrop-blur-md p-3 text-center border-t border-gray-200 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+              <p className="text-[10px] font-bold text-gray-600 tracking-wider uppercase">
                 Interactive map showing property location
               </p>
             </div>
@@ -257,39 +259,39 @@ const PropertyLocation = ({ property }) => {
         </div>
 
         {/* Nearby Places Grid */}
-        <div className="mb-6">
+        <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-lg font-medium text-foreground">
+            <h4 className="text-xl font-extrabold text-gray-900 tracking-tight">
               Nearby Places
             </h4>
-            <span className="text-sm text-muted-foreground">
-              {nearbyPlaces.length} places nearby
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
+              {nearbyPlaces.length} places
             </span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {nearbyPlaces.map((place, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
+                className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-md hover:border-blue-200 hover:shadow-sm shadow-[0_4px_20px_rgb(0,0,0,0.02)] transition-all duration-300"
               >
-                <div className="flex items-center space-x-3 min-w-0 flex-1">
-                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="flex items-center space-x-4 min-w-0 flex-1">
+                  <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0">
                     <Icon
                       name={place.icon}
-                      size={16}
-                      className="text-primary"
+                      size={18}
+                      className="text-blue-600"
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-foreground text-sm truncate">
+                    <p className="font-extrabold text-gray-900 text-sm truncate">
                       {place.name}
                     </p>
-                    <p className="text-xs text-muted-foreground capitalize">
+                    <p className="text-[10px] uppercase font-bold tracking-wider text-gray-500">
                       {place.type}
                     </p>
                   </div>
                 </div>
-                <span className="text-sm font-medium text-foreground bg-background px-2 py-1 rounded-md flex-shrink-0 ml-2">
+                <span className="text-xs font-bold text-gray-700 bg-gray-50 px-2.5 py-1 rounded-md flex-shrink-0 ml-3 border border-gray-200">
                   {place.distance}
                 </span>
               </div>
@@ -298,34 +300,34 @@ const PropertyLocation = ({ property }) => {
         </div>
 
         {/* Transportation Options */}
-        <div>
+        <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-lg font-medium text-foreground">
+            <h4 className="text-xl font-extrabold text-gray-900 tracking-tight">
               Transportation Access
             </h4>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
               {transportation.length} options
             </span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {transportation.map((transport, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
+                className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-md hover:border-blue-200 hover:shadow-sm shadow-[0_4px_20px_rgb(0,0,0,0.02)] transition-all duration-300"
               >
-                <div className="flex items-center space-x-3 min-w-0 flex-1">
+                <div className="flex items-center space-x-4 min-w-0 flex-1">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                       transport.type === "walk"
-                        ? "bg-green-500/10"
+                        ? "bg-green-50"
                         : transport.type === "drive"
-                        ? "bg-blue-500/10"
-                        : "bg-purple-500/10"
+                        ? "bg-blue-50"
+                        : "bg-purple-50"
                     }`}
                   >
                     <Icon
                       name={transport.icon}
-                      size={16}
+                      size={18}
                       className={
                         transport.type === "walk"
                           ? "text-green-600"
@@ -336,23 +338,23 @@ const PropertyLocation = ({ property }) => {
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-foreground text-sm">
+                    <p className="font-extrabold text-gray-900 text-sm">
                       {transport.mode}
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-[10px] uppercase font-bold tracking-wider text-gray-500 mt-0.5">
                       {transport.distance}
                     </p>
                   </div>
                 </div>
-                <div className="text-right flex-shrink-0 ml-2">
+                <div className="text-right flex-shrink-0 ml-3">
                   <p
-                    className={`text-sm font-semibold ${getTimeColor(
+                    className={`text-sm font-extrabold ${getTimeColor(
                       transport.time
                     )}`}
                   >
                     {transport.time}
                   </p>
-                  <p className="text-xs text-muted-foreground capitalize">
+                  <p className="text-[10px] uppercase font-bold tracking-wider text-gray-400 mt-0.5">
                     {transport.type}
                   </p>
                 </div>
@@ -362,7 +364,7 @@ const PropertyLocation = ({ property }) => {
         </div>
 
         {/* Location Highlights */}
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
           <div className="flex items-start space-x-3">
             <Icon
               name="Info"

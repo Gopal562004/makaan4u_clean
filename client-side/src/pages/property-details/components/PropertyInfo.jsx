@@ -69,7 +69,7 @@
 // //       {/* Specifications Grid */}
 // //       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
 // //         {specifications?.map((spec, index) => (
-// //           <div key={index} className="bg-muted/50 rounded-lg p-4 text-center">
+// //           <div key={index} className="bg-muted/50 rounded p-4 text-center">
 // //             <Icon
 // //               name={spec?.icon}
 // //               size={24}
@@ -341,7 +341,7 @@
 //       </div>
 
 //       {/* Main Specifications Grid */}
-//       <div className="bg-muted/30 rounded-xl p-6">
+//       <div className="bg-muted/30 rounded-md p-6">
 //         <h3 className="text-xl font-semibold text-foreground mb-4">
 //           Key Specifications
 //         </h3>
@@ -349,7 +349,7 @@
 //           {mainSpecifications.map((spec, index) => (
 //             <div
 //               key={index}
-//               className="text-center p-4 bg-background rounded-lg hover:shadow-md transition-shadow"
+//               className="text-center p-4 bg-background rounded hover:shadow-md transition-shadow"
 //             >
 //               <Icon
 //                 name={spec.icon}
@@ -376,7 +376,7 @@
 //             {additionalSpecifications.map((spec, index) => (
 //               <div
 //                 key={index}
-//                 className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg"
+//                 className="flex items-center space-x-3 p-3 bg-muted/30 rounded"
 //               >
 //                 <Icon
 //                   name={spec.icon}
@@ -395,7 +395,7 @@
 
 //       {/* Description */}
 //       {property?.description && (
-//         <div className="bg-muted/30 rounded-xl p-6">
+//         <div className="bg-muted/30 rounded-md p-6">
 //           <h3 className="text-xl font-semibold text-foreground mb-4">
 //             Property Description
 //           </h3>
@@ -409,7 +409,7 @@
 
 //       {/* Amenities */}
 //       {property?.amenities && property.amenities.length > 0 && (
-//         <div className="bg-muted/30 rounded-xl p-6">
+//         <div className="bg-muted/30 rounded-md p-6">
 //           <h3 className="text-xl font-semibold text-foreground mb-4">
 //             Amenities & Facilities
 //           </h3>
@@ -417,7 +417,7 @@
 //             {property.amenities.map((amenity, index) => (
 //               <div
 //                 key={index}
-//                 className="flex items-center space-x-3 p-3 bg-background rounded-lg hover:shadow-sm transition-shadow"
+//                 className="flex items-center space-x-3 p-3 bg-background rounded hover:shadow-sm transition-shadow"
 //               >
 //                 <Icon
 //                   name="CheckCircle"
@@ -433,7 +433,7 @@
 
 //       {/* Key Features */}
 //       {property?.features && property.features.length > 0 && (
-//         <div className="bg-muted/30 rounded-xl p-6">
+//         <div className="bg-muted/30 rounded-md p-6">
 //           <h3 className="text-xl font-semibold text-foreground mb-4">
 //             Key Features & Highlights
 //           </h3>
@@ -441,7 +441,7 @@
 //             {property.features.map((feature, index) => (
 //               <li
 //                 key={index}
-//                 className="flex items-start space-x-3 p-3 bg-background rounded-lg hover:shadow-sm transition-shadow"
+//                 className="flex items-start space-x-3 p-3 bg-background rounded hover:shadow-sm transition-shadow"
 //               >
 //                 <Icon
 //                   name="Star"
@@ -462,7 +462,7 @@
 //       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 //         {/* Property ID */}
 //         {property?.propertyId && (
-//           <div className="bg-muted/30 rounded-xl p-6">
+//           <div className="bg-muted/30 rounded-md p-6">
 //             <h3 className="text-lg font-semibold text-foreground mb-2">
 //               Property ID
 //             </h3>
@@ -474,7 +474,7 @@
 
 //         {/* Last Updated */}
 //         {property?.lastUpdated && (
-//           <div className="bg-muted/30 rounded-xl p-6">
+//           <div className="bg-muted/30 rounded-md p-6">
 //             <h3 className="text-lg font-semibold text-foreground mb-2">
 //               Last Updated
 //             </h3>
@@ -490,7 +490,7 @@
 //       </div>
 
 //       {/* Disclaimer */}
-//       <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
+//       <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md p-4">
 //         <div className="flex items-start space-x-3">
 //           <Icon
 //             name="Info"
@@ -662,259 +662,183 @@ const PropertyInfo = ({ property }) => {
   const statusInfo = getStatusInfo();
 
   return (
-    <div className="space-y-6">
-      {/* Header Section - Compact */}
-      <div className="space-y-3">
-        {/* Title */}
-        <h1 className="text-2xl lg:text-3xl font-bold text-foreground leading-tight">
-          {property?.title || "Property Title Not Available"}
-        </h1>
-
-        {/* Price Section */}
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-baseline gap-2">
-            <span className="text-2xl lg:text-3xl font-bold text-primary">
-              {formatPrice(property?.price)}
-            </span>
-
-            {/* Original Price with Discount */}
-            {property?.originalPrice &&
-              property?.originalPrice > property?.price && (
-                <div className="flex items-center gap-2">
-                  <span className="text-lg text-muted-foreground line-through">
-                    {formatPrice(property?.originalPrice)}
-                  </span>
-                  <span className="px-2 py-1 bg-success/20 text-success text-xs font-medium rounded-full">
-                    {Math.round(
-                      ((property.originalPrice - property.price) /
-                        property.originalPrice) *
-                        100
-                    )}
-                    % Off
-                  </span>
-                </div>
-              )}
+    <div className="space-y-6 animate-in fade-in duration-500">
+      {/* 1. Super Compact Hero Header */}
+      <div className="bg-white border border-gray-200 shadow-sm rounded-md p-6 flex flex-col md:flex-row md:items-start justify-between gap-6 transition-all hover:shadow-md">
+        <div className="space-y-4 flex-1">
+          <div>
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 leading-tight mb-2">
+              {property?.title || "Property Title Not Available"}
+            </h1>
+            <div className="flex items-center text-gray-600">
+              <Icon name="MapPin" size={16} className="mr-1.5 flex-shrink-0" />
+              <span className="text-sm">{formatLocation()}</span>
+            </div>
           </div>
+          
+          <div className="flex flex-wrap items-center gap-2 mt-1">
+            <div className={`flex items-center space-x-1 px-2.5 py-1 rounded text-xs font-semibold border ${statusInfo.color}`}>
+              <Icon name={statusInfo.icon} size={14} />
+              <span>{statusInfo.label}</span>
+            </div>
+            {property?.featured && (
+              <div className="flex items-center space-x-1 px-2.5 py-1 bg-gray-50 text-gray-800 rounded text-xs font-semibold border border-gray-200">
+                <Icon name="Star" size={14} fill="currentColor" className="text-yellow-500" />
+                <span>Featured</span>
+              </div>
+            )}
+            {property?.verified && (
+              <div className="flex items-center space-x-1 px-2.5 py-1 bg-blue-50 text-blue-700 rounded text-xs font-semibold border border-blue-200">
+                <Icon name="Verified" size={14} />
+                <span>Verified</span>
+              </div>
+            )}
+            {property?.immediatePossession && (
+              <div className="flex items-center space-x-1 px-2.5 py-1 bg-green-50 text-green-700 rounded text-xs font-semibold border border-green-200">
+                <Icon name="Zap" size={14} />
+                <span>Ready to Move</span>
+              </div>
+            )}
+          </div>
+        </div>
 
-          {/* Price per sq ft */}
+        <div className="flex flex-col md:items-end space-y-1 bg-gray-50 p-5 rounded-md md:bg-transparent md:p-0 md:rounded-none border border-gray-200 md:border-transparent">
+          <span className="text-3xl lg:text-4xl font-bold text-gray-900">
+            {formatPrice(property?.price)}
+          </span>
+          {property?.originalPrice && property?.originalPrice > property?.price && (
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-sm text-gray-500 line-through">
+                {formatPrice(property?.originalPrice)}
+              </span>
+              <span className="px-2 py-0.5 bg-green-100 text-green-800 text-[10px] uppercase tracking-wider font-semibold rounded">
+                {Math.round(((property.originalPrice - property.price) / property.originalPrice) * 100)}% Off
+              </span>
+            </div>
+          )}
           {getPricePerSqFt() && (
-            <p className="text-base text-muted-foreground font-medium">
+            <p className="text-sm text-gray-500 font-medium mt-2">
               {getPricePerSqFt()}
             </p>
           )}
         </div>
-
-        {/* Location */}
-        <div className="flex items-start text-muted-foreground">
-          <Icon name="MapPin" size={18} className="mr-2 mt-0.5 flex-shrink-0" />
-          <span className="text-base leading-relaxed">{formatLocation()}</span>
-        </div>
       </div>
 
-      {/* Status & Tags - Compact */}
-      <div className="flex flex-wrap items-center gap-2">
-        {/* Status Badge */}
-        <div
-          className={`flex items-center space-x-1 px-3 py-1.5 rounded-full border text-sm ${statusInfo.color}`}
-        >
-          <Icon name={statusInfo.icon} size={14} />
-          <span className="font-semibold">{statusInfo.label}</span>
+      {/* 2. Key Specifications Bar */}
+      <div className="bg-white border border-gray-200 shadow-sm rounded-md overflow-hidden">
+        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+          <h3 className="text-lg font-bold text-gray-900">Key Specifications</h3>
         </div>
-
-        {/* Featured Badge */}
-        {property?.featured && (
-          <div className="flex items-center space-x-1 px-3 py-1.5 bg-purple-500/20 text-purple-600 rounded-full border border-purple-500/30 text-sm">
-            <Icon name="Star" size={14} fill="currentColor" />
-            <span className="font-semibold">Featured</span>
-          </div>
-        )}
-
-        {/* Verified Badge */}
-        {property?.verified && (
-          <div className="flex items-center space-x-1 px-3 py-1.5 bg-blue-500/20 text-blue-600 rounded-full border border-blue-500/30 text-sm">
-            <Icon name="Verified" size={14} />
-            <span className="font-semibold">Verified</span>
-          </div>
-        )}
-
-        {/* Immediate Possession */}
-        {property?.immediatePossession && (
-          <div className="flex items-center space-x-1 px-3 py-1.5 bg-green-500/20 text-green-600 rounded-full border border-green-500/30 text-sm">
-            <Icon name="Zap" size={14} />
-            <span className="font-semibold">Ready to Move</span>
-          </div>
-        )}
-      </div>
-
-      {/* Main Specifications Grid - More Compact */}
-      <div className="bg-muted/20 rounded-lg p-4">
-        <h3 className="text-lg font-semibold text-foreground mb-3">
-          Key Specifications
-        </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 divide-x divide-y md:divide-y-0 divide-gray-200">
           {mainSpecifications.map((spec, index) => (
-            <div
-              key={index}
-              className="text-center p-3 bg-background rounded-md border border-border/50"
-            >
-              <Icon
-                name={spec.icon}
-                size={20}
-                className="text-primary mx-auto mb-2"
-              />
-              <p className="text-xs text-muted-foreground mb-1">{spec.label}</p>
-              <p className="font-semibold text-foreground text-sm">
-                {spec.value}
-                {spec.suffix}
-              </p>
+            <div key={index} className="p-5 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors group">
+              <div className="w-10 h-10 rounded-md bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 transition-transform duration-300">
+                <Icon name={spec.icon} size={20} className="text-blue-600" />
+              </div>
+              <span className="text-[10px] uppercase font-bold tracking-wider text-gray-500 mb-1">{spec.label}</span>
+              <span className="font-extrabold text-gray-900 text-sm">
+                {spec.value}{spec.suffix}
+              </span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Additional Details - Only if exists */}
-      {additionalDetails.length > 0 && (
-        <div className="bg-muted/20 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-foreground mb-3">
-            Additional Details
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {additionalDetails.map((spec, index) => (
-              <div
-                key={index}
-                className="flex items-center space-x-3 p-3 bg-background rounded-md border border-border/50"
-              >
-                <Icon
-                  name={spec.icon}
-                  size={18}
-                  className="text-primary flex-shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-muted-foreground">{spec.label}</p>
-                  <p className="font-semibold text-foreground text-sm">
-                    {spec.value}
-                  </p>
-                </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column: Description & Features */}
+        <div className="lg:col-span-2 space-y-6">
+          {property?.description && (
+            <div className="bg-white border border-gray-200 shadow-sm rounded-md p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Property Description</h3>
+              <div className="pl-4 border-l-4 border-blue-500">
+                <p className="text-gray-600 leading-loose text-sm whitespace-pre-line font-medium">
+                  {property.description}
+                </p>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+            </div>
+          )}
 
-      {/* Description - Compact */}
-      {property?.description && (
-        <div className="bg-muted/20 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-foreground mb-3">
-            Property Description
-          </h3>
-          <p className="text-muted-foreground leading-relaxed text-sm whitespace-pre-line">
-            {property.description}
-          </p>
-        </div>
-      )}
-
-      {/* Amenities - Compact */}
-      {property?.amenities && property.amenities.length > 0 && (
-        <div className="bg-muted/20 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-foreground mb-3">
-            Amenities & Facilities
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {property.amenities.map((amenity, index) => (
-              <div
-                key={index}
-                className="flex items-center space-x-2 p-2 bg-background rounded-md border border-border/50"
-              >
-                <Icon
-                  name="CheckCircle"
-                  size={16}
-                  className="text-success flex-shrink-0"
-                />
-                <span className="text-foreground font-medium text-sm">
-                  {amenity}
-                </span>
+          {property?.amenities && property.amenities.length > 0 && (
+            <div className="bg-white border border-gray-200 shadow-sm rounded-md p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Amenities & Facilities</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {property.amenities.map((amenity, index) => (
+                  <div key={index} className="flex items-center p-3 rounded-md bg-gradient-to-r from-gray-50 to-white border border-gray-200 shadow-sm hover:border-blue-300 hover:shadow-md transition-all duration-300">
+                    <div className="w-6 h-6 rounded bg-blue-100 flex items-center justify-center mr-3 flex-shrink-0">
+                      <Icon name="Check" size={14} className="text-blue-600 font-bold" />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-700">{amenity}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
+
+          {property?.features && property.features.length > 0 && (
+            <div className="bg-white border border-gray-200 shadow-sm rounded-md p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Key Features</h3>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {property.features.map((feature, index) => (
+                  <li key={index} className="flex items-start space-x-3 bg-gray-50 p-3 rounded border border-gray-200">
+                    <Icon name="Star" size={16} className="text-gray-400 mt-0.5 flex-shrink-0" fill="currentColor" />
+                    <span className="text-gray-800 text-sm">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
-      )}
 
-      {/* Key Features - Compact */}
-      {property?.features && property.features.length > 0 && (
-        <div className="bg-muted/20 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-foreground mb-3">
-            Key Features
-          </h3>
-          <ul className="space-y-2">
-            {property.features.map((feature, index) => (
-              <li
-                key={index}
-                className="flex items-start space-x-2 p-2 bg-background rounded-md border border-border/50"
-              >
-                <Icon
-                  name="Star"
-                  size={16}
-                  className="text-warning mt-0.5 flex-shrink-0"
-                  fill="currentColor"
-                />
-                <span className="text-foreground leading-relaxed text-sm flex-1">
-                  {feature}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        {/* Right Column: Additional Details */}
+        <div className="space-y-6">
+          {additionalDetails.length > 0 && (
+            <div className="bg-white border border-gray-200 shadow-sm rounded-md p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Additional Details</h3>
+              <div className="space-y-4">
+                {additionalDetails.map((spec, index) => (
+                  <div key={index} className="flex items-center justify-between border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+                    <div className="flex items-center text-gray-600">
+                      <div className="w-8 h-8 rounded bg-gray-50 flex items-center justify-center mr-3 border border-gray-200">
+                        <Icon name={spec.icon} size={14} className="text-gray-600" />
+                      </div>
+                      <span className="text-xs uppercase font-semibold tracking-wider">{spec.label}</span>
+                    </div>
+                    <span className="font-semibold text-gray-900 text-sm">{spec.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-      {/* Additional Information - Compact */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Property ID */}
-        {property?.propertyId && (
-          <div className="bg-muted/20 rounded-lg p-4">
-            <h3 className="text-base font-semibold text-foreground mb-1">
-              Property ID
-            </h3>
-            <p className="text-muted-foreground font-mono text-sm">
-              {property.propertyId}
-            </p>
+          <div className="bg-gray-50 rounded-md p-5 border border-gray-200">
+             <div className="space-y-3">
+               {property?.propertyId && (
+                 <div className="flex justify-between items-center">
+                   <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Property ID</span>
+                   <span className="text-sm font-mono text-gray-900 bg-white px-2 py-1 rounded border border-gray-200">{property.propertyId}</span>
+                 </div>
+               )}
+               {property?.lastUpdated && (
+                 <div className="flex justify-between items-center">
+                   <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Last Updated</span>
+                   <span className="text-sm text-gray-900">
+                     {new Date(property.lastUpdated).toLocaleDateString("en-IN", {
+                       day: "numeric", month: "short", year: "numeric"
+                     })}
+                   </span>
+                 </div>
+               )}
+             </div>
           </div>
-        )}
 
-        {/* Last Updated */}
-        {property?.lastUpdated && (
-          <div className="bg-muted/20 rounded-lg p-4">
-            <h3 className="text-base font-semibold text-foreground mb-1">
-              Last Updated
-            </h3>
-            <p className="text-muted-foreground text-sm">
-              {new Date(property.lastUpdated).toLocaleDateString("en-IN", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })}
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Disclaimer - Compact */}
-      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
-        <div className="flex items-start space-x-2">
-          <Icon
-            name="Info"
-            size={16}
-            className="text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0"
-          />
-          <div>
-            <p className="text-yellow-800 dark:text-yellow-200 text-xs font-medium">
-              Disclaimer
-            </p>
-            <p className="text-yellow-700 dark:text-yellow-300 text-xs mt-0.5">
-              All information provided is based on data received from the
-              property owner/agent. Please verify all details during site
-              visits. Prices and availability are subject to change without
-              prior notice.
-            </p>
+          <div className="bg-gray-50 border border-gray-200 rounded-md p-5 flex items-start space-x-3 shadow-sm">
+             <Icon name="Info" size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
+             <div>
+               <p className="text-gray-700 text-xs font-semibold uppercase tracking-wider mb-1.5">Disclaimer</p>
+               <p className="text-gray-600 text-xs leading-relaxed">
+                 All information is based on data received from the property owner/agent. Please verify details during site visits. Prices are subject to change.
+               </p>
+             </div>
           </div>
         </div>
       </div>

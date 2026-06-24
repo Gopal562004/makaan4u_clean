@@ -525,7 +525,7 @@
 // //         </Helmet>
 // //         <div className="text-center max-w-md">
 // //           <div className="flex justify-center mb-6">
-// //             <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center border border-red-100">
+// //             <div className="w-16 h-16 bg-red-50 rounded-md flex items-center justify-center border border-red-100">
 // //               <AlertCircle className="w-8 h-8 text-red-500" />
 // //             </div>
 // //           </div>
@@ -653,7 +653,7 @@
 // //             </div>
 
 // //             {/* Quick Information */}
-// //             <div className="bg-card border border-border rounded-lg p-6">
+// //             <div className="bg-card border border-border rounded p-6">
 // //               <h4 className="font-semibold text-foreground mb-4">
 // //                 Quick Information
 // //               </h4>
@@ -692,7 +692,7 @@
 // //             </div>
 
 // //             {/* Contact Support */}
-// //             <div className="bg-muted/50 rounded-lg p-6 text-center">
+// //             <div className="bg-muted/50 rounded p-6 text-center">
 // //               <Icon
 // //                 name="Headphones"
 // //                 size={32}
@@ -1354,7 +1354,7 @@
 //         </Helmet>
 //         <div className="text-center max-w-md">
 //           <div className="flex justify-center mb-6">
-//             <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center border border-red-100">
+//             <div className="w-16 h-16 bg-red-50 rounded-md flex items-center justify-center border border-red-100">
 //               <AlertCircle className="w-8 h-8 text-red-500" />
 //             </div>
 //           </div>
@@ -1495,7 +1495,7 @@
 //             </div>
 
 //             {/* Quick Information */}
-//             <div className="bg-card border border-border rounded-lg p-6">
+//             <div className="bg-card border border-border rounded p-6">
 //               <h4 className="font-semibold text-foreground mb-4">
 //                 Quick Information
 //               </h4>
@@ -1556,7 +1556,7 @@
 
 //             {/* 🔥 WISHLIST ERROR MESSAGE */}
 //             {wishlistError && (
-//               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+//               <div className="bg-red-50 border border-red-200 rounded p-4">
 //                 <div className="flex items-center space-x-2 text-red-700">
 //                   <AlertCircle size={16} />
 //                   <span className="text-sm font-medium">{wishlistError}</span>
@@ -1565,7 +1565,7 @@
 //             )}
 
 //             {/* Contact Support */}
-//             <div className="bg-muted/50 rounded-lg p-6 text-center">
+//             <div className="bg-muted/50 rounded p-6 text-center">
 //               <Icon
 //                 name="Headphones"
 //                 size={32}
@@ -1601,6 +1601,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Header from "../../components/ui/Header";
+import Footer from "../../components/ui/Footer";
 import FloatingChat from "../../components/ui/FloatingChat";
 import PropertyImageGallery from "./components/PropertyImageGallery";
 import PropertyInfo from "./components/PropertyInfo";
@@ -2286,7 +2287,7 @@ const PropertyDetails = () => {
         </Helmet>
         <div className="text-center max-w-md">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center border border-red-100">
+            <div className="w-16 h-16 bg-red-50 rounded-md flex items-center justify-center border border-red-100">
               <AlertCircle className="w-8 h-8 text-red-500" />
             </div>
           </div>
@@ -2344,21 +2345,11 @@ const PropertyDetails = () => {
         onSearch={() => {}}
       />
 
-      <main className="container mx-auto px-4 py-6">
+      <main className="max-w-7xl mx-auto px-4 lg:px-8 py-8 md:py-12">
         {/* 🔥 REPLACE OLD BREADCRUMB WITH ENHANCED BREADCRUMBTRAIL */}
         <BreadcrumbTrail propertyData={property} user={user} />
 
-        {/* Back Button */}
-        <div className="mb-6">
-          <Button
-            variant="outline"
-            onClick={handleBackToListings}
-            iconName="ArrowLeft"
-            iconPosition="left"
-          >
-            Back to Listings
-          </Button>
-        </div>
+        <div className="mb-4"></div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
@@ -2386,19 +2377,19 @@ const PropertyDetails = () => {
             </div>
 
             {/* Tabs */}
-            <div className="border-b border-border">
-              <nav className="flex space-x-8">
+            <div className="border-b border-gray-200 mt-10 mb-6">
+              <nav className="flex space-x-8 overflow-x-auto no-scrollbar">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => handleTabChange(tab.id)}
-                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-smooth ${
+                    className={`flex items-center space-x-2 py-4 px-2 border-b-2 font-bold text-sm whitespace-nowrap transition-all duration-300 ${
                       activeTab === tab.id
-                        ? "border-primary text-primary"
-                        : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
+                        ? "border-blue-600 text-blue-600"
+                        : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
                     }`}
                   >
-                    <Icon name={tab.icon} size={16} />
+                    <Icon name={tab.icon} size={16} className={activeTab === tab.id ? "text-blue-600" : "text-gray-400"} />
                     <span>{tab.label}</span>
                   </button>
                 ))}
@@ -2431,59 +2422,59 @@ const PropertyDetails = () => {
             </div>
 
             {/* Quick Information */}
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h4 className="font-semibold text-foreground mb-4">
+            <div className="bg-white border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-md p-6">
+              <h4 className="font-extrabold text-gray-900 mb-4 tracking-tight">
                 Quick Information
               </h4>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Property ID</span>
-                  <span className="text-foreground font-medium">
+                  <span className="text-gray-500">Property ID</span>
+                  <span className="text-gray-900 font-bold">
                     {formattedPropertyId}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Listed Date</span>
-                  <span className="text-foreground">
+                  <span className="text-gray-500">Listed Date</span>
+                  <span className="text-gray-900 font-medium">
                     {new Date(property.listedDate).toLocaleDateString()}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Status</span>
-                  <span className="text-foreground capitalize">
+                  <span className="text-gray-500">Status</span>
+                  <span className="text-gray-900 font-medium capitalize">
                     {property.status}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Type</span>
-                  <span className="text-foreground capitalize">
+                  <span className="text-gray-500">Type</span>
+                  <span className="text-gray-900 font-medium capitalize">
                     {property.type}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Area</span>
-                  <span className="text-foreground">
+                  <span className="text-gray-500">Area</span>
+                  <span className="text-gray-900 font-medium">
                     {property.area} {property.areaUnit}
                   </span>
                 </div>
                 {/* 🔥 ADD WISHLIST STATUS - ONLY SHOW IF USER IS AUTHENTICATED */}
                 {isAuthenticated() && (
-                  <div className="flex justify-between items-center pt-2 border-t border-border">
-                    <span className="text-muted-foreground">
+                  <div className="flex justify-between items-center pt-3 mt-1 border-t border-gray-100">
+                    <span className="text-gray-500">
                       Wishlist Status
                     </span>
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-1.5">
                       <Heart
                         size={16}
                         className={
                           isWishlisted
-                            ? "text-red-500 fill-red-500"
-                            : "text-gray-400"
+                            ? "text-rose-500 fill-rose-500"
+                            : "text-gray-300"
                         }
                       />
                       <span
-                        className={`text-sm font-medium ${
-                          isWishlisted ? "text-red-500" : "text-foreground"
+                        className={`text-sm font-bold ${
+                          isWishlisted ? "text-rose-500" : "text-gray-900"
                         }`}
                       >
                         {isWishlisted ? "Saved" : "Not Saved"}
@@ -2496,8 +2487,8 @@ const PropertyDetails = () => {
 
             {/* 🔥 WISHLIST ERROR MESSAGE */}
             {wishlistError && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <div className="flex items-center space-x-2 text-red-700">
+              <div className="bg-red-50 border border-red-100 rounded-md p-4">
+                <div className="flex items-center space-x-2 text-red-600">
                   <AlertCircle size={16} />
                   <span className="text-sm font-medium">{wishlistError}</span>
                 </div>
@@ -2505,17 +2496,17 @@ const PropertyDetails = () => {
             )}
 
             {/* Contact Support */}
-            <div className="bg-muted/50 rounded-lg p-6 text-center">
+            <div className="bg-gradient-to-br from-slate-50 to-blue-50/50 border border-blue-100/50 rounded-md p-6 text-center shadow-sm">
               <Icon
                 name="Headphones"
                 size={32}
-                className="text-primary mx-auto mb-3"
+                className="text-blue-600 mx-auto mb-3"
               />
-              <h4 className="font-semibold text-foreground mb-2">Need Help?</h4>
-              <p className="text-sm text-muted-foreground mb-4">
+              <h4 className="font-extrabold text-gray-900 mb-2">Need Help?</h4>
+              <p className="text-sm text-gray-600 mb-5 leading-relaxed">
                 Our support team is here to assist you with any questions.
               </p>
-              <Button variant="outline" size="sm" fullWidth>
+              <Button variant="outline" className="w-full border-blue-200 text-blue-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 rounded-md font-bold text-xs uppercase tracking-wide py-2">
                 Contact Support
               </Button>
             </div>
@@ -2531,6 +2522,7 @@ const PropertyDetails = () => {
       />
 
       <FloatingChat isOpen={isChatOpen} onToggle={handleToggleChat} />
+      <Footer />
     </div>
   );
 };

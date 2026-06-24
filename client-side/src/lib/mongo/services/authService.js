@@ -11,22 +11,15 @@ const api = axios.create({
   },
 });
 
-// Add auth token if exists
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// We no longer manually append the token header. 
+// Axios withCredentials: true ensures the HttpOnly cookie is sent automatically.
 
 // Response interceptor for handling errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid
-      localStorage.removeItem("token");
+      // Token expired or invalid (HttpOnly cookie will be rejected by backend)
       localStorage.removeItem("user");
       window.location.href = "/login";
     }
@@ -45,9 +38,8 @@ export const register = async (userData) => {
   try {
     const response = await api.post("/auth/register", userData);
 
-    // Store token and user data in localStorage
-    if (response.data.token) {
-      localStorage.setItem("token", response.data.token);
+    // Store user data in localStorage (Token is set securely via HttpOnly cookie by backend)
+    if (response.data.user) {
       localStorage.setItem("user", JSON.stringify(response.data.user));
     }
 
@@ -66,9 +58,8 @@ export const login = async (credentials) => {
   try {
     const response = await api.post("/auth/login", credentials);
 
-    // Store token and user data in localStorage
-    if (response.data.token) {
-      localStorage.setItem("token", response.data.token);
+    // Store user data in localStorage (Token is set securely via HttpOnly cookie by backend)
+    if (response.data.user) {
       localStorage.setItem("user", JSON.stringify(response.data.user));
     }
 
@@ -87,13 +78,11 @@ export const logout = async () => {
     const response = await api.post("/auth/logout");
 
     // Clear localStorage
-    localStorage.removeItem("token");
     localStorage.removeItem("user");
 
     return response.data;
   } catch (error) {
     // Clear localStorage even if API call fails
-    localStorage.removeItem("token");
     localStorage.removeItem("user");
     throw error.response?.data || error;
   }
@@ -187,7 +176,7 @@ export const changePassword = async (passwordData) => {
  */
 export const forgotPassword = async (email) => {
   try {
-    const response = await api.post("/auth/forgot-password", { email });
+    const response = await api.post("/auth/forgotpassword", { email });
     return response.data;
   } catch (error) {
     throw error.response?.data || error;
@@ -196,12 +185,12 @@ export const forgotPassword = async (email) => {
 
 /**
  * Reset password
- * @param {Object} resetData - Reset token and new password
+ * @param {Object} resetData - Contains email, otp, and password
  * @returns {Promise}
  */
 export const resetPassword = async (resetData) => {
   try {
-    const response = await api.post("/auth/reset-password", resetData);
+    const response = await api.post("/auth/resetpassword", resetData);
     return response.data;
   } catch (error) {
     throw error.response?.data || error;
@@ -245,15 +234,13 @@ export const getStoredUser = () => {
   }
 };
 
-export const getStoredToken = () => {
-  return localStorage.getItem("token");
-};
-
 export const isAuthenticated = () => {
-  return !!localStorage.getItem("token");
+  // We cannot check the token directly since it's HttpOnly. 
+  // We rely on the existence of the user object as a heuristic.
+  // The ultimate source of truth is the backend rejecting the cookie.
+  return !!localStorage.getItem("user");
 };
 
 export const clearAuthData = () => {
-  localStorage.removeItem("token");
   localStorage.removeItem("user");
 };

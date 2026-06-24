@@ -26,7 +26,7 @@ const ProfileSidebar = ({
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-24">
+      <div className="hidden lg:block bg-white rounded-md shadow-sm border border-gray-200 p-6 sticky top-24">
         {/* User Info */}
         <div className="text-center mb-6">
           {isValidAvatar(user?.avatar) ? (
@@ -55,7 +55,7 @@ const ProfileSidebar = ({
             <button
               key={tab.id}
               onClick={() => handleTabClick(tab.id)}
-              className={`w-full flex items-center justify-between p-3 rounded-lg transition-all duration-200 ${
+              className={`w-full flex items-center justify-between p-3 rounded transition-all duration-200 ${
                 activeTab === tab.id
                   ? "bg-blue-50 text-blue-600 border border-blue-200"
                   : "text-gray-700 hover:bg-gray-50"
@@ -74,7 +74,7 @@ const ProfileSidebar = ({
         <div className="mt-8 pt-6 border-t border-gray-200">
           <button
             onClick={onLogout}
-            className="w-full flex items-center p-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+            className="w-full flex items-center p-3 text-red-600 hover:bg-red-50 rounded transition-colors duration-200"
           >
             <LogOut className="w-5 h-5 mr-3" />
             <span className="font-medium">Logout</span>
@@ -89,7 +89,7 @@ const ProfileSidebar = ({
             <button
               key={tab.id}
               onClick={() => handleTabClick(tab.id)}
-              className={`flex flex-col items-center p-2 rounded-lg transition-all duration-200 ${
+              className={`flex flex-col items-center p-2 rounded transition-all duration-200 ${
                 activeTab === tab.id
                   ? "text-blue-600 bg-blue-50"
                   : "text-gray-500"

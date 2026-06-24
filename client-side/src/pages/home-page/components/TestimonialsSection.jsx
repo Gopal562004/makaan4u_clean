@@ -136,77 +136,85 @@ const TestimonialsSection = () => {
   };
 
   return (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 lg:px-6">
+    <section className="py-16 bg-white border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-sm text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-3 border border-indigo-100 shadow-sm">
+            <Quote className="w-3.5 h-3.5 fill-indigo-600/20" />
+            Testimonials
+          </div>
+          <h2 className="text-2xl md:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">
             {t?.title}
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base text-gray-600 font-light max-w-2xl mx-auto">
             {t?.subtitle}
           </p>
         </div>
 
         {/* Testimonials Carousel */}
-        <div className="relative">
+        <div className="relative group">
           {/* Navigation Buttons */}
           <button
             onClick={prevSlide}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white border border-gray-300 rounded-full shadow-sm flex items-center justify-center hover:bg-gray-50"
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 lg:-translate-x-6 z-10 w-12 h-12 bg-white border border-gray-200 shadow-lg flex items-center justify-center hover:bg-gray-50 hover:scale-105 transition-all opacity-0 group-hover:opacity-100"
           >
-            <ChevronLeft size={20} className="text-gray-600" />
+            <ChevronLeft size={24} className="text-gray-700" />
           </button>
 
           <button
             onClick={nextSlide}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white border border-gray-300 rounded-full shadow-sm flex items-center justify-center hover:bg-gray-50"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 lg:translate-x-6 z-10 w-12 h-12 bg-white border border-gray-200 shadow-lg flex items-center justify-center hover:bg-gray-50 hover:scale-105 transition-all opacity-0 group-hover:opacity-100"
           >
-            <ChevronRight size={20} className="text-gray-600" />
+            <ChevronRight size={24} className="text-gray-700" />
           </button>
 
           {/* Testimonials Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {getVisibleTestimonials().map((testimonial) => (
               <div
                 key={testimonial.id}
-                className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm"
+                className="bg-white border border-gray-200/60 rounded-md p-8 shadow-sm hover:shadow-xl transition-shadow duration-300 relative overflow-hidden"
               >
+                <Quote className="absolute top-4 right-4 w-16 h-16 text-gray-50 opacity-50 transform rotate-12" />
+                
                 {/* Rating */}
-                <div className="flex items-center space-x-1 mb-4">
+                <div className="flex items-center space-x-1 mb-6 relative z-10">
                   {renderStars(testimonial.rating)}
                 </div>
 
                 {/* Testimonial Text */}
-                <blockquote className="text-gray-700 leading-relaxed mb-4">
+                <blockquote className="text-gray-700 leading-relaxed mb-8 relative z-10 font-medium">
                   "{testimonial.text}"
                 </blockquote>
 
                 {/* Client Info */}
-                <div className="flex items-center space-x-3">
-                  <img
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                  <div>
-                    <h4 className="font-semibold text-gray-900">
-                      {testimonial.name}
-                    </h4>
-                    <p className="text-gray-600 text-sm">
-                      {testimonial.location}
-                    </p>
+                <div className="flex items-center justify-between border-t border-gray-100 pt-6 relative z-10">
+                  <div className="flex items-center space-x-4">
+                    <img
+                      src={testimonial.avatar}
+                      alt={testimonial.name}
+                      className="w-12 h-12 rounded-full object-cover shadow-sm ring-2 ring-white"
+                    />
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-sm">
+                        {testimonial.name}
+                      </h4>
+                      <p className="text-gray-500 text-xs font-semibold uppercase tracking-wider mt-0.5">
+                        {testimonial.location}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 {/* Verification */}
-                <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center space-x-1">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
+                <div className="mt-4 flex items-center justify-between text-xs text-gray-400 font-medium uppercase tracking-wide relative z-10">
+                  <div className="flex items-center space-x-1.5 text-emerald-600">
+                    <CheckCircle className="w-3.5 h-3.5" />
                     <span>{t?.verified}</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Calendar className="w-4 h-4" />
+                  <div className="flex items-center space-x-1.5">
+                    <Calendar className="w-3.5 h-3.5" />
                     <span>{testimonial.date}</span>
                   </div>
                 </div>
@@ -215,15 +223,17 @@ const TestimonialsSection = () => {
           </div>
 
           {/* Dots Indicator */}
-          <div className="flex justify-center mt-8 space-x-2">
+          <div className="flex justify-center mt-12 space-x-3">
             {Array.from(
               { length: Math.ceil(testimonials.length / 3) },
               (_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
-                  className={`w-2 h-2 rounded-full ${
-                    index === currentSlide ? "bg-blue-600" : "bg-gray-300"
+                  className={`transition-all duration-300 rounded-full ${
+                    index === currentSlide 
+                      ? "w-8 h-2 bg-blue-600" 
+                      : "w-2 h-2 bg-gray-300 hover:bg-gray-400"
                   }`}
                 />
               )
@@ -232,45 +242,45 @@ const TestimonialsSection = () => {
         </div>
 
         {/* Trust Indicators */}
-        <div className="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
+        <div className="mt-24 grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 text-center border-t border-gray-100 pt-16">
+          <div className="flex flex-col items-center group">
+            <div className="w-14 h-14 bg-gradient-to-br from-blue-50 to-blue-100 rounded-md flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <Shield size={24} className="text-blue-600" />
             </div>
-            <h4 className="font-semibold text-gray-900 mb-1 text-sm">
+            <h4 className="font-bold text-gray-900 mb-1 text-sm uppercase tracking-wider">
               Verified Properties
             </h4>
-            <p className="text-gray-600 text-xs">Authentic listings</p>
+            <p className="text-gray-500 text-xs">Authentic & Legal</p>
           </div>
 
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
-              <Users size={24} className="text-green-600" />
+          <div className="flex flex-col items-center group">
+            <div className="w-14 h-14 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-md flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <Users size={24} className="text-emerald-600" />
             </div>
-            <h4 className="font-semibold text-gray-900 mb-1 text-sm">
+            <h4 className="font-bold text-gray-900 mb-1 text-sm uppercase tracking-wider">
               Expert Agents
             </h4>
-            <p className="text-gray-600 text-xs">Certified professionals</p>
+            <p className="text-gray-500 text-xs">Certified Pros</p>
           </div>
 
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-3">
+          <div className="flex flex-col items-center group">
+            <div className="w-14 h-14 bg-gradient-to-br from-orange-50 to-orange-100 rounded-md flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <Clock size={24} className="text-orange-600" />
             </div>
-            <h4 className="font-semibold text-gray-900 mb-1 text-sm">
+            <h4 className="font-bold text-gray-900 mb-1 text-sm uppercase tracking-wider">
               24/7 Support
             </h4>
-            <p className="text-gray-600 text-xs">Always available</p>
+            <p className="text-gray-500 text-xs">Always Available</p>
           </div>
 
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-3">
+          <div className="flex flex-col items-center group">
+            <div className="w-14 h-14 bg-gradient-to-br from-purple-50 to-purple-100 rounded-md flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <Award size={24} className="text-purple-600" />
             </div>
-            <h4 className="font-semibold text-gray-900 mb-1 text-sm">
+            <h4 className="font-bold text-gray-900 mb-1 text-sm uppercase tracking-wider">
               Award Winning
             </h4>
-            <p className="text-gray-600 text-xs">Industry excellence</p>
+            <p className="text-gray-500 text-xs">Industry Leader</p>
           </div>
         </div>
       </div>

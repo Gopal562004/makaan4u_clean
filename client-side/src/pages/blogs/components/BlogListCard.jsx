@@ -11,11 +11,11 @@
 
 // const BlogListCard = ({ post }) => {
 //   return (
-//     <article className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 group">
+//     <article className="bg-white rounded-md border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 group">
 //       <div className="flex flex-col md:flex-row md:items-center gap-6">
 //         {/* Image */}
 //         <div className="flex-shrink-0">
-//           <div className="relative w-full md:w-40 h-32 rounded-xl overflow-hidden">
+//           <div className="relative w-full md:w-40 h-32 rounded-md overflow-hidden">
 //             <img
 //               src={post.image}
 //               alt={post.title}
@@ -103,11 +103,11 @@ import {
 
 const BlogListCard = ({ post }) => {
   return (
-    <article className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl border border-gray-200 p-4 sm:p-5 md:p-6 hover:shadow-md sm:hover:shadow-lg transition-all duration-300 group">
+    <article className="bg-white rounded sm:rounded-md md:rounded-md border border-gray-200 p-4 sm:p-5 md:p-6 hover:shadow-md sm:hover:shadow-lg transition-all duration-300 group">
       <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-5 md:gap-6">
         {/* Image */}
         <div className="flex-shrink-0 w-full sm:w-32 md:w-40">
-          <div className="relative w-full h-28 sm:h-24 md:h-32 rounded-lg sm:rounded-xl overflow-hidden">
+          <div className="relative w-full h-28 sm:h-24 md:h-32 rounded sm:rounded-md overflow-hidden">
             <img
               src={post.image}
               alt={post.title}

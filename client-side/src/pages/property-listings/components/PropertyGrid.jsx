@@ -22,7 +22,7 @@
 //           {Array.from({ length: 6 }).map((_, index) => (
 //             <div
 //               key={`skeleton-${index}`}
-//               className="bg-white border border-slate-200 rounded-lg overflow-hidden animate-pulse"
+//               className="bg-white border border-slate-200 rounded overflow-hidden animate-pulse"
 //             >
 //               <div className="h-48 bg-slate-200"></div>
 //               <div className="p-4 space-y-3">
@@ -114,7 +114,7 @@ const PropertyGrid = ({
 }) => {
   if (loading) {
     return (
-      <div className="flex-1 p-6">
+      <div className="flex-1">
         <div
           className={`grid gap-6 ${
             viewMode === "grid"
@@ -125,7 +125,7 @@ const PropertyGrid = ({
           {Array.from({ length: 6 }).map((_, index) => (
             <div
               key={`skeleton-${index}`}
-              className="bg-white border border-slate-200 rounded-lg overflow-hidden animate-pulse"
+              className="bg-white border border-slate-200 rounded overflow-hidden animate-pulse"
             >
               <div className="h-48 bg-slate-200"></div>
               <div className="p-4 space-y-3">
@@ -177,7 +177,7 @@ const PropertyGrid = ({
   return (
     <div className="flex flex-col min-h-0">
       {/* Properties Grid */}
-      <div className="flex-1 p-6">
+      <div className="flex-1">
         <div
           className={`grid gap-6 ${
             viewMode === "grid"

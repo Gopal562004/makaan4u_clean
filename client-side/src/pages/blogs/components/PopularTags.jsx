@@ -3,7 +3,7 @@
 
 // const PopularTags = ({ tags }) => {
 //   return (
-//     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+//     <div className="bg-white rounded shadow-sm border border-gray-200 p-6">
 //       <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
 //         <Tag className="w-5 h-5 mr-2 text-blue-600" />
 //         Popular Tags
@@ -28,7 +28,7 @@ import { Tag } from "lucide-react";
 
 const PopularTags = ({ tags }) => {
   return (
-    <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-4 sm:p-5 md:p-6">
+    <div className="bg-white rounded sm:rounded-md shadow-sm border border-gray-200 p-4 sm:p-5 md:p-6">
       {/* Header */}
       <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4 flex items-center">
         <Tag className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-blue-600 flex-shrink-0" />

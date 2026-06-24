@@ -73,11 +73,11 @@
 
 //   return (
 //     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-1000 p-4">
-//       <div className="bg-card border border-border rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+//       <div className="bg-card border border-border rounded w-full max-w-2xl max-h-[90vh] overflow-y-auto">
 //         {/* Header */}
 //         <div className="flex items-center justify-between p-6 border-b border-border">
 //           <div className="flex items-center space-x-3">
-//             <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+//             <div className="w-10 h-10 bg-primary/10 rounded flex items-center justify-center">
 //               <Icon name="Download" size={20} className="text-primary" />
 //             </div>
 //             <div>
@@ -102,7 +102,7 @@
 //               {exportFormats?.map((format) => (
 //                 <div
 //                   key={format?.id}
-//                   className="flex items-start space-x-3 p-3 border border-border rounded-lg hover:bg-muted/30 transition-smooth"
+//                   className="flex items-start space-x-3 p-3 border border-border rounded hover:bg-muted/30 transition-smooth"
 //                 >
 //                   <Checkbox
 //                     checked={selectedFormats?.includes(format?.id)}
@@ -146,7 +146,7 @@
 //               {reportData?.map((report) => (
 //                 <div
 //                   key={report?.id}
-//                   className="flex items-center space-x-3 p-2 hover:bg-muted/30 rounded-lg transition-smooth"
+//                   className="flex items-center space-x-3 p-2 hover:bg-muted/30 rounded transition-smooth"
 //                 >
 //                   <Checkbox
 //                     checked={selectedReports?.includes(report?.id)}
@@ -154,7 +154,7 @@
 //                   />
 //                   <div className="flex items-center space-x-3 flex-1">
 //                     <div
-//                       className={`w-8 h-8 rounded-lg flex items-center justify-center ${report?.color}`}
+//                       className={`w-8 h-8 rounded flex items-center justify-center ${report?.color}`}
 //                     >
 //                       <Icon name={report?.icon} size={16} color="white" />
 //                     </div>
@@ -173,7 +173,7 @@
 //           </div>
 
 //           {/* Email Delivery */}
-//           <div className="p-4 bg-muted/30 rounded-lg border border-border">
+//           <div className="p-4 bg-muted/30 rounded border border-border">
 //             <div className="flex items-center space-x-3 mb-3">
 //               <Checkbox
 //                 checked={emailDelivery}
@@ -194,7 +194,7 @@
 //                   placeholder="Enter email address"
 //                   value={emailAddress}
 //                   onChange={(e) => setEmailAddress(e?.target?.value)}
-//                   className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+//                   className="w-full px-3 py-2 border border-border rounded bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
 //                 />
 //               </div>
 //             )}
@@ -304,11 +304,11 @@ const ExportModal = ({ isOpen, onClose, reportData, onExport }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4">
-      <div className="bg-card border border-border rounded-xl w-full max-w-md max-h-[70vh] overflow-hidden flex flex-col shadow-xl">
+      <div className="bg-card border border-border rounded-md w-full max-w-md max-h-[70vh] overflow-hidden flex flex-col shadow-xl">
         {/* Header - Compact */}
         <div className="flex items-center justify-between p-4 border-b border-border bg-card/50">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
               <Icon name="Download" size={16} className="text-primary" />
             </div>
             <div>
@@ -336,7 +336,7 @@ const ExportModal = ({ isOpen, onClose, reportData, onExport }) => {
               {exportFormats.map((format) => (
                 <label
                   key={format.id}
-                  className="flex items-center gap-2 p-2 border border-border rounded-lg hover:bg-muted/30 cursor-pointer transition-colors"
+                  className="flex items-center gap-2 p-2 border border-border rounded hover:bg-muted/30 cursor-pointer transition-colors"
                 >
                   <Checkbox
                     checked={selectedFormats.includes(format.id)}
@@ -380,7 +380,7 @@ const ExportModal = ({ isOpen, onClose, reportData, onExport }) => {
               {reportData.map((report) => (
                 <label
                   key={report.id}
-                  className="flex items-center gap-2 p-2 hover:bg-muted/30 rounded-lg cursor-pointer transition-colors"
+                  className="flex items-center gap-2 p-2 hover:bg-muted/30 rounded cursor-pointer transition-colors"
                 >
                   <Checkbox
                     checked={selectedReports.includes(report.id)}
@@ -406,7 +406,7 @@ const ExportModal = ({ isOpen, onClose, reportData, onExport }) => {
           </section>
 
           {/* Email Delivery */}
-          <section className="bg-muted/30 rounded-lg border border-border p-3">
+          <section className="bg-muted/30 rounded border border-border p-3">
             <label className="flex items-center gap-2 cursor-pointer">
               <Checkbox
                 checked={emailDelivery}

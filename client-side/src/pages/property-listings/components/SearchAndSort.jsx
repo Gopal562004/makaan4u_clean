@@ -203,14 +203,14 @@
 //                     dropdownPosition === "top"
 //                       ? "bottom-full mb-2"
 //                       : "top-full mt-2"
-//                   } right-0 w-64 max-w-[90vw] sm:max-w-none bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 animate-in fade-in-0 zoom-in-95 max-h-80 overflow-y-auto`}
+//                   } right-0 w-64 max-w-[90vw] sm:max-w-none bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl z-50 animate-in fade-in-0 zoom-in-95 max-h-80 overflow-y-auto`}
 //                 >
 //                   <div className="p-2 space-y-1">
 //                     {sortOptions.map((option) => (
 //                       <button
 //                         key={option.value}
 //                         onClick={() => handleSortSelect(option.value)}
-//                         className={`w-full flex items-center gap-2 sm:gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-200 ${
+//                         className={`w-full flex items-center gap-2 sm:gap-3 px-3 py-2.5 text-sm rounded transition-all duration-200 ${
 //                           sortBy === option.value
 //                             ? "bg-primary/10 text-primary font-semibold"
 //                             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -245,7 +245,7 @@
 //             </div>
 
 //             {/* View Mode Toggle */}
-//             <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1 border border-gray-200 dark:border-gray-700 flex-shrink-0">
+//             <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded p-1 border border-gray-200 dark:border-gray-700 flex-shrink-0">
 //               <button
 //                 onClick={() => onViewModeChange("grid")}
 //                 className={`p-1.5 sm:p-2 rounded-md transition-all duration-200 ${
@@ -456,7 +456,7 @@ const SearchAndSort = ({
                 value={localSearch}
                 onChange={(e) => handleSearchChange(e.target.value)}
                 onKeyDown={handleKeyPress}
-                className="w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2 sm:py-2.5 lg:py-3 text-sm sm:text-base bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+                className="w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2 sm:py-2.5 lg:py-3 text-sm sm:text-base bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 rounded-md"
                 aria-label="Search properties"
               />
 
@@ -469,17 +469,7 @@ const SearchAndSort = ({
                 />
               </div>
 
-              {/* Clear Button (optional - uncomment if needed) */}
-              {localSearch && (
-                <button
-                  type="button"
-                  onClick={handleSearchClear}
-                  className="absolute right-8 sm:right-10 top-1/2 transform -translate-y-1/2 p-0.5 sm:p-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
-                  aria-label="Clear search"
-                >
-                  <Icon name="X" size={isMobile ? 14 : 16} />
-                </button>
-              )}
+              {/* Clear Button removed because we now use a global native webkit clear button */}
 
               {/* Search Button */}
               <button
@@ -509,7 +499,7 @@ const SearchAndSort = ({
                 onClick={toggleSortDropdown}
                 iconName="ArrowUpDown"
                 iconPosition="left"
-                className="min-w-[90px] xs:min-w-[100px] sm:min-w-[120px] md:min-w-[140px] lg:min-w-[160px] justify-between px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-black"
+                className="min-w-[90px] xs:min-w-[100px] sm:min-w-[120px] md:min-w-[140px] lg:min-w-[160px] justify-between px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:bg-white dark:hover:bg-gray-700 hover:border-blue-300 rounded-md transition-all duration-200 text-gray-700 font-medium"
                 aria-expanded={isSortOpen}
                 aria-haspopup="listbox"
               >
@@ -532,14 +522,14 @@ const SearchAndSort = ({
                     dropdownPosition === "top"
                       ? "bottom-full mb-1 sm:mb-2"
                       : "top-full mt-1 sm:mt-2"
-                  } right-0 w-56 xs:w-64 sm:w-72 max-w-[90vw] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg sm:rounded-xl shadow-xl z-50 animate-in fade-in-0 zoom-in-95 max-h-72 sm:max-h-80 overflow-y-auto`}
+                  } right-0 w-56 xs:w-64 sm:w-72 max-w-[90vw] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded sm:rounded-md shadow-xl z-50 animate-in fade-in-0 zoom-in-95 max-h-72 sm:max-h-80 overflow-y-auto`}
                 >
                   <div className="p-1.5 sm:p-2 space-y-0.5 sm:space-y-1">
                     {sortOptions.map((option) => (
                       <button
                         key={option.value}
                         onClick={() => handleSortSelect(option.value)}
-                        className={`w-full flex items-center gap-1.5 sm:gap-2 md:gap-3 px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-md sm:rounded-lg transition-all duration-200 ${
+                        className={`w-full flex items-center gap-1.5 sm:gap-2 md:gap-3 px-2.5 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-md sm:rounded transition-all duration-200 ${
                           sortBy === option.value
                             ? "bg-primary/10 text-primary font-semibold"
                             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -578,7 +568,7 @@ const SearchAndSort = ({
             </div>
 
             {/* View Mode Toggle */}
-            <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-md sm:rounded-lg p-0.5 sm:p-1 border border-gray-200 dark:border-gray-700 flex-shrink-0">
+            <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-md sm:rounded p-0.5 sm:p-1 border border-gray-200 dark:border-gray-700 flex-shrink-0">
               <button
                 onClick={() => onViewModeChange("grid")}
                 className={`p-1 sm:p-1.5 rounded transition-all duration-200 ${
@@ -613,13 +603,13 @@ const SearchAndSort = ({
               </button>
             </div>
 
-            {/* Map Toggle - Tablet and larger */}
+            {/* Map Toggle - Available on all screen sizes */}
             <Button
               variant={showMapView ? "primary" : "outline"}
               onClick={onMapToggle}
               iconName="Map"
-              iconPosition={isMobile ? "left" : "left"}
-              className="hidden xs:flex px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap flex-shrink-0"
+              iconPosition="left"
+              className="flex px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium whitespace-nowrap flex-shrink-0"
             >
               <span className="hidden md:inline xl:hidden">Map</span>
               <span className="hidden xl:inline">

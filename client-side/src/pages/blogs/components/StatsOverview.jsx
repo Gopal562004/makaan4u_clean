@@ -46,10 +46,10 @@
 //           {stats.map((stat, index) => (
 //             <div
 //               key={index}
-//               className="text-center p-6 bg-gray-50 rounded-2xl border border-gray-200 hover:shadow-md transition-all duration-300"
+//               className="text-center p-6 bg-gray-50 rounded-md border border-gray-200 hover:shadow-md transition-all duration-300"
 //             >
 //               <div
-//                 className={`w-12 h-12 rounded-xl bg-${stat.color}-100 flex items-center justify-center mx-auto mb-4`}
+//                 className={`w-12 h-12 rounded-md bg-${stat.color}-100 flex items-center justify-center mx-auto mb-4`}
 //               >
 //                 <stat.icon className={`w-6 h-6 text-${stat.color}-600`} />
 //               </div>
@@ -131,11 +131,11 @@ const StatsOverview = ({ posts }) => {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="text-center p-3 sm:p-4 md:p-6 bg-gray-50 rounded-lg sm:rounded-xl md:rounded-2xl border border-gray-200 hover:shadow-sm sm:hover:shadow-md transition-all duration-300"
+              className="text-center p-3 sm:p-4 md:p-6 bg-gray-50 rounded sm:rounded-md md:rounded-md border border-gray-200 hover:shadow-sm sm:hover:shadow-md transition-all duration-300"
             >
               {/* Icon Container */}
               <div
-                className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl ${stat.bgColor} flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4`}
+                className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded sm:rounded-md ${stat.bgColor} flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4`}
               >
                 <stat.icon
                   className={`w-3 h-3 sm:w-4 sm:h-4 md:w-6 md:h-6 ${stat.textColor}`}

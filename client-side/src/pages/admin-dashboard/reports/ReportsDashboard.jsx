@@ -136,7 +136,7 @@ const ReportsDashboard = () => {
         {reportData.map((report) => (
           <div
             key={report.id}
-            className="p-5 bg-card border border-border rounded-lg shadow-sm hover:shadow-md transition-all"
+            className="p-5 bg-card border border-border rounded shadow-sm hover:shadow-md transition-all"
           >
             <div className="flex items-center space-x-3 mb-3">
               <div

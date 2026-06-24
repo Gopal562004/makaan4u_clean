@@ -16,7 +16,7 @@
 // //   };
 
 // //   return (
-// //     <div className="relative h-full bg-muted rounded-lg overflow-hidden">
+// //     <div className="relative h-full bg-muted rounded overflow-hidden">
 // //       {/* Map Container */}
 // //       <div className="w-full h-full">
 // //         <iframe
@@ -44,7 +44,7 @@
 // //             <div key={property?.id} style={markerStyle}>
 // //               <button
 // //                 onClick={() => handlePropertyClick(property)}
-// //                 className={`relative bg-primary text-primary-foreground px-3 py-2 rounded-lg shadow-moderate hover:shadow-prominent transition-all duration-200 transform hover:scale-105 ${
+// //                 className={`relative bg-primary text-primary-foreground px-3 py-2 rounded shadow-moderate hover:shadow-prominent transition-all duration-200 transform hover:scale-105 ${
 // //                   selectedProperty?.id === property?.id
 // //                     ? "ring-2 ring-primary ring-offset-2"
 // //                     : ""
@@ -88,7 +88,7 @@
 // //       </div>
 // //       {/* Selected Property Card */}
 // //       {selectedProperty && (
-// //         <div className="absolute bottom-4 left-4 right-4 bg-card border border-border rounded-lg shadow-prominent p-4">
+// //         <div className="absolute bottom-4 left-4 right-4 bg-card border border-border rounded shadow-prominent p-4">
 // //           <div className="flex items-start space-x-4">
 // //             <div className="w-20 h-16 bg-muted rounded-md overflow-hidden flex-shrink-0">
 // //               <img
@@ -140,7 +140,7 @@
 // //         </div>
 // //       )}
 // //       {/* Map Legend */}
-// //       <div className="absolute top-4 left-4 bg-card/90 backdrop-blur-sm border border-border rounded-lg p-3">
+// //       <div className="absolute top-4 left-4 bg-card/90 backdrop-blur-sm border border-border rounded p-3">
 // //         <h4 className="text-sm font-semibold text-foreground mb-2">
 // //           Map Legend
 // //         </h4>
@@ -171,7 +171,7 @@
 //   if (!selectedProperty) return null;
 
 //   return (
-//     <div className="bg-white shadow-md rounded-lg p-4">
+//     <div className="bg-white shadow-md rounded p-4">
 //       <h2 className="text-lg font-semibold mb-2">{selectedProperty.title}</h2>
 
 //       <p className="text-sm text-muted-foreground flex items-center">
@@ -271,7 +271,7 @@ const PropertyMap = ({
 
   if (properties.length === 0) {
     return (
-      <div className="h-full flex items-center justify-center bg-slate-100 rounded-lg">
+      <div className="h-full flex items-center justify-center bg-slate-100 rounded">
         <div className="text-center">
           <Icon name="Map" size={48} className="text-slate-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-slate-700 mb-2">
@@ -286,7 +286,7 @@ const PropertyMap = ({
   }
 
   return (
-    <div className="relative h-full bg-white rounded-lg overflow-hidden border border-slate-200">
+    <div className="relative h-full bg-white rounded overflow-hidden border border-slate-200">
       {/* Map Container */}
       <div className="w-full h-full">
         <iframe
@@ -311,8 +311,10 @@ const PropertyMap = ({
         )}
       </div>
 
+
+
       {/* Property List Sidebar */}
-      <div className="absolute top-4 left-4 bottom-4 w-80 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200 overflow-hidden">
+      <div className="absolute top-4 left-4 bottom-4 w-80 bg-white/95 backdrop-blur-sm rounded shadow-lg border border-slate-200 overflow-hidden">
         <div className="p-4 border-b border-slate-200">
           <h3 className="font-semibold text-slate-900">
             Properties on Map ({properties.length})
@@ -402,21 +404,21 @@ const PropertyMap = ({
 
       {/* Selected Property Details Card */}
       {selectedProperty && (
-        <div className="absolute bottom-4 left-4 right-4 bg-white rounded-lg shadow-lg border border-slate-200 p-4 max-w-md">
+        <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 bg-white rounded-md shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border border-gray-100 p-4 w-[calc(100%-32px)] sm:w-full max-w-sm sm:max-w-md z-20 overflow-hidden">
           <div className="flex items-start justify-between mb-3">
-            <h3 className="font-semibold text-slate-900 text-lg">
+            <h3 className="font-extrabold text-gray-900 text-base sm:text-lg leading-tight line-clamp-2 pr-2">
               {selectedProperty.title}
             </h3>
             <button
               onClick={handleCloseDetails}
-              className="p-1 text-slate-400 hover:text-slate-600 transition-colors"
+              className="p-1.5 bg-gray-50 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
             >
               <Icon name="X" size={16} />
             </button>
           </div>
 
-          <div className="flex space-x-4">
-            <div className="flex-shrink-0 w-24 h-20 bg-slate-200 rounded-md overflow-hidden">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div className="flex-shrink-0 w-full sm:w-28 h-32 sm:h-24 bg-slate-200 rounded-md overflow-hidden relative">
               <img
                 src={getPropertyImage(selectedProperty)}
                 alt={selectedProperty.title}
@@ -425,69 +427,62 @@ const PropertyMap = ({
                   e.target.src = "/assets/images/no_image.png";
                 }}
               />
+              <div className="absolute top-2 left-2 bg-blue-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-sm sm:hidden">
+                {formatPrice(selectedProperty.price)}
+              </div>
             </div>
 
-            <div className="flex-1">
-              <p className="text-sm text-slate-600 flex items-center mb-2">
-                <Icon name="MapPin" size={12} className="mr-1 flex-shrink-0" />
-                <span className="truncate">
-                  {selectedProperty.location?.address &&
-                    `${selectedProperty.location.address}, `}
-                  {selectedProperty.location?.city &&
-                    `${selectedProperty.location.city}, `}
-                  {selectedProperty.location?.state &&
-                    `${selectedProperty.location.state} `}
-                  {selectedProperty.location?.pincode &&
-                    `- ${selectedProperty.location.pincode}`}
-                </span>
-              </p>
-
-              <div className="flex items-center space-x-3 text-xs text-slate-500 mb-2">
-                {selectedProperty.specifications?.bedrooms && (
-                  <span>{selectedProperty.specifications.bedrooms} beds</span>
-                )}
-                {selectedProperty.specifications?.bathrooms && (
-                  <span>{selectedProperty.specifications.bathrooms} baths</span>
-                )}
-                {selectedProperty.specifications?.area && (
-                  <span>
-                    {selectedProperty.specifications.area}{" "}
-                    {selectedProperty.specifications.areaUnit}
+            <div className="flex-1 min-w-0 flex flex-col justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-slate-500 flex items-start mb-2">
+                  <Icon name="MapPin" size={14} className="mr-1 mt-0.5 flex-shrink-0" />
+                  <span className="line-clamp-2">
+                    {selectedProperty.location?.address &&
+                      `${selectedProperty.location.address}, `}
+                    {selectedProperty.location?.city &&
+                      `${selectedProperty.location.city}, `}
+                    {selectedProperty.location?.state &&
+                      `${selectedProperty.location.state} `}
+                    {selectedProperty.location?.pincode &&
+                      `- ${selectedProperty.location.pincode}`}
                   </span>
-                )}
+                </p>
+
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] sm:text-xs text-slate-500 mb-2 font-medium">
+                  {selectedProperty.specifications?.bedrooms && (
+                    <span className="flex items-center"><Icon name="BedDouble" size={12} className="mr-1"/> {selectedProperty.specifications.bedrooms} Beds</span>
+                  )}
+                  {selectedProperty.specifications?.bathrooms && (
+                    <span className="flex items-center"><Icon name="Bath" size={12} className="mr-1"/> {selectedProperty.specifications.bathrooms} Baths</span>
+                  )}
+                  {selectedProperty.specifications?.area && (
+                    <span className="flex items-center">
+                      <Icon name="Maximize" size={12} className="mr-1"/>
+                      {selectedProperty.specifications.area} {selectedProperty.specifications.areaUnit}
+                    </span>
+                  )}
+                </div>
               </div>
 
-              <p className="text-lg font-bold text-blue-600 mb-3">
-                {formatPrice(selectedProperty.price)}
-              </p>
+              <div className="flex items-end justify-between mt-1 sm:mt-0">
+                <p className="hidden sm:block text-lg sm:text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-800">
+                  {formatPrice(selectedProperty.price)}
+                </p>
 
-              <div className="flex space-x-2">
-                <Button
-                  size="sm"
-                  onClick={() =>
-                    window.open(
-                      `/property-details/${
-                        selectedProperty.slug || selectedProperty.id
-                      }`,
-                      "_blank"
-                    )
-                  }
-                >
-                  View Details
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    // Add to wishlist or contact functionality
-                    console.log(
-                      "Contact about property:",
-                      selectedProperty._id
-                    );
-                  }}
-                >
-                  Contact
-                </Button>
+                <div className="flex w-full sm:w-auto">
+                  <Button
+                    size="sm"
+                    onClick={() =>
+                      window.open(
+                        `/property-details/${selectedProperty.slug || selectedProperty.id}`,
+                        "_blank"
+                      )
+                    }
+                    className="flex-1 sm:flex-none text-xs px-6 py-2 h-auto rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-none shadow-md font-bold"
+                  >
+                    View Details
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -495,7 +490,7 @@ const PropertyMap = ({
       )}
 
       {/* Map Legend */}
-      <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm border border-slate-200 rounded-lg p-3 max-w-xs">
+      <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm border border-slate-200 rounded p-3 max-w-xs">
         <h4 className="text-sm font-semibold text-slate-900 mb-2">
           Map Legend
         </h4>

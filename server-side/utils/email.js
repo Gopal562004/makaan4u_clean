@@ -2,7 +2,9 @@ import nodemailer from "nodemailer";
 
 // Create email transporter
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: process.env.EMAIL_HOST || "smtp.gmail.com",
+  port: process.env.EMAIL_PORT || 587,
+  secure: false, // true for 465, false for other ports
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -178,7 +180,7 @@ export const sendInquiryNotification = async (
 export const testEmail = async () => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
       subject: "Test Email from Real Estate App",
       text: "This is a test email from your real estate application backend.",
@@ -190,5 +192,52 @@ export const testEmail = async () => {
   } catch (error) {
     console.error("Error sending test email:", error);
     return false;
+  }
+};
+
+// Send Password Reset Email
+export const sendPasswordResetEmail = async (user, otp) => {
+  const mailOptions = {
+    from: process.env.EMAIL_FROM || `"Makaan4U" <${process.env.EMAIL_USER}>`,
+    to: user.email,
+    subject: "Makaan4U - Password Reset Code",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 10px; border: 1px solid #e2e8f0;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h1 style="color: #2563eb; margin: 0; font-size: 28px;">Makaan4U</h1>
+        </div>
+        
+        <h2 style="color: #1e293b; font-size: 20px; margin-bottom: 15px;">Password Reset Request</h2>
+        
+        <p style="color: #475569; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+          Hello ${user.name},<br><br>
+          We received a request to reset your password. Enter the following 6-digit code to continue:
+        </p>
+
+        <div style="text-align: center; margin-bottom: 30px;">
+          <div style="background-color: #f1f5f9; border: 2px dashed #94a3b8; color: #1e293b; padding: 15px; border-radius: 8px; font-weight: 700; font-size: 32px; letter-spacing: 4px; display: inline-block;">
+            ${otp}
+          </div>
+        </div>
+
+        <p style="color: #64748b; font-size: 14px; margin-bottom: 25px; text-align: center;">
+          If you didn't request a password reset, you can safely ignore this email.
+        </p>
+
+        <div style="border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center;">
+          <p style="color: #94a3b8; font-size: 13px; margin: 0;">
+            This code will expire in 10 minutes.<br>
+            © ${new Date().getFullYear()} Makaan4U. All rights reserved.
+          </p>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending password reset email:", error);
+    throw error;
   }
 };

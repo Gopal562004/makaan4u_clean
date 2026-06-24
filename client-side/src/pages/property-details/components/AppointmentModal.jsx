@@ -73,7 +73,7 @@ const AppointmentModal = ({ isOpen, onClose, property, agent }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-1000 p-4">
-      <div className="bg-card border border-border rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="bg-card border border-border rounded w-full max-w-md max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div>
@@ -86,7 +86,7 @@ const AppointmentModal = ({ isOpen, onClose, property, agent }) => {
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-muted rounded-lg transition-smooth"
+            className="p-2 hover:bg-muted rounded transition-smooth"
           >
             <Icon name="X" size={20} />
           </button>
@@ -166,7 +166,7 @@ const AppointmentModal = ({ isOpen, onClose, property, agent }) => {
           </div>
 
           {/* Agent Info */}
-          <div className="bg-muted/50 rounded-lg p-4">
+          <div className="bg-muted/50 rounded p-4">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
                 <span className="text-sm font-medium text-primary-foreground">

@@ -52,7 +52,7 @@
 //   };
 
 //   return (
-//     <div className="space-y-4 p-4 bg-card border border-border rounded-lg">
+//     <div className="space-y-4 p-4 bg-card border border-border rounded">
 //       {/* Primary Actions */}
 //       {/* <div className="space-y-3">
 //         <Button
@@ -82,7 +82,7 @@
 //             key={index}
 //             onClick={action.action}
 //             disabled={action.loading}
-//             className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
+//             className={`flex flex-col items-center p-2 rounded transition-colors ${
 //               action.active
 //                 ? "bg-error/10 text-error"
 //                 : "bg-muted/50 hover:bg-muted"
@@ -105,7 +105,7 @@
 //       {/* Status Alert */}
 //       {property?.status !== "available" && (
 //         <div
-//           className={`p-3 rounded-lg text-sm text-center ${
+//           className={`p-3 rounded text-sm text-center ${
 //             property.status === "sold"
 //               ? "bg-error/10 text-error"
 //               : "bg-warning/10 text-warning"
@@ -133,6 +133,7 @@ import React, { useState, useEffect } from "react";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
 import { wishlistService } from "../../../lib/mongo/services/wishlistService";
+import EmiCalculatorModal from "./EmiCalculatorModal";
 
 const PropertyActions = ({
   property,
@@ -144,6 +145,7 @@ const PropertyActions = ({
   wishlistLoading,
 }) => {
   const [isSharing, setIsSharing] = useState(false);
+  const [isEmiModalOpen, setIsEmiModalOpen] = useState(false);
 
   const quickActions = [
     {
@@ -163,12 +165,12 @@ const PropertyActions = ({
     {
       icon: "Download",
       label: "PDF",
-      action: () => alert("Brochure download started!"),
+      action: () => window.print(),
     },
     {
       icon: "Calculator",
       label: "EMI",
-      action: () => alert("EMI Calculator coming soon!"),
+      action: () => setIsEmiModalOpen(true),
     },
   ];
 
@@ -193,7 +195,7 @@ const PropertyActions = ({
   };
 
   return (
-    <div className="space-y-4 p-4 bg-card border border-border rounded-lg">
+    <div className="space-y-4 p-4 bg-card border border-border rounded">
       {/* Quick Actions */}
       <div className="grid grid-cols-4 gap-2">
         {quickActions.map((action, index) => (
@@ -201,7 +203,7 @@ const PropertyActions = ({
             key={index}
             onClick={action.action}
             disabled={action.loading}
-            className={`flex flex-col items-center p-2 rounded-lg transition-colors border ${
+            className={`flex flex-col items-center p-2 rounded transition-colors border ${
               action.active
                 ? "bg-red-50 border-red-200 text-red-600"
                 : "bg-muted/50 border-border hover:bg-muted"
@@ -226,7 +228,7 @@ const PropertyActions = ({
       {/* Status Alert */}
       {property?.status !== "available" && (
         <div
-          className={`p-3 rounded-lg text-sm text-center ${
+          className={`p-3 rounded text-sm text-center ${
             property.status === "sold"
               ? "bg-red-50 border-red-200 text-red-700"
               : "bg-yellow-50 border-yellow-200 text-yellow-700"
@@ -245,6 +247,12 @@ const PropertyActions = ({
       <div className="text-xs text-muted-foreground text-center">
         By contacting, you agree to our terms and privacy policy.
       </div>
+
+      <EmiCalculatorModal
+        isOpen={isEmiModalOpen}
+        onClose={() => setIsEmiModalOpen(false)}
+        propertyPrice={property?.price || 0}
+      />
     </div>
   );
 };

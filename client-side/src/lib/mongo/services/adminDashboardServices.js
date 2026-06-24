@@ -44,6 +44,19 @@ export const updateUserStatus = async (id, updateData) => {
 };
 
 /* ============================================================
+   🏠 PROPERTY MANAGEMENT (Admin)
+============================================================ */
+export const fetchAllProperties = async () => {
+  const { data } = await API.get("/admin/properties");
+  return data;
+};
+
+export const updatePropertyAdminStatus = async (id, updateData) => {
+  const { data } = await API.put(`/admin/properties/${id}`, updateData);
+  return data;
+};
+
+/* ============================================================
    🧾 EXPORT DASHBOARD DATA (PDF / CSV / EXCEL)
 ============================================================ */
 export const exportDashboardData = async (exportConfig) => {
@@ -164,6 +177,10 @@ const adminDashboardServices = {
   // User Management
   fetchAllUsers,
   updateUserStatus,
+
+  // Property Management
+  fetchAllProperties,
+  updatePropertyAdminStatus,
 
   // Export / Reports
   exportDashboardData,

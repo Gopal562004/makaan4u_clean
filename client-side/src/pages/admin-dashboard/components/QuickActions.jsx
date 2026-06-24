@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../components/ui/Button";
+import { exportDashboardData } from "../../../lib/mongo/services/adminDashboardServices";
 
 const QuickActions = () => {
   const navigate = useNavigate();
@@ -22,13 +23,16 @@ const QuickActions = () => {
       label: "Download Data",
       icon: "Download",
       variant: "secondary",
-      onClick: () => {
-        // Mock download functionality
-        const link = document.createElement("a");
-        link.href =
-          "data:text/csv;charset=utf-8,Property ID,Name,Price,Status\n1,Luxury Villa,₹2.5Cr,Active\n2,Modern Apartment,₹85L,Sold";
-        link.download = "properties_data.csv";
-        link?.click();
+      onClick: async () => {
+        try {
+          await exportDashboardData({
+            formats: ["csv"],
+            emailDelivery: false,
+          });
+        } catch (err) {
+          console.error("Download failed:", err);
+          alert("Failed to download data.");
+        }
       },
     },
     {
@@ -40,7 +44,7 @@ const QuickActions = () => {
   ];
 
   return (
-    <div className="bg-card border border-border rounded-lg p-6 shadow-subtle">
+    <div className="bg-card border border-border rounded p-6 shadow-subtle">
       <h3 className="text-lg font-semibold text-foreground mb-4">
         Quick Actions
       </h3>

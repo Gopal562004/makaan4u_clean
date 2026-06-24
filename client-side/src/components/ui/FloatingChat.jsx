@@ -114,7 +114,7 @@ const FloatingChat = ({ isOpen = false, onToggle }) => {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 right-6 z-999">
+      <div className="fixed bottom-6 right-6 z-999 hidden md:block">
         <button
           onClick={onToggle}
           className="w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-prominent hover:shadow-lg transition-all duration-200 hover:scale-105 flex items-center justify-center"
@@ -126,8 +126,8 @@ const FloatingChat = ({ isOpen = false, onToggle }) => {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-999 w-80 sm:w-96 z-10 bg-white">
-      <div className="bg-card border border-border rounded-lg shadow-prominent overflow-hidden">
+    <div className="fixed bottom-6 right-6 z-999 w-80 sm:w-96 z-10 bg-white hidden md:block">
+      <div className="bg-card border border-border rounded shadow-prominent overflow-hidden">
         {/* Header */}
         <div className="bg-primary text-primary-foreground p-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -157,7 +157,7 @@ const FloatingChat = ({ isOpen = false, onToggle }) => {
               }`}
             >
               <div
-                className={`max-w-[80%] p-3 rounded-lg ${
+                className={`max-w-[80%] p-3 rounded ${
                   message?.sender === "user"
                     ? "bg-primary text-primary-foreground"
                     : "bg-card border border-border"
@@ -179,7 +179,7 @@ const FloatingChat = ({ isOpen = false, onToggle }) => {
 
           {isTyping && (
             <div className="flex justify-start">
-              <div className="bg-card border border-border p-3 rounded-lg">
+              <div className="bg-card border border-border p-3 rounded">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
                   <div

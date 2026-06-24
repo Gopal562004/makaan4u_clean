@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   X,
+  ChevronRight,
   LogIn,
   Shield,
   Key,
@@ -20,6 +21,7 @@ import {
 } from "lucide-react";
 import Button from "./Button";
 import Input from "./Input";
+import Logo from "./Logo";
 import {
   logout,
   getStoredUser,
@@ -297,107 +299,98 @@ const Header = ({ onSearch }) => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-      <div className="w-full px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center flex-shrink-0">
+    <header className="sticky top-0 z-50 w-full transition-all duration-300 bg-white/80 backdrop-blur-md transform-gpu border-b border-gray-200/50 shadow-sm will-change-transform">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 lg:h-16">
+          {/* Left: Logo & Nav */}
+          <div className="flex items-center space-x-6 flex-shrink-0">
+            {/* Logo */}
             <button
               onClick={() => navigate("/home-page")}
-              className="flex items-center space-x-3 transition-all hover:opacity-80"
+              className="flex items-center space-x-2 transition-all hover:scale-105 group"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-sm">
-                <Home size={18} color="white" />
-              </div>
-              <span className="text-lg font-bold text-gray-900 whitespace-nowrap">
+              <Logo className="w-8 h-8 group-hover:scale-105 transition-transform duration-300 drop-shadow-md" />
+              <span className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-800 whitespace-nowrap tracking-tight">
                 Makaan4U
               </span>
             </button>
-          </div>
 
-          {/* Desktop Navigation - Clean & Minimal */}
-          <nav className="hidden lg:flex items-center justify-center flex-1 max-w-xl mx-8">
-            <div className="flex items-center space-x-1">
+            {/* Desktop Navigation - Clean & Premium */}
+            <nav className="hidden lg:flex items-center space-x-0.5 border-l border-gray-200/50 pl-5 h-6">
               {getVisibleNavItems().map((item) => (
                 <button
                   key={item.path}
                   onClick={() => handleNavigation(item.path)}
-                  className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                  className={`flex items-center px-3 py-1.5 text-xs font-semibold transition-all duration-300 rounded-md ${
                     isActivePath(item.path)
-                      ? "text-blue-600 bg-blue-50 border border-blue-100"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      ? "text-blue-600 bg-blue-50/80"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100/80"
                   }`}
                 >
-                  <item.icon size={18} />
                   <span>{item.label}</span>
                 </button>
               ))}
-            </div>
-          </nav>
+            </nav>
+          </div>
+
+          {/* Center: Search */}
+          <div className="hidden lg:flex flex-1 justify-center max-w-lg px-6">
+            <form
+              onSubmit={handleSearch}
+              className="w-full relative flex items-center group"
+            >
+              <Input
+                type="search"
+                placeholder="Search properties, cities..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-24 h-9 text-xs border-gray-200 focus:border-blue-500 rounded-full shadow-sm bg-gray-50/50 hover:bg-white focus:bg-white transition-all duration-300"
+              />
+              <Search
+                size={16}
+                className="absolute left-3.5 text-gray-400 group-focus-within:text-blue-500 transition-colors"
+              />
+              <Button
+                type="submit"
+                className="absolute right-1 top-1 h-7 px-4 text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-full shadow-sm transition-all duration-300 border-none"
+              >
+                Search
+              </Button>
+            </form>
+          </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center justify-end space-x-3 flex-shrink-0">
-            {/* Search */}
+          <div className="flex items-center justify-end space-x-2 sm:space-x-4 flex-shrink-0">
+            {/* Search (Mobile Only) */}
             <div className="relative" ref={searchRef}>
-              {/* Mobile Search Icon */}
               <button
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors hover:bg-gray-100 rounded-lg"
+                className="lg:hidden p-2.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-all"
               >
                 <Search size={20} />
               </button>
 
-              {/* Desktop Search */}
-              <div className="hidden lg:flex items-center">
-                <form
-                  onSubmit={handleSearch}
-                  className="flex items-center space-x-2"
-                >
-                  <div className="relative">
+              {/* Mobile Search Overlay */}
+              {isSearchOpen && (
+                <div className="lg:hidden absolute top-16 right-0 w-[calc(100vw-2rem)] sm:w-96 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-2xl p-4 z-50 animate-in slide-in-from-top-2">
+                  <form onSubmit={handleSearch} className="relative flex items-center">
                     <Input
                       type="search"
-                      placeholder="Search properties..."
+                      placeholder="Search..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-64 pl-10 pr-4 h-10 text-sm border-gray-300 focus:border-blue-300 rounded-lg"
+                      className="w-full pl-10 pr-24 h-12 text-sm border-gray-200 focus:border-blue-500 rounded-md bg-gray-50 focus:bg-white shadow-sm"
+                      autoFocus
                     />
                     <Search
                       size={18}
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
                     />
-                  </div>
-                  <Button
-                    type="submit"
-                    className="h-10 px-4 text-sm bg-blue-600 hover:bg-blue-700 whitespace-nowrap rounded-lg"
-                  >
-                    Search
-                  </Button>
-                </form>
-              </div>
-
-              {/* Mobile Search Overlay */}
-              {isSearchOpen && (
-                <div className="lg:hidden absolute top-12 right-0 w-80 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-50">
-                  <form onSubmit={handleSearch} className="space-y-3">
-                    <div className="relative">
-                      <Input
-                        type="search"
-                        placeholder="Search properties..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full h-11 text-sm pl-10 rounded-lg"
-                        autoFocus
-                      />
-                      <Search
-                        size={18}
-                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                      />
-                    </div>
                     <Button
                       type="submit"
-                      className="w-full h-11 text-sm bg-blue-600 hover:bg-blue-700 rounded-lg"
+                      className="absolute right-1.5 top-1.5 h-9 px-4 text-xs font-bold uppercase bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm"
                     >
-                      Search Properties
+                      Search
                     </Button>
                   </form>
                 </div>
@@ -409,28 +402,28 @@ const Header = ({ onSearch }) => {
               <div className="relative" ref={notificationRef}>
                 <button
                   onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                  className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors hover:bg-gray-100 rounded-lg"
+                  className="relative p-2.5 text-gray-600 hover:text-gray-900 transition-colors hover:bg-gray-100 rounded-md"
                 >
                   <Bell size={20} />
                   {notificationCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                    <span className="absolute 2 top-1.5 right-2 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center shadow-sm">
                       {notificationCount}
                     </span>
                   )}
                 </button>
 
                 {isNotificationOpen && (
-                  <div className="absolute top-12 right-0 w-80 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
-                    <div className="p-4 border-b border-gray-200">
-                      <h3 className="font-semibold text-gray-900 text-sm">
+                  <div className="absolute top-14 right-0 w-80 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95">
+                    <div className="p-4 bg-gray-50/80 border-b border-gray-100">
+                      <h3 className="font-bold text-gray-900 text-sm">
                         Notifications
                       </h3>
                     </div>
-                    <div className="max-h-64 overflow-y-auto">
+                    <div className="max-h-80 overflow-y-auto">
                       {getNotifications().map((notification) => (
                         <div
                           key={notification.id}
-                          className="p-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors cursor-pointer"
+                          className="p-4 border-b border-gray-50 last:border-b-0 hover:bg-blue-50/50 transition-colors cursor-pointer group"
                           onClick={() => {
                             setIsNotificationOpen(false);
                             toast.info(`Opening: ${notification.title}`);
@@ -438,20 +431,20 @@ const Header = ({ onSearch }) => {
                         >
                           <div className="flex items-start space-x-3">
                             <div
-                              className={`w-2 h-2 rounded-full mt-2 ${
+                              className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
                                 notification.type === "success"
-                                  ? "bg-green-500"
+                                  ? "bg-emerald-500"
                                   : "bg-blue-500"
                               }`}
                             />
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-gray-900 truncate">
+                              <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
                                 {notification.title}
                               </p>
-                              <p className="text-sm text-gray-600 mt-1">
+                              <p className="text-xs text-gray-600 mt-0.5 line-clamp-2 leading-relaxed">
                                 {notification.message}
                               </p>
-                              <p className="text-xs text-gray-500 mt-2">
+                              <p className="text-[10px] font-medium text-gray-400 mt-2 uppercase tracking-wide">
                                 {notification.time}
                               </p>
                             </div>
@@ -466,40 +459,37 @@ const Header = ({ onSearch }) => {
 
             {/* User Profile */}
             {user ? (
-              <div className="relative" ref={profileRef}>
+              <div className="hidden lg:block relative" ref={profileRef}>
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="flex items-center space-x-2 pl-2 pr-3 py-1.5 rounded-full hover:bg-gray-100 transition-colors border border-transparent hover:border-gray-200"
                 >
-                  <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-sm">
-                    <span className="text-sm font-medium text-white">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-sm">
+                    <span className="text-xs font-bold text-white">
                       {user.name?.charAt(0)?.toUpperCase() || "U"}
                     </span>
                   </div>
-                  <ChevronDown
-                    size={16}
-                    className="text-gray-600 hidden sm:block"
-                  />
+                  <ChevronDown size={14} className="text-gray-500" />
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute top-12 right-0 w-64 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
-                    <div className="p-4 border-b border-gray-200">
+                  <div className="absolute top-14 right-0 w-64 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95">
+                    <div className="p-5 bg-gray-50/80 border-b border-gray-100">
                       <div className="flex items-center space-x-3">
-                        <div className="w-11 h-11 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-sm">
-                          <span className="text-sm font-medium text-white">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-md">
+                          <span className="text-lg font-bold text-white">
                             {user.name?.charAt(0)?.toUpperCase() || "U"}
                           </span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-gray-900 text-sm truncate">
+                          <p className="font-bold text-gray-900 text-sm truncate">
                             {user.name}
                           </p>
-                          <p className="text-sm text-gray-600 mt-1 truncate">
+                          <p className="text-xs text-gray-500 mt-0.5 truncate">
                             {user.email}
                           </p>
+                          <div className="mt-2">{getRoleBadge()}</div>
                         </div>
-                        {getRoleBadge()}
                       </div>
                     </div>
 
@@ -508,20 +498,20 @@ const Header = ({ onSearch }) => {
                         <button
                           key={item.path}
                           onClick={item.onClick}
-                          className="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                          className="w-full flex items-center space-x-3 px-5 py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50/50 transition-colors"
                         >
-                          <item.icon size={18} />
+                          <item.icon size={16} className="text-gray-400" />
                           <span>{item.label}</span>
                         </button>
                       ))}
                     </div>
 
-                    <div className="p-2 border-t border-gray-200">
+                    <div className="p-2 border-t border-gray-100 bg-gray-50/50">
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center space-x-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="w-full flex items-center space-x-3 px-3 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 hover:text-red-700 rounded-md transition-colors"
                       >
-                        <LogOut size={18} />
+                        <LogOut size={16} />
                         <span>Sign Out</span>
                       </button>
                     </div>
@@ -529,17 +519,17 @@ const Header = ({ onSearch }) => {
                 )}
               </div>
             ) : (
-              <div className="hidden lg:flex items-center space-x-3">
+              <div className="hidden lg:flex items-center space-x-2">
                 <Button
                   variant="ghost"
                   onClick={handleLogin}
-                  className="h-10 px-4 text-sm text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg"
+                  className="h-8 px-4 text-xs font-semibold text-gray-700 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 border-transparent rounded-md transition-all"
                 >
                   Sign In
                 </Button>
                 <Button
                   onClick={() => navigate("/auth/register")}
-                  className="h-10 px-4 text-sm bg-blue-600 hover:bg-blue-700 rounded-lg"
+                  className="h-8 px-4 text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-sm rounded-md transition-all hover:shadow border-none"
                 >
                   Sign Up
                 </Button>
@@ -549,91 +539,102 @@ const Header = ({ onSearch }) => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors hover:bg-gray-100 rounded-lg"
+              className="lg:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-all"
             >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-gray-200 bg-white">
-            <nav className="py-4 space-y-2">
+      {/* Mobile Navigation Overlay & Menu */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden fixed inset-x-0 top-14 bottom-0 z-[100] transition-opacity">
+          {/* Click-outside backdrop */}
+          <div 
+            className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm"
+            onClick={() => setIsMobileMenuOpen(false)} 
+          />
+          
+          {/* Menu Drawer (Full Width) */}
+          <div className="absolute top-0 left-0 right-0 bg-white/95 backdrop-blur-2xl border-b border-gray-200/50 shadow-2xl z-10 animate-in fade-in slide-in-from-top-2 overflow-hidden">
+            <nav className="flex flex-col py-2 px-4 space-y-1 max-h-[60vh] overflow-y-auto">
               {getVisibleNavItems().map((item) => (
                 <button
                   key={item.path}
-                  onClick={() => handleNavigation(item.path)}
-                  className={`w-full flex items-center space-x-3 px-4 py-3.5 text-base font-medium transition-colors rounded-lg mx-2 ${
+                  onClick={() => {
+                    handleNavigation(item.path);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`w-full flex items-center px-4 py-3.5 text-sm font-semibold transition-all rounded-lg ${
                     isActivePath(item.path)
-                      ? "text-blue-600 bg-blue-50 border border-blue-100"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      ? "text-blue-600 bg-blue-50"
+                      : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
                   }`}
                 >
-                  <item.icon size={20} />
+                  <item.icon size={18} className="mr-3 opacity-70" />
                   <span>{item.label}</span>
                 </button>
               ))}
+            </nav>
 
-              {/* Mobile Login */}
-              {!user && (
-                <div className="px-4 py-3 border-t border-gray-200">
-                  <div className="flex space-x-3">
-                    <Button
-                      variant="ghost"
-                      onClick={handleLogin}
-                      className="flex-1 h-12 text-sm text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg"
-                    >
-                      Sign In
-                    </Button>
-                    <Button
-                      onClick={() => navigate("/auth/register")}
-                      className="flex-1 h-12 text-sm bg-blue-600 hover:bg-blue-700 rounded-lg"
-                    >
-                      Sign Up
-                    </Button>
-                  </div>
+            <div className="p-4 border-t border-gray-100 bg-gray-50/50">
+              {!user ? (
+                <div className="flex flex-col space-y-3">
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      handleLogin();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full h-10 text-sm font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg shadow-sm"
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      navigate("/auth/register");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full h-10 text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg shadow-sm border-none"
+                  >
+                    Sign Up
+                  </Button>
                 </div>
-              )}
-
-              {/* User Info */}
-              {user && (
-                <div className="px-4 py-4 border-t border-gray-200">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-sm">
-                      <span className="text-base font-medium text-white">
+              ) : (
+                <div className="flex flex-col space-y-3">
+                  <div className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-100 shadow-sm">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-md flex items-center justify-center shadow-sm">
+                      <span className="text-sm font-bold text-white">
                         {user.name?.charAt(0)?.toUpperCase() || "U"}
                       </span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900 text-base truncate">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-gray-900 text-sm truncate">
                         {user.name}
                       </p>
-                      <p className="text-sm text-gray-600 truncate">
+                      <p className="text-xs text-gray-500 truncate mt-0.5">
                         {user.email}
                       </p>
                     </div>
-                    {getRoleBadge()}
                   </div>
-                </div>
-              )}
-
-              {/* Mobile Logout */}
-              {user && (
-                <div className="px-4 py-3 border-t border-gray-200">
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center justify-center space-x-2 px-4 py-3.5 text-base font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full h-11 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl border-transparent"
                   >
-                    <LogOut size={20} />
-                    <span>Sign Out</span>
-                  </button>
+                    <LogOut size={16} className="mr-2" />
+                    Sign Out
+                  </Button>
                 </div>
               )}
-            </nav>
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </header>
   );
 };

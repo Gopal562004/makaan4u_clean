@@ -38,10 +38,10 @@ const RecentReports = ({ reports, onDownload, onShare, onDelete }) => {
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg p-6">
+    <div className="bg-card border border-border rounded p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-secondary/10 rounded flex items-center justify-center">
             <Icon name="Clock" size={20} className="text-secondary" />
           </div>
           <div>
@@ -74,10 +74,10 @@ const RecentReports = ({ reports, onDownload, onShare, onDelete }) => {
           reports?.map((report) => (
             <div
               key={report?.id}
-              className="flex items-center space-x-4 p-4 border border-border rounded-lg hover:bg-muted/30 transition-smooth"
+              className="flex items-center space-x-4 p-4 border border-border rounded hover:bg-muted/30 transition-smooth"
             >
               <div
-                className={`w-10 h-10 rounded-lg flex items-center justify-center ${getFileColor(
+                className={`w-10 h-10 rounded flex items-center justify-center ${getFileColor(
                   report?.format
                 )}`}
               >

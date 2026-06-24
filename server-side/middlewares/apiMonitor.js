@@ -1,7 +1,7 @@
 // middlewares/apiMonitor.js
 
 // Your API Monitor server URL
-const MONITOR_URL = process.env.MONITOR_URL || "https://ai-api-monitoring-2.onrender.com/api/logs";
+const MONITOR_URL = process.env.MONITOR_URL || "https://lognexis-node.onrender.com/api/logs";
 const API_KEY = process.env.MONITOR_API_KEY || "ak_32f29668ba7b43d5aa55187acea93316";
 
 export default function apiMonitorMiddleware(req, res, next) {

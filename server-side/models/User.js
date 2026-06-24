@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import validator from "validator";
+import crypto from "crypto";
 
 const userSchema = new mongoose.Schema(
   {
@@ -158,6 +159,10 @@ const userSchema = new mongoose.Schema(
         default: true,
       },
     },
+
+    // Password Reset
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
   },
   {
     timestamps: {
@@ -223,6 +228,22 @@ userSchema.methods.updatePerformance = function (propertyPrice) {
   this.performance.averageDealSize =
     this.performance.totalRevenueGenerated /
     this.performance.totalPropertiesSold;
+};
+
+// Generate and hash password reset token
+userSchema.methods.createPasswordResetToken = function () {
+  // Generate 6-digit OTP
+  const resetToken = Math.floor(100000 + Math.random() * 900000).toString();
+
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // Token expires in 10 minutes
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
 };
 
 export default mongoose.model("User", userSchema);

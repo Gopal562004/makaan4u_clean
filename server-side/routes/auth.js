@@ -6,7 +6,8 @@ import {
   getMe,
   updateProfile,
   updateAvatar,
-  
+  forgotPassword,
+  resetPassword,
 } from "../controllers/authController.js";
 import { protect } from "../middlewares/auth.js";
 import { uploadAvatar } from "../middlewares/cloudinary.js";
@@ -18,6 +19,8 @@ const router = express.Router();
 // Public routes
 router.post("/register", authLimiter, validateRegister, register);
 router.post("/login", authLimiter, validateLogin, login);
+router.post("/forgotpassword", authLimiter, forgotPassword);
+router.post("/resetpassword", authLimiter, resetPassword);
 
 // Protected routes
 router.use(protect);

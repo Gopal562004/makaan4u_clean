@@ -387,32 +387,32 @@ const BreadcrumbTrail = ({
         </script>
       </Helmet>
 
-      {/* Desktop Breadcrumb */}
+      {/* Unified Elegant Breadcrumb */}
       <nav
-        className="hidden md:flex items-center space-x-2 text-sm text-text-secondary mb-4 lg:mb-6"
+        className="flex items-center space-x-1.5 text-sm mb-6 overflow-x-auto no-scrollbar pb-1"
         aria-label="Breadcrumb"
         itemScope
         itemType="https://schema.org/BreadcrumbList"
       >
-        <ol className="flex items-center space-x-2 flex-wrap">
+        <ol className="flex items-center space-x-1.5 whitespace-nowrap min-w-min">
           {breadcrumbs?.map((crumb, index) => (
             <li
-              key={`desktop-${crumb?.path}-${index}`}
+              key={`crumb-${crumb?.path}-${index}`}
               className="flex items-center"
               {...getBreadcrumbMicrodata(crumb, index)}
             >
               {index > 0 && (
                 <Icon
                   name="ChevronRight"
-                  size={16}
-                  className="mx-2 text-text-secondary flex-shrink-0"
+                  size={14}
+                  className="mx-1 text-gray-400 flex-shrink-0"
                   aria-hidden="true"
                 />
               )}
 
               {crumb?.isLast ? (
                 <span
-                  className="text-text-primary font-medium whitespace-nowrap max-w-[200px] lg:max-w-none truncate"
+                  className="text-gray-900 font-bold max-w-[200px] sm:max-w-none truncate tracking-wide"
                   aria-current="page"
                   itemProp="name"
                 >
@@ -421,7 +421,7 @@ const BreadcrumbTrail = ({
               ) : (
                 <Link
                   to={crumb?.path}
-                  className="hover:text-primary transition-colors duration-200 whitespace-nowrap max-w-[150px] lg:max-w-none truncate"
+                  className="text-gray-500 hover:text-blue-600 font-medium transition-colors duration-200 max-w-[120px] sm:max-w-none truncate"
                   itemProp="item"
                 >
                   <span itemProp="name">{crumb?.label}</span>
@@ -434,68 +434,6 @@ const BreadcrumbTrail = ({
           ))}
         </ol>
       </nav>
-
-      {/* Mobile Breadcrumb */}
-      <nav
-        className="md:hidden flex items-center justify-between mb-4"
-        aria-label="Breadcrumb"
-      >
-        <div className="flex items-center space-x-1 flex-1 min-w-0">
-          <ol className="flex items-center space-x-1 text-xs flex-1 min-w-0">
-            {getDisplayBreadcrumbs()?.map((crumb, index, array) => (
-              <li
-                key={`mobile-${crumb?.path}-${index}`}
-                className="flex items-center flex-shrink-0"
-              >
-                {index > 0 && (
-                  <Icon
-                    name="ChevronRight"
-                    size={12}
-                    className="mx-1 text-text-secondary flex-shrink-0"
-                    aria-hidden="true"
-                  />
-                )}
-
-                {crumb?.path === null ? (
-                  // Ellipsis for truncated items
-                  <span className="text-text-secondary px-1">...</span>
-                ) : crumb?.isLast ? (
-                  <span
-                    className="text-text-primary font-medium truncate max-w-[120px]"
-                    aria-current="page"
-                  >
-                    {truncateLabel(crumb?.label, 15)}
-                  </span>
-                ) : (
-                  <Link
-                    to={crumb?.path}
-                    className="hover:text-primary transition-colors duration-200 truncate max-w-[80px]"
-                  >
-                    {truncateLabel(crumb?.label, 12)}
-                  </Link>
-                )}
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        {/* Mobile Back Button */}
-        <button
-          onClick={() => window.history?.back()}
-          className="flex items-center space-x-1 text-primary hover:text-primary/80 transition-colors duration-200 ml-2 pl-2 border-l border-gray-200 flex-shrink-0"
-          aria-label="Go back to previous page"
-        >
-          <Icon name="ArrowLeft" size={14} aria-hidden="true" />
-          <span className="text-xs hidden xs:inline">Back</span>
-        </button>
-      </nav>
-
-      {/* 🔥 SEO: Hidden but accessible breadcrumb description for screen readers */}
-      <div className="sr-only" aria-live="polite">
-        <p>
-          You are here: {breadcrumbs.map((crumb) => crumb.label).join(" > ")}
-        </p>
-      </div>
     </>
   );
 };

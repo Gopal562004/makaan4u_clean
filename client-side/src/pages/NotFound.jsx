@@ -16,7 +16,7 @@ const NotFound = () => {
         {/* Animated Icon */}
         <div className="flex justify-center mb-8">
           <div className="relative">
-            <div className="w-24 h-24 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl shadow-sm flex items-center justify-center border border-gray-100 animate-pulse">
+            <div className="w-24 h-24 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-md shadow-sm flex items-center justify-center border border-gray-100 animate-pulse">
               <Search className="w-12 h-12 text-blue-400" />
             </div>
             <div className="absolute -top-2 -right-2">

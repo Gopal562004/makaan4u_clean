@@ -3,7 +3,7 @@
 
 // const ExpertSpotlight = ({ experts }) => {
 //   return (
-//     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+//     <div className="bg-white rounded-md shadow-sm border border-gray-200 p-6">
 //       <div className="text-center mb-6">
 //         <Award className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
 //         <h3 className="text-lg font-bold text-gray-900">Expert Spotlight</h3>
@@ -14,7 +14,7 @@
 //         {experts.map((expert) => (
 //           <div
 //             key={expert.id}
-//             className="text-center p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100"
+//             className="text-center p-4 rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100"
 //           >
 //             <img
 //               src={expert.avatar}
@@ -56,7 +56,7 @@ import { Award, BookOpen, Calendar } from "lucide-react";
 
 const ExpertSpotlight = ({ experts }) => {
   return (
-    <div className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-5 md:p-6">
+    <div className="bg-white rounded sm:rounded-md md:rounded-md shadow-sm border border-gray-200 p-4 sm:p-5 md:p-6">
       {/* Header */}
       <div className="text-center mb-4 sm:mb-6">
         <Award className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-yellow-500 mx-auto mb-1 sm:mb-2" />
@@ -73,7 +73,7 @@ const ExpertSpotlight = ({ experts }) => {
         {experts.map((expert) => (
           <div
             key={expert.id}
-            className="text-center p-3 sm:p-4 rounded-lg sm:rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 hover:shadow-md transition-all duration-300"
+            className="text-center p-3 sm:p-4 rounded sm:rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 hover:shadow-md transition-all duration-300"
           >
             {/* Expert Avatar */}
             <img

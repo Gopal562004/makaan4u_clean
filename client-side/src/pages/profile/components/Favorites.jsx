@@ -72,7 +72,7 @@
 //           <select
 //             value={filter}
 //             onChange={(e) => setFilter(e.target.value)}
-//             className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+//             className="px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
 //           >
 //             <option value="all">All Types</option>
 //             <option value="apartment">Apartments</option>
@@ -98,7 +98,7 @@
 //           {filteredProperties.map((property) => (
 //             <div
 //               key={property.id}
-//               className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300"
+//               className="bg-white rounded border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300"
 //             >
 //               {/* Image */}
 //               <div className="relative h-48">
@@ -285,7 +285,7 @@ const Favorites = () => {
           {[1, 2, 3].map((item) => (
             <div
               key={item}
-              className="bg-white rounded-lg border border-gray-200 overflow-hidden animate-pulse"
+              className="bg-white rounded border border-gray-200 overflow-hidden animate-pulse"
             >
               <div className="h-48 bg-gray-200"></div>
               <div className="p-4">
@@ -326,7 +326,7 @@ const Favorites = () => {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              className="px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
             >
               <option value="all">All Types</option>
               <option value="apartment">Apartments</option>
@@ -340,7 +340,7 @@ const Favorites = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+        <div className="bg-red-50 border border-red-200 rounded p-4 mb-6">
           <div className="flex items-center">
             <Heart className="w-5 h-5 text-red-500 mr-2" />
             <span className="text-red-700">{error}</span>
@@ -363,7 +363,7 @@ const Favorites = () => {
               </p>
               <Link
                 to="/property-listings"
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
               >
                 Browse Properties
                 <ExternalLink className="w-4 h-4 ml-2" />
@@ -386,7 +386,7 @@ const Favorites = () => {
           {filteredProperties.map((property) => (
             <div
               key={property.id}
-              className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 group"
+              className="bg-white rounded border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 group"
             >
               {/* Image */}
               <div className="relative h-48">

@@ -15,7 +15,7 @@
 //           {/* View Toggle */}
 //           <div className="flex items-center space-x-4">
 //             <span className="text-sm font-medium text-gray-900">View as:</span>
-//             <div className="flex bg-gray-100 rounded-lg p-1">
+//             <div className="flex bg-gray-100 rounded p-1">
 //               <button
 //                 onClick={() => onViewChange("grid")}
 //                 className={`p-2 rounded-md transition-all duration-200 ${
@@ -43,7 +43,7 @@
 //           <div className="flex overflow-x-auto space-x-3 scrollbar-hide">
 //             <button
 //               onClick={() => onCategoryChange("all")}
-//               className={`flex-shrink-0 px-4 py-2 rounded-lg border transition-all duration-200 ${
+//               className={`flex-shrink-0 px-4 py-2 rounded border transition-all duration-200 ${
 //                 selectedCategory === "all"
 //                   ? "bg-blue-600 text-white border-blue-600"
 //                   : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
@@ -58,7 +58,7 @@
 //                 <button
 //                   key={category.id}
 //                   onClick={() => onCategoryChange(category.id)}
-//                   className={`flex-shrink-0 px-4 py-2 rounded-lg border transition-all duration-200 ${
+//                   className={`flex-shrink-0 px-4 py-2 rounded border transition-all duration-200 ${
 //                     selectedCategory === category.id
 //                       ? "bg-blue-600 text-white border-blue-600"
 //                       : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
@@ -94,7 +94,7 @@ const CategoryFilters = ({
             <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
               View as:
             </span>
-            <div className="flex bg-gray-100 rounded-lg p-1">
+            <div className="flex bg-gray-100 rounded p-1">
               <button
                 onClick={() => onViewChange("grid")}
                 className={`p-1.5 sm:p-2 rounded-md transition-all duration-200 ${
@@ -126,7 +126,7 @@ const CategoryFilters = ({
               <div className="flex space-x-2 sm:space-x-3 min-w-max">
                 <button
                   onClick={() => onCategoryChange("all")}
-                  className={`flex-shrink-0 px-3 py-2 sm:px-4 sm:py-2 rounded-lg border transition-all duration-200 text-sm sm:text-base whitespace-nowrap ${
+                  className={`flex-shrink-0 px-3 py-2 sm:px-4 sm:py-2 rounded border transition-all duration-200 text-sm sm:text-base whitespace-nowrap ${
                     selectedCategory === "all"
                       ? "bg-blue-600 text-white border-blue-600 shadow-sm"
                       : "bg-white text-gray-700 border-gray-300 hover:border-gray-400 hover:bg-gray-50"
@@ -141,7 +141,7 @@ const CategoryFilters = ({
                     <button
                       key={category.id}
                       onClick={() => onCategoryChange(category.id)}
-                      className={`flex-shrink-0 px-3 py-2 sm:px-4 sm:py-2 rounded-lg border transition-all duration-200 text-sm sm:text-base whitespace-nowrap ${
+                      className={`flex-shrink-0 px-3 py-2 sm:px-4 sm:py-2 rounded border transition-all duration-200 text-sm sm:text-base whitespace-nowrap ${
                         selectedCategory === category.id
                           ? "bg-blue-600 text-white border-blue-600 shadow-sm"
                           : "bg-white text-gray-700 border-gray-300 hover:border-gray-400 hover:bg-gray-50"

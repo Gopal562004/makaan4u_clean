@@ -18,7 +18,7 @@ import { Checkbox } from "../../../components/ui/Checkbox";
 
 const FilterSidebar = ({
   filters,
-  onFiltersChange,
+  onChange,
   propertyCount = 0,
   filterOptions = {},
   isOpen = false,
@@ -208,7 +208,7 @@ const FilterSidebar = ({
   const handleFilterChange = (key, value) => {
     const newFilters = { ...localFilters, [key]: value };
     setLocalFilters(newFilters);
-    onFiltersChange(newFilters);
+    if (onChange) onChange(newFilters);
   };
 
   const toggleSection = (section) => {
@@ -229,7 +229,7 @@ const FilterSidebar = ({
       agent: "",
     };
     setLocalFilters(clearedFilters);
-    onFiltersChange(clearedFilters);
+    if (onChange) onChange(clearedFilters);
   };
 
   // Count active filters for badge display
@@ -249,7 +249,7 @@ const FilterSidebar = ({
     <div className="border-b border-slate-200 pb-6 mb-6 last:border-b-0 last:pb-0 last:mb-0">
       <button
         onClick={() => toggleSection(sectionKey)}
-        className="w-full flex items-center justify-between p-3 hover:bg-slate-50 rounded-xl transition-all duration-200 group"
+        className="w-full flex items-center justify-between p-3 hover:bg-slate-50 rounded-md transition-all duration-200 group"
       >
         <div className="flex items-center space-x-3">
           <h3 className="font-semibold text-slate-900 text-sm">{title}</h3>
@@ -301,7 +301,7 @@ const FilterSidebar = ({
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="hover:bg-slate-100 rounded-xl"
+            className="hover:bg-slate-100 rounded-md"
           >
             <X size={20} className="text-slate-600" />
           </Button>
@@ -334,7 +334,7 @@ const FilterSidebar = ({
                       min: e.target.value,
                     })
                   }
-                  className="text-sm border-slate-300 focus:border-blue-500 rounded-lg"
+                  className="text-sm border-slate-300 focus:border-blue-500 rounded"
                 />
               </div>
               <div>
@@ -351,7 +351,7 @@ const FilterSidebar = ({
                       max: e.target.value,
                     })
                   }
-                  className="text-sm border-slate-300 focus:border-blue-500 rounded-lg"
+                  className="text-sm border-slate-300 focus:border-blue-500 rounded"
                 />
               </div>
             </div>
@@ -369,7 +369,7 @@ const FilterSidebar = ({
                         max: range.max.toString(),
                       });
                     }}
-                    className={`w-full text-left px-3 py-2 text-sm rounded-lg border transition-all duration-200 ${
+                    className={`w-full text-left px-3 py-2 text-sm rounded border transition-all duration-200 ${
                       localFilters.priceRange.min === range.min.toString() &&
                       localFilters.priceRange.max === range.max.toString()
                         ? "bg-blue-50 text-blue-700 border-blue-200 font-medium"
@@ -458,7 +458,7 @@ const FilterSidebar = ({
                     localFilters.bedrooms === bedroom ? "" : bedroom
                   )
                 }
-                className={`p-3 text-sm font-semibold rounded-xl border-2 transition-all duration-200 ${
+                className={`p-3 text-sm font-semibold rounded-md border-2 transition-all duration-200 ${
                   localFilters.bedrooms === bedroom
                     ? "bg-blue-600 text-white border-blue-600 shadow-md"
                     : "bg-white text-slate-700 border-slate-300 hover:border-blue-400 hover:bg-blue-50"
@@ -486,7 +486,7 @@ const FilterSidebar = ({
                     localFilters.bathrooms === bathroom ? "" : bathroom
                   )
                 }
-                className={`p-3 text-sm font-semibold rounded-xl border-2 transition-all duration-200 ${
+                className={`p-3 text-sm font-semibold rounded-md border-2 transition-all duration-200 ${
                   localFilters.bathrooms === bathroom
                     ? "bg-blue-600 text-white border-blue-600 shadow-md"
                     : "bg-white text-slate-700 border-slate-300 hover:border-blue-400 hover:bg-blue-50"
@@ -532,7 +532,7 @@ const FilterSidebar = ({
             {agents.map((agent) => (
               <div
                 key={agent.id}
-                className={`p-3 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                className={`p-3 rounded-md border-2 cursor-pointer transition-all duration-200 ${
                   localFilters.agent === agent.id.toString()
                     ? "bg-blue-50 border-blue-200 shadow-sm"
                     : "bg-white border-slate-200 hover:border-blue-300 hover:bg-slate-50"
@@ -572,7 +572,7 @@ const FilterSidebar = ({
           fullWidth
           onClick={clearAllFilters}
           disabled={getActiveFilterCount() === 0}
-          className="border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 h-12 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          className="border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 h-12 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <RotateCcw size={18} className="mr-2" />
           Clear All Filters
@@ -581,7 +581,7 @@ const FilterSidebar = ({
           <Button
             fullWidth
             onClick={onClose}
-            className="bg-blue-600 hover:bg-blue-700 h-12 rounded-xl font-semibold text-white transition-colors"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-12 rounded-md font-bold tracking-wide text-white transition-all shadow-md border-none"
           >
             Show {propertyCount} Properties
           </Button>
@@ -627,7 +627,7 @@ const FilterSidebar = ({
   }
 
   return (
-    <div className="w-80 bg-white border-r border-slate-200 h-full shadow-sm">
+    <div className="w-full bg-white border-r border-slate-200 h-full shadow-sm">
       {sidebarContent}
     </div>
   );

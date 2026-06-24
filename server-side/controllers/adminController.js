@@ -323,19 +323,35 @@ export const exportDashboardData = async (req, res) => {
 ============================================================ */
 export const getSalesTrend = async (req, res) => {
   try {
-    // Mock sales trend data — replace with real aggregation later
-    const salesTrend = [
-      { month: "Jan", sales: 45, revenue: 2400000, leads: 120 },
-      { month: "Feb", sales: 52, revenue: 2800000, leads: 135 },
-      { month: "Mar", sales: 48, revenue: 2600000, leads: 128 },
-      { month: "Apr", sales: 61, revenue: 3200000, leads: 145 },
-      { month: "May", sales: 55, revenue: 2900000, leads: 132 },
-      { month: "Jun", sales: 67, revenue: 3500000, leads: 158 },
-      { month: "Jul", sales: 59, revenue: 3100000, leads: 142 },
-      { month: "Aug", sales: 72, revenue: 3800000, leads: 165 },
-      { month: "Sep", sales: 68, revenue: 3600000, leads: 152 },
-      { month: "Oct", sales: 75, revenue: 3900000, leads: 170 },
-    ];
+    const currentYear = new Date().getFullYear();
+    const startOfYear = new Date(`${currentYear}-01-01T00:00:00.000Z`);
+
+    const salesAggregation = await Property.aggregate([
+      {
+        $match: {
+          status: "sold",
+          updatedAt: { $gte: startOfYear },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$updatedAt" },
+          sales: { $sum: 1 },
+          revenue: { $sum: "$price" },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const salesTrend = salesAggregation.map((item) => ({
+      month: months[item._id - 1],
+      sales: item.sales,
+      revenue: item.revenue,
+      leads: 0, // Placeholder, can be aggregated from Leads later if needed
+    }));
 
     res.status(200).json({
       success: true,
@@ -640,6 +656,63 @@ export const getRecentActivity = async (req, res) => {
 };
 
 /* ============================================================
+   🏠 PROPERTY MANAGEMENT (List / Update Status)
+============================================================ */
+export const manageProperties = async (req, res) => {
+  try {
+    const properties = await Property.find()
+      .populate("postedBy", "name email avatar")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: properties.length,
+      properties,
+    });
+  } catch (error) {
+    console.error("Manage Properties Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch properties.",
+    });
+  }
+};
+
+export const updatePropertyStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, isActive } = req.body;
+
+    const updateFields = {};
+    if (status !== undefined) updateFields.status = status;
+    if (isActive !== undefined) updateFields.isActive = isActive;
+
+    const property = await Property.findByIdAndUpdate(
+      id,
+      { $set: updateFields },
+      { new: true }
+    );
+
+    if (!property) {
+      return res.status(404).json({ success: false, message: "Property not found." });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Property status updated.",
+      property,
+    });
+  } catch (error) {
+    console.error("Update Property Status Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update property.",
+      error: error.message
+    });
+  }
+};
+
+/* ============================================================
    📅 DATE RANGE FILTER
 ============================================================ */
 export const getDataByDateRange = async (req, res) => {
@@ -739,10 +812,10 @@ export const exportReports = async (req, res) => {
       ]
     );
 
-    // Mock property views — replace with PropertyView model if exists
+    // Use real property views
     const propertyViews = properties.map((p) => ({
       title: p.title,
-      views: p.views || Math.floor(Math.random() * 500),
+      views: p.views || 0,
       postedBy: p.postedBy?.name || "Unknown",
     }));
 

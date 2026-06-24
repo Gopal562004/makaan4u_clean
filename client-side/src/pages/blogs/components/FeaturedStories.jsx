@@ -24,7 +24,7 @@
 //           {posts.map((post, index) => (
 //             <div
 //               key={post.id}
-//               className={`bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-500 group ${
+//               className={`bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-500 group ${
 //                 index === 0 ? "lg:col-span-2 lg:row-span-2" : ""
 //               }`}
 //             >
@@ -144,15 +144,18 @@ const FeaturedStories = ({ posts }) => {
         {/* Featured Posts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {posts.map((post, index) => (
-            <div
+            <a
               key={post.id}
-              className={`bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg sm:hover:shadow-xl transition-all duration-500 group ${
+              href={post.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`bg-white rounded-md sm:rounded-md shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg sm:hover:shadow-xl transition-all duration-500 group block ${
                 index === 0 ? "lg:col-span-2 lg:row-span-2" : ""
               }`}
             >
               {/* Image Section */}
               <div
-                className={`relative ${
+                className={`relative overflow-hidden ${
                   index === 0 ? "h-48 sm:h-60 md:h-80" : "h-40 sm:h-48"
                 }`}
               >
@@ -249,13 +252,13 @@ const FeaturedStories = ({ posts }) => {
                   </div>
 
                   {/* Read Button */}
-                  <button className="flex items-center text-blue-600 font-medium hover:text-blue-700 transition-colors text-sm sm:text-base self-start xs:self-auto">
+                  <div className="flex items-center text-blue-600 font-medium hover:text-blue-700 transition-colors text-sm sm:text-base self-start xs:self-auto">
                     Read Story
                     <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2 group-hover:translate-x-0.5 sm:group-hover:translate-x-1 transition-transform" />
-                  </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>

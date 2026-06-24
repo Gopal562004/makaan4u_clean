@@ -55,7 +55,7 @@ const DateRangeFilter = ({ onDateRangeChange }) => {
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg p-4 shadow-subtle">
+    <div className="bg-card border border-border rounded p-4 shadow-subtle">
       <div className="flex items-center justify-between mb-3">
         <h4 className="font-medium text-foreground flex items-center space-x-2">
           <Icon name="Calendar" size={18} />
@@ -78,7 +78,7 @@ const DateRangeFilter = ({ onDateRangeChange }) => {
         ))}
       </div>
       {isCustomOpen && (
-        <div className="mt-4 p-3 border border-border rounded-lg bg-muted/30">
+        <div className="mt-4 p-3 border border-border rounded bg-muted/30">
           <div className="space-y-3">
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">

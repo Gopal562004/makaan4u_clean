@@ -101,7 +101,7 @@ const PropertyImageGallery = ({ images = [], propertyTitle = "" }) => {
   if (!optimizedImages?.length) {
     return (
       <div
-        className="w-full h-96 bg-muted rounded-lg flex items-center justify-center"
+        className="w-full h-96 bg-muted rounded flex items-center justify-center"
         itemScope
         itemType="https://schema.org/Photograph"
       >
@@ -136,7 +136,7 @@ const PropertyImageGallery = ({ images = [], propertyTitle = "" }) => {
       {/* Main Image */}
       <div className="relative group">
         <div
-          className="relative w-full h-96 lg:h-[500px] overflow-hidden rounded-lg bg-muted"
+          className="relative w-full h-96 lg:h-[500px] overflow-hidden rounded-md bg-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
           itemScope
           itemType="https://schema.org/ImageObject"
         >
@@ -151,6 +151,9 @@ const PropertyImageGallery = ({ images = [], propertyTitle = "" }) => {
             loading={currentImageIndex === 0 ? "eager" : "lazy"}
             itemProp="contentUrl"
           />
+
+          {/* Cinematic Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none" />
 
           {/* SEO Meta for Main Image */}
           <meta
@@ -226,10 +229,10 @@ const PropertyImageGallery = ({ images = [], propertyTitle = "" }) => {
             <button
               key={index}
               onClick={() => selectImage(index)}
-              className={`flex-shrink-0 w-20 h-16 rounded-md overflow-hidden border-2 transition-all ${
+              className={`flex-shrink-0 w-24 h-20 rounded-md overflow-hidden border-2 transition-all duration-300 ${
                 index === currentImageIndex
-                  ? "border-primary"
-                  : "border-transparent hover:border-border"
+                  ? "border-blue-600 shadow-md ring-2 ring-blue-600 ring-offset-2"
+                  : "border-transparent hover:border-gray-300 opacity-80 hover:opacity-100"
               }`}
               role="tab"
               aria-selected={index === currentImageIndex}

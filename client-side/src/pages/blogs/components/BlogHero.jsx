@@ -18,7 +18,7 @@
 
 //       <div className="relative max-w-6xl mx-auto px-4 text-center">
 //         {/* Unique Header Badge */}
-//         <div className="inline-flex items-center px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 text-blue-700 text-lg font-semibold mb-8 shadow-sm">
+//         <div className="inline-flex items-center px-6 py-3 rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 text-blue-700 text-lg font-semibold mb-8 shadow-sm">
 //           <Sparkles className="w-5 h-5 mr-3 text-blue-600" />
 //           The Knowledge Hub for Property Enthusiasts
 //         </div>
@@ -79,19 +79,19 @@
 //         {/* Enhanced Search with Context */}
 //         <div className="max-w-2xl mx-auto">
 //           <div className="relative group">
-//             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+//             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-md blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
 //             <div className="relative">
 //               <input
 //                 type="text"
 //                 placeholder="Dive into market insights, investment strategies, or expert analysis..."
 //                 value={searchQuery}
 //                 onChange={(e) => onSearchChange(e.target.value)}
-//                 className="w-full px-6 py-5 pl-14 rounded-2xl border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-blue-500 transition-all duration-300 bg-white shadow-lg"
+//                 className="w-full px-6 py-5 pl-14 rounded-md border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-blue-500 transition-all duration-300 bg-white shadow-lg"
 //               />
 //               <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 group-hover:text-blue-500 transition-colors" />
 //               <button
 //                 onClick={() => onSearchSubmit(searchQuery)}
-//                 className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-xl transition-all duration-300 hover:scale-105"
+//                 className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-md font-semibold hover:shadow-xl transition-all duration-300 hover:scale-105"
 //               >
 //                 Discover
 //               </button>
@@ -148,7 +148,7 @@ const BlogHero = ({
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center">
         {/* Unique Header Badge */}
-        <div className="inline-flex items-center px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 text-blue-700 text-sm sm:text-base md:text-lg font-semibold mb-6 sm:mb-8 shadow-sm">
+        <div className="inline-flex items-center px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 rounded-md sm:rounded-md bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 text-blue-700 text-sm sm:text-base md:text-lg font-semibold mb-6 sm:mb-8 shadow-sm">
           <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 text-blue-600 flex-shrink-0" />
           <span className="text-xs sm:text-sm md:text-base">
             The Knowledge Hub for Property Enthusiasts
@@ -175,59 +175,27 @@ const BlogHero = ({
           </p>
         </div>
 
-        {/* Enhanced Stats with Progress Indicators */}
-        <div className="flex justify-center items-center space-x-4 sm:space-x-8 md:space-x-12 mb-8 sm:mb-10">
-          <div className="text-center">
-            <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">
-              {totalArticles}
-            </div>
-            <div className="text-xs sm:text-sm text-gray-500 font-medium">
-              Curated Stories
-            </div>
-            <div className="w-12 sm:w-14 md:w-16 h-0.5 sm:h-1 bg-blue-200 rounded-full mx-auto mt-1 sm:mt-2">
-              <div className="w-8 sm:w-10 md:w-12 h-0.5 sm:h-1 bg-blue-500 rounded-full"></div>
-            </div>
-          </div>
-          <div className="text-center">
-            <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">
-              15+
-            </div>
-            <div className="text-xs sm:text-sm text-gray-500 font-medium">
-              Industry Experts
-            </div>
-            <div className="w-12 sm:w-14 md:w-16 h-0.5 sm:h-1 bg-green-200 rounded-full mx-auto mt-1 sm:mt-2">
-              <div className="w-6 sm:w-8 md:w-10 h-0.5 sm:h-1 bg-green-500 rounded-full"></div>
-            </div>
-          </div>
-          <div className="text-center">
-            <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">
-              42
-            </div>
-            <div className="text-xs sm:text-sm text-gray-500 font-medium">
-              Topics Covered
-            </div>
-            <div className="w-12 sm:w-14 md:w-16 h-0.5 sm:h-1 bg-purple-200 rounded-full mx-auto mt-1 sm:mt-2">
-              <div className="w-10 sm:w-12 md:w-14 h-0.5 sm:h-1 bg-purple-500 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-
         {/* Enhanced Search with Context */}
-        <div className="max-w-2xl mx-auto">
-          <form onSubmit={handleSubmit} className="relative group">
-            <div className="absolute -inset-0.5 sm:-inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl sm:rounded-2xl blur opacity-20 sm:opacity-25 group-hover:opacity-30 sm:group-hover:opacity-40 transition duration-300"></div>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search market insights, investment strategies..."
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                className="w-full px-4 py-3 sm:px-6 sm:py-4 md:py-5 pl-12 sm:pl-14 rounded-xl sm:rounded-2xl border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-blue-500 transition-all duration-300 bg-white shadow-lg text-sm sm:text-base"
-              />
-              <Search className="absolute left-3 sm:left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5 group-hover:text-blue-500 transition-colors" />
+        <div className="max-w-2xl mx-auto mt-8 sm:mt-10">
+          <form
+            onSubmit={handleSubmit}
+            className="relative group"
+          >
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-md blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+            <div className="relative flex flex-col xs:flex-row">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Dive into market insights, investment strategies..."
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  className="w-full px-4 sm:px-6 py-3 sm:py-4 md:py-5 pl-10 sm:pl-12 md:pl-14 rounded-t-md xs:rounded-l-md xs:rounded-tr-none border-2 border-gray-200 text-gray-900 focus:outline-none focus:border-blue-500 transition-all duration-300 bg-white shadow-lg text-sm sm:text-base"
+                />
+                <Search className="absolute left-3 sm:left-4 md:left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5 group-hover:text-blue-500 transition-colors" />
+              </div>
               <button
                 type="submit"
-                className="absolute right-1.5 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 sm:px-6 sm:py-2.5 md:px-8 md:py-3 rounded-lg sm:rounded-xl font-semibold hover:shadow-xl transition-all duration-300 hover:scale-105 text-xs sm:text-sm md:text-base"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 sm:px-8 py-3 sm:py-4 md:py-5 rounded-b-md xs:rounded-r-md xs:rounded-bl-none font-semibold hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 text-sm sm:text-base whitespace-nowrap flex-shrink-0"
               >
                 Discover
               </button>

@@ -12,7 +12,7 @@
 
 // const BlogCard = ({ post }) => {
 //   return (
-//     <article className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-500 group">
+//     <article className="bg-white rounded-md shadow-sm border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-500 group">
 //       <div className="relative h-48 overflow-hidden">
 //         <img
 //           src={post.image}
@@ -130,7 +130,12 @@ import {
 
 const BlogCard = ({ post }) => {
   return (
-    <article className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg sm:hover:shadow-xl transition-all duration-500 group">
+    <a 
+      href={post.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="bg-white rounded sm:rounded-md md:rounded-md shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg sm:hover:shadow-xl transition-all duration-500 group block flex-col h-full"
+    >
       <div className="relative h-40 sm:h-44 md:h-48 overflow-hidden">
         <img
           src={post.image}
@@ -167,18 +172,20 @@ const BlogCard = ({ post }) => {
             </span>
           </div>
           <div className="flex items-center space-x-0.5 sm:space-x-1">
-            <button
+            <div
               className="p-1 hover:bg-gray-100 rounded transition-colors"
               aria-label="Save article"
+              onClick={(e) => e.preventDefault()}
             >
               <Bookmark className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
-            </button>
-            <button
+            </div>
+            <div
               className="p-1 hover:bg-gray-100 rounded transition-colors"
               aria-label="Share article"
+              onClick={(e) => e.preventDefault()}
             >
               <Share2 className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
-            </button>
+            </div>
           </div>
         </div>
 
@@ -194,7 +201,7 @@ const BlogCard = ({ post }) => {
 
         {/* Tags */}
         <div className="flex flex-wrap gap-1 mb-3 sm:mb-4">
-          {post.tags.slice(0, 2).map((tag, index) => (
+          {(post.tags || []).slice(0, 2).map((tag, index) => (
             <span
               key={index}
               className="bg-gray-100 text-gray-600 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-xs font-medium"
@@ -202,9 +209,9 @@ const BlogCard = ({ post }) => {
               #{tag}
             </span>
           ))}
-          {post.tags.length > 2 && (
+          {(post.tags || []).length > 2 && (
             <span className="bg-gray-100 text-gray-600 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-xs font-medium">
-              +{post.tags.length - 2}
+              +{(post.tags || []).length - 2}
             </span>
           )}
         </div>
@@ -243,7 +250,7 @@ const BlogCard = ({ post }) => {
           </div>
         </div>
       </div>
-    </article>
+    </a>
   );
 };
 

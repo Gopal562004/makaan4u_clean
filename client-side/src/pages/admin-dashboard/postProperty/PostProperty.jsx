@@ -3,8 +3,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Icon from "../../../components/AppIcon";
 import Button from "../../../components/ui/Button";
-import { createProperty } from "../../../lib/mongo/services/propertyService";
-import { getAvailableAgents } from "../../../lib/mongo/services/propertyService";
+import { createProperty, getPropertyById, updateProperty, getAvailableAgents } from "../../../lib/mongo/services/propertyService";
+import { useParams, useNavigate } from "react-router-dom";
 
 // Memoized input components
 const InputField = React.memo(
@@ -32,7 +32,7 @@ const InputField = React.memo(
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        className="w-full px-3 py-2 border border-border rounded bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
         {...props}
       />
     </div>
@@ -53,7 +53,7 @@ const SelectField = React.memo(
         value={value}
         onChange={onChange}
         required={required}
-        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        className="w-full px-3 py-2 border border-border rounded bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
         {...props}
       >
         <option value="">Select {label}</option>
@@ -88,7 +88,7 @@ const TextareaField = React.memo(
         placeholder={placeholder}
         required={required}
         rows={rows}
-        className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-vertical"
+        className="w-full px-3 py-2 border border-border rounded bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-vertical"
         {...props}
       />
     </div>
@@ -109,6 +109,11 @@ const CheckboxField = React.memo(({ label, checked, onChange, ...props }) => (
 ));
 
 const PostProperty = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const isEditMode = !!id;
+  const [initialLoading, setInitialLoading] = useState(isEditMode);
+
   const [formData, setFormData] = useState({
     // Basic Information
     title: "",
@@ -223,6 +228,27 @@ const PostProperty = () => {
   useEffect(() => {
     fetchUserData();
   }, []);
+
+  // Fetch property for editing
+  useEffect(() => {
+    if (isEditMode) {
+      const fetchProperty = async () => {
+        try {
+          const res = await getPropertyById(id);
+          if (res?.property) {
+            const propData = { ...res.property, images: [] };
+            setFormData(prev => ({ ...prev, ...propData }));
+          }
+        } catch (error) {
+          toast.error("Failed to load property for editing");
+          navigate("/admin/properties");
+        } finally {
+          setInitialLoading(false);
+        }
+      };
+      fetchProperty();
+    }
+  }, [id, isEditMode, navigate]);
 
   const fetchUserData = useCallback(async () => {
     try {
@@ -649,17 +675,27 @@ const PostProperty = () => {
         propertyData.manualAgent = formData.manualAgentInfo;
       }
 
-      const result = await createProperty(propertyData);
+      let result;
+      if (isEditMode) {
+        result = await updateProperty(id, propertyData);
+      } else {
+        result = await createProperty(propertyData);
+      }
 
       toast.update(toastId, {
         render:
           result.agentType === "manual"
-            ? "Property posted successfully with manual agent information! 🎉"
-            : "Property posted successfully! 🎉",
+            ? `Property ${isEditMode ? 'updated' : 'posted'} successfully with manual agent information! 🎉`
+            : `Property ${isEditMode ? 'updated' : 'posted'} successfully! 🎉`,
         type: "success",
         isLoading: false,
         autoClose: 3000,
       });
+
+      if (isEditMode) {
+        setTimeout(() => navigate("/admin/properties"), 1500);
+        return;
+      }
 
       // Reset form
       setFormData({
@@ -809,7 +845,7 @@ const PostProperty = () => {
   const AgentSelectionField = React.memo(() => {
     if (userRole === "employee") {
       return (
-        <div className="bg-success/10 border border-success/20 rounded-lg p-4">
+        <div className="bg-success/10 border border-success/20 rounded p-4">
           <div className="flex items-center space-x-2">
             <Icon name="UserCheck" size={20} className="text-success" />
             <span className="text-success font-medium">
@@ -869,7 +905,7 @@ const PostProperty = () => {
                   <div
                     key={agent._id}
                     onClick={() => handleAgentSelect(agent._id)}
-                    className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                    className={`p-3 border rounded cursor-pointer transition-all ${
                       formData.assignedAgent === agent._id
                         ? "border-primary bg-primary/5"
                         : "border-border hover:border-primary/50"
@@ -930,7 +966,7 @@ const PostProperty = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="bg-info/10 border border-info/20 rounded-lg p-4">
+            <div className="bg-info/10 border border-info/20 rounded p-4">
               <div className="flex items-center space-x-2">
                 <Icon name="Info" size={16} className="text-info" />
                 <span className="text-sm text-info">
@@ -1008,7 +1044,7 @@ const PostProperty = () => {
         )}
 
         {(formData.assignedAgent || formData.manualAgentInfo.name) && (
-          <div className="bg-primary/5 border border-primary/20 rounded-lg p-3">
+          <div className="bg-primary/5 border border-primary/20 rounded p-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <Icon name="UserCheck" size={16} className="text-primary" />
@@ -1061,7 +1097,7 @@ const PostProperty = () => {
 
   // Step 1: Basic Information
   const Step1 = () => (
-    <div className="bg-card border border-border rounded-lg p-6">
+    <div className="bg-card border border-border rounded p-6">
       <div className="flex items-center space-x-2 mb-6">
         <Icon name="Info" size={20} className="text-primary" />
         <h2 className="text-xl font-semibold text-foreground">
@@ -1155,7 +1191,7 @@ const PostProperty = () => {
 
   // Step 2: Location Details
   const Step2 = () => (
-    <div className="bg-card border border-border rounded-lg p-6">
+    <div className="bg-card border border-border rounded p-6">
       <div className="flex items-center space-x-2 mb-6">
         <Icon name="MapPin" size={20} className="text-primary" />
         <h2 className="text-xl font-semibold text-foreground">
@@ -1262,7 +1298,7 @@ const PostProperty = () => {
 
   // Step 3: Specifications
   const Step3 = () => (
-    <div className="bg-card border border-border rounded-lg p-6">
+    <div className="bg-card border border-border rounded p-6">
       <div className="flex items-center space-x-2 mb-6">
         <Icon name="Ruler" size={20} className="text-primary" />
         <h2 className="text-xl font-semibold text-foreground">
@@ -1567,7 +1603,7 @@ const PostProperty = () => {
   const Step4 = () => (
     <div className="space-y-6">
       {/* Amenities */}
-      <div className="bg-card border border-border rounded-lg p-6">
+      <div className="bg-card border border-border rounded p-6">
         <div className="flex items-center space-x-2 mb-6">
           <Icon name="Wifi" size={20} className="text-primary" />
           <h2 className="text-xl font-semibold text-foreground">Amenities</h2>
@@ -1588,7 +1624,7 @@ const PostProperty = () => {
       </div>
 
       {/* Features */}
-      <div className="bg-card border border-border rounded-lg p-6">
+      <div className="bg-card border border-border rounded p-6">
         <div className="flex items-center space-x-2 mb-6">
           <Icon name="Star" size={20} className="text-primary" />
           <h2 className="text-xl font-semibold text-foreground">Features</h2>
@@ -1612,7 +1648,7 @@ const PostProperty = () => {
 
   // Step 5: Financial Details
   const Step5 = () => (
-    <div className="bg-card border border-border rounded-lg p-6">
+    <div className="bg-card border border-border rounded p-6">
       <div className="flex items-center space-x-2 mb-6">
         <Icon name="DollarSign" size={20} className="text-primary" />
         <h2 className="text-xl font-semibold text-foreground">
@@ -1744,7 +1780,7 @@ const PostProperty = () => {
     <>
       {/* Agent Assignment */}
       {(userRole === "admin" || userRole === "customer") && (
-        <div className="bg-card border border-border rounded-lg p-6 mb-6">
+        <div className="bg-card border border-border rounded p-6 mb-6">
           <div className="flex items-center space-x-2 mb-6">
             <Icon name="User" size={20} className="text-primary" />
             <h2 className="text-xl font-semibold text-foreground">
@@ -1756,7 +1792,7 @@ const PostProperty = () => {
       )}
 
       {/* Images Upload */}
-      <div className="bg-card border border-border rounded-lg p-6">
+      <div className="bg-card border border-border rounded p-6">
         <div className="flex items-center space-x-2 mb-6">
           <Icon name="Image" size={20} className="text-primary" />
           <h2 className="text-xl font-semibold text-foreground">
@@ -1764,7 +1800,7 @@ const PostProperty = () => {
           </h2>
         </div>
 
-        <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+        <div className="border-2 border-dashed border-border rounded p-6 text-center">
           <input
             type="file"
             multiple
@@ -1803,7 +1839,7 @@ const PostProperty = () => {
                   <img
                     src={URL.createObjectURL(image)}
                     alt={`Property ${index + 1}`}
-                    className="w-full h-24 object-cover rounded-lg"
+                    className="w-full h-24 object-cover rounded"
                   />
                   <button
                     type="button"
@@ -1825,21 +1861,29 @@ const PostProperty = () => {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <Step1 />;
+        return Step1();
       case 2:
-        return <Step2 />;
+        return Step2();
       case 3:
-        return <Step3 />;
+        return Step3();
       case 4:
-        return <Step4 />;
+        return Step4();
       case 5:
-        return <Step5 />;
+        return Step5();
       case 6:
-        return <Step6 />;
+        return Step6();
       default:
-        return <Step1 />;
+        return Step1();
     }
   };
+
+  if (initialLoading) {
+    return (
+      <div className="min-h-screen bg-background p-6 flex items-center justify-center">
+        <Icon name="Loader2" size={32} className="animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -1849,11 +1893,11 @@ const PostProperty = () => {
           <div className="flex items-center space-x-3 mb-2">
             <Icon name="Home" size={24} className="text-primary" />
             <h1 className="text-3xl font-bold text-foreground">
-              Post New Property
+              {isEditMode ? "Edit Property" : "Post New Property"}
             </h1>
           </div>
           <p className="text-muted-foreground">
-            List your property and reach potential buyers or tenants
+            {isEditMode ? "Update property details" : "List your property and reach potential buyers or tenants"}
           </p>
         </div>
 
@@ -1892,7 +1936,7 @@ const PostProperty = () => {
                 iconName="Upload"
                 iconPosition="left"
               >
-                {loading ? "Posting Property..." : "Post Property"}
+                {loading ? (isEditMode ? "Updating Property..." : "Posting Property...") : (isEditMode ? "Update Property" : "Post Property")}
               </Button>
             )}
           </div>

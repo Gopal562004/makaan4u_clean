@@ -11,7 +11,7 @@ const SimilarPropertiesSkeleton = () => {
         {[...Array(3)].map((_, index) => (
           <div
             key={index}
-            className="bg-card border border-border rounded-lg overflow-hidden animate-pulse"
+            className="bg-card border border-border rounded overflow-hidden animate-pulse"
           >
             {/* Image Skeleton */}
             <div className="relative h-48 bg-gray-200"></div>

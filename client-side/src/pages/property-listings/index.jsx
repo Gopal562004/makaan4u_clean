@@ -11,6 +11,7 @@ import PropertyMap from "./components/PropertyMap";
 import Button from "../../components/ui/Button";
 import Icon from "../../components/AppIcon";
 import Input from "../../components/ui/Input";
+import Footer from "../../components/ui/Footer";
 
 import {
   getAllProperties,
@@ -205,14 +206,14 @@ const SearchAndSort = ({
                     dropdownPosition === "top"
                       ? "bottom-full mb-2"
                       : "top-full mt-2"
-                  } right-0 w-64 max-w-[90vw] sm:max-w-none bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 animate-in fade-in-0 zoom-in-95 max-h-80 overflow-y-auto`}
+                  } right-0 w-64 max-w-[90vw] sm:max-w-none bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl z-50 animate-in fade-in-0 zoom-in-95 max-h-80 overflow-y-auto`}
                 >
                   <div className="p-2 space-y-1">
                     {sortOptions.map((option) => (
                       <button
                         key={option.value}
                         onClick={() => handleSortSelect(option.value)}
-                        className={`w-full flex items-center gap-2 sm:gap-3 px-3 py-2.5 text-sm rounded-lg transition-all duration-200 ${
+                        className={`w-full flex items-center gap-2 sm:gap-3 px-3 py-2.5 text-sm rounded transition-all duration-200 ${
                           sortBy === option.value
                             ? "bg-primary/10 text-primary font-semibold"
                             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -247,7 +248,7 @@ const SearchAndSort = ({
             </div>
 
             {/* View Mode Toggle */}
-            <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1 border border-gray-200 dark:border-gray-700 flex-shrink-0">
+            <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded p-1 border border-gray-200 dark:border-gray-700 flex-shrink-0">
               <button
                 onClick={() => onViewModeChange("grid")}
                 className={`p-1.5 sm:p-2 rounded-md transition-all duration-200 ${
@@ -430,6 +431,13 @@ const PropertyListings = () => {
   });
   const [page, setPage] = useState(initialParams.page);
   const [totalPages, setTotalPages] = useState(1);
+  const scrollContainerRef = useRef(null);
+
+  const scrollToTop = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   // Helper functions for sorting
   const getSortField = (sortValue) => {
@@ -466,8 +474,8 @@ const PropertyListings = () => {
         page: params.page,
         limit: 12,
         search: params.search,
-        type: params.type[0] || "",
-        city: params.location[0] || "",
+        type: params.type.length > 0 ? params.type.join(",") : "",
+        city: params.location.length > 0 ? params.location.join(",") : "",
         minPrice: params.price_min || "",
         maxPrice: params.price_max || "",
         bedrooms: params.bedrooms,
@@ -778,7 +786,7 @@ const PropertyListings = () => {
       />
 
       <motion.div
-        className="flex h-[calc(100vh-64px)]"
+        className="flex h-[calc(100vh-56px)] lg:h-[calc(100vh-64px)]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
@@ -810,29 +818,33 @@ const PropertyListings = () => {
             onMapToggle={handleMapToggle}
           />
 
-          <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-6">
-            {showMapView ? (
-              <PropertyMap
-                properties={properties}
-                loading={loading}
-                selectedProperty={selectedMapProperty}
-                onPropertySelect={setSelectedMapProperty}
-              />
-            ) : (
-              <PropertyGrid
-                properties={properties}
-                loading={loading}
-                viewMode={viewMode}
-                onWishlistToggle={handleWishlistToggle}
-                wishlistedProperties={wishlistedProperties}
-                page={page}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            )}
+          <div ref={scrollContainerRef} className="flex-1 overflow-y-auto custom-scrollbar flex flex-col relative">
+            <div className={`flex-1 px-4 py-6 ${showMapView ? "h-full min-h-[600px]" : "min-h-min"}`}>
+              {showMapView ? (
+                <PropertyMap
+                  properties={properties}
+                  loading={loading}
+                  selectedProperty={selectedMapProperty}
+                  onPropertySelect={setSelectedMapProperty}
+                />
+              ) : (
+                <PropertyGrid
+                  properties={properties}
+                  loading={loading}
+                  viewMode={viewMode}
+                  onWishlistToggle={handleWishlistToggle}
+                  wishlistedProperties={wishlistedProperties}
+                  page={page}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              )}
+            </div>
           </div>
         </main>
       </motion.div>
+
+      {!showMapView && <Footer className="mt-0" />}
 
       {/* Mobile Filter Sidebar */}
       <FilterSidebar
@@ -849,7 +861,7 @@ const PropertyListings = () => {
       
       {/* Back to top button */}
       <button
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        onClick={scrollToTop}
         className="fixed bottom-6 right-20 p-3 bg-primary text-white rounded-full shadow-lg hover:bg-primary/90 transition-all z-40 lg:hidden"
         aria-label="Back to top"
       >

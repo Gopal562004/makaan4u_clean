@@ -28,10 +28,10 @@ const MetricsCard = ({
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg p-6 shadow-subtle hover:shadow-moderate transition-smooth">
+    <div className="bg-card border border-border rounded p-6 shadow-subtle hover:shadow-moderate transition-smooth">
       <div className="flex items-center justify-between mb-4">
         <div
-          className={`w-12 h-12 rounded-lg flex items-center justify-center ${getColorClasses(
+          className={`w-12 h-12 rounded flex items-center justify-center ${getColorClasses(
             color
           )}`}
         >
