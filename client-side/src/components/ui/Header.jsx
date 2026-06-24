@@ -198,6 +198,10 @@ const Header = ({ onSearch }) => {
 
       setIsSearchOpen(false);
       setSearchQuery("");
+    } else {
+      // Navigate to property listings when search is empty
+      navigate("/property-listings");
+      setIsSearchOpen(false);
     }
   };
 
@@ -387,7 +391,7 @@ const Header = ({ onSearch }) => {
 
               {/* Mobile Search Overlay */}
               {isSearchOpen && (
-                <div className="lg:hidden absolute top-16 right-0 w-[calc(100vw-2rem)] sm:w-96 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-2xl p-4 z-50 animate-in slide-in-from-top-2">
+                <div className="lg:hidden fixed top-[72px] left-4 right-4 sm:absolute sm:top-16 sm:-right-2 sm:left-auto sm:w-96 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-2xl p-4 z-50 animate-in slide-in-from-top-2">
                   <form onSubmit={handleSearch} className="relative flex items-center">
                     <Input
                       type="search"

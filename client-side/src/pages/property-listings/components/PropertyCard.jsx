@@ -242,7 +242,7 @@ const PropertyCard = ({
       itemType="https://schema.org/RealEstateListing"
       data-schema={JSON.stringify(generatePropertySchema())}
     >
-      <div className="relative overflow-hidden h-52 sm:h-48 md:h-52 lg:h-56 flex-shrink-0">
+      <div className="relative overflow-hidden h-40 sm:h-48 md:h-52 lg:h-56 flex-shrink-0">
         {imageLoading && <div className="absolute inset-0 bg-slate-100 dark:bg-gray-800 animate-pulse" />}
         <Image
           src={getImageSrc()}
@@ -277,25 +277,25 @@ const PropertyCard = ({
         )}
       </div>
 
-      <div className="p-4 sm:p-5 flex-1 flex flex-col">
-        <div className="mb-3 min-w-0">
+      <div className="p-3 sm:p-5 flex-1 flex flex-col">
+        <div className="mb-2 sm:mb-3 min-w-0">
           <div className="flex justify-between items-start mb-1">
-            <p className="text-xl font-bold text-gray-900" itemProp="offers" itemScope itemType="https://schema.org/Offer">
+            <p className="text-lg sm:text-xl font-bold text-gray-900" itemProp="offers" itemScope itemType="https://schema.org/Offer">
               <span itemProp="price" content={property?.price}>{formatPrice(property?.price)}</span>
               <meta itemProp="priceCurrency" content="INR" />
             </p>
           </div>
-          {getPricePerUnit() && <p className="text-[11px] font-semibold text-gray-500 mb-2 uppercase tracking-wide">{getPricePerUnit()}</p>}
-          <h3 className="text-base font-bold text-gray-900 dark:text-white leading-snug group-hover:text-blue-700 transition-colors truncate" itemProp="name">
+          {getPricePerUnit() && <p className="text-[10px] sm:text-[11px] font-semibold text-gray-500 mb-1 sm:mb-2 uppercase tracking-wide">{getPricePerUnit()}</p>}
+          <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-white leading-snug group-hover:text-blue-700 transition-colors truncate" itemProp="name">
             {property?.title || "Untitled Property"}
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center" itemProp="address">
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center" itemProp="address">
             <Icon name="MapPin" size={12} className="mr-1.5 text-gray-400" />
             <span className="truncate">{formatLocation()}</span>
           </p>
         </div>
 
-        <div className="flex items-center justify-between py-3 border-y border-gray-100 dark:border-gray-800 mb-4">
+        <div className="flex items-center justify-between py-2 sm:py-3 border-y border-gray-100 dark:border-gray-800 mb-3 sm:mb-4">
           {property?.specifications?.bedrooms && (
             <div className="flex flex-col items-center">
               <Icon name="BedDouble" size={16} className="text-gray-400 mb-1" />

@@ -307,30 +307,30 @@ const PropertyMap = ({
 
 
 
-      {/* Property List Sidebar */}
-      <div className="absolute top-4 left-4 bottom-4 w-80 bg-white/95 backdrop-blur-sm rounded shadow-lg border border-slate-200 overflow-hidden">
-        <div className="p-4 border-b border-slate-200">
+      {/* Property List Sidebar (Desktop) / Bottom Carousel (Mobile) */}
+      <div className="absolute bottom-0 left-0 right-0 sm:top-4 sm:left-4 sm:bottom-4 sm:w-80 sm:rounded bg-white/95 sm:bg-white/95 backdrop-blur-sm shadow-lg border-t sm:border border-slate-200 overflow-hidden flex flex-col z-10">
+        <div className="hidden sm:block p-4 border-b border-slate-200 flex-shrink-0">
           <h3 className="font-semibold text-slate-900">
             Properties on Map ({properties.length})
           </h3>
         </div>
 
-        <div className="overflow-y-auto h-[calc(100%-80px)]">
+        <div className="flex sm:block overflow-x-auto sm:overflow-y-auto sm:h-[calc(100%-60px)] h-[100px] sm:h-full snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {properties.map((property, index) => (
             <div
               key={property._id || property.id || index}
-              className={`border-b border-slate-100 last:border-b-0 ${
+              className={`flex-shrink-0 w-72 sm:w-full border-r sm:border-r-0 sm:border-b border-slate-100 sm:last:border-b-0 snap-center sm:snap-none ${
                 selectedProperty?._id === property._id
                   ? "bg-blue-50"
-                  : "hover:bg-slate-50"
+                  : "bg-white sm:bg-transparent hover:bg-slate-50"
               }`}
             >
               <button
                 onClick={() => handlePropertyClick(property)}
-                className="w-full text-left p-4 transition-colors duration-200"
+                className="w-full h-full text-left p-3 sm:p-4 transition-colors duration-200"
               >
-                <div className="flex space-x-3">
-                  <div className="flex-shrink-0 w-16 h-12 bg-slate-200 rounded-md overflow-hidden">
+                <div className="flex space-x-3 h-full items-center sm:items-start">
+                  <div className="flex-shrink-0 w-16 h-16 sm:w-16 sm:h-12 bg-slate-200 rounded-md overflow-hidden">
                     <img
                       src={getPropertyImage(property)}
                       alt={property.title}
@@ -352,7 +352,7 @@ const PropertyMap = ({
                       <span className="text-sm font-semibold text-blue-600">
                         {formatPrice(property.price)}
                       </span>
-                      <div className="flex items-center space-x-2 text-xs text-slate-500">
+                      <div className="hidden sm:flex items-center space-x-2 text-xs text-slate-500">
                         {property.specifications?.bedrooms && (
                           <span>{property.specifications.bedrooms} bed</span>
                         )}

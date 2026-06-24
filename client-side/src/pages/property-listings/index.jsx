@@ -206,14 +206,14 @@ const SearchAndSort = ({
                     dropdownPosition === "top"
                       ? "bottom-full mb-2"
                       : "top-full mt-2"
-                  } right-0 w-64 max-w-[90vw] sm:max-w-none bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl z-50 animate-in fade-in-0 zoom-in-95 max-h-80 overflow-y-auto`}
+                  } left-0 sm:right-0 sm:left-auto w-52 sm:w-64 max-w-[90vw] sm:max-w-none bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl z-50 animate-in fade-in-0 zoom-in-95 max-h-80 overflow-y-auto`}
                 >
                   <div className="p-2 space-y-1">
                     {sortOptions.map((option) => (
                       <button
                         key={option.value}
                         onClick={() => handleSortSelect(option.value)}
-                        className={`w-full flex items-center gap-2 sm:gap-3 px-3 py-2.5 text-sm rounded transition-all duration-200 ${
+                        className={`w-full flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded transition-all duration-200 ${
                           sortBy === option.value
                             ? "bg-primary/10 text-primary font-semibold"
                             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -248,7 +248,7 @@ const SearchAndSort = ({
             </div>
 
             {/* View Mode Toggle */}
-            <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded p-1 border border-gray-200 dark:border-gray-700 flex-shrink-0">
+            <div className="hidden sm:flex items-center bg-gray-100 dark:bg-gray-800 rounded p-1 border border-gray-200 dark:border-gray-700 flex-shrink-0">
               <button
                 onClick={() => onViewModeChange("grid")}
                 className={`p-1.5 sm:p-2 rounded-md transition-all duration-200 ${
@@ -275,13 +275,13 @@ const SearchAndSort = ({
               </button>
             </div>
 
-            {/* Map Toggle - Hidden on mobile */}
+            {/* Map Toggle - Visible on mobile */}
             <Button
               variant={showMapView ? "primary" : "outline"}
               onClick={onMapToggle}
               iconName="Map"
               iconPosition="left"
-              className="hidden lg:flex px-3 sm:px-4 py-2 text-sm font-medium whitespace-nowrap flex-shrink-0"
+              className="flex px-3 sm:px-4 py-2 text-sm font-medium whitespace-nowrap flex-shrink-0"
             >
               <span className="hidden xl:inline">
                 {showMapView ? "Hide Map" : "Show Map"}
@@ -302,14 +302,7 @@ const SearchAndSort = ({
           </div>
         </div>
 
-        {/* Mobile Results Count */}
-        {showResultsCount && (
-          <div className="lg:hidden pb-3 lg:pb-0">
-            <div className="text-sm text-gray-600 dark:text-gray-400 font-medium text-center lg:text-left">
-              {formatPropertyCount()}
-            </div>
-          </div>
-        )}
+
       </div>
     </div>
   );
@@ -859,14 +852,7 @@ const PropertyListings = () => {
 
       <FloatingChat isOpen={isChatOpen} onToggle={() => setIsChatOpen(!isChatOpen)} />
       
-      {/* Back to top button */}
-      <button
-        onClick={scrollToTop}
-        className="fixed bottom-6 right-20 p-3 bg-primary text-white rounded-full shadow-lg hover:bg-primary/90 transition-all z-40 lg:hidden"
-        aria-label="Back to top"
-      >
-        <ArrowUp size={20} />
-      </button>
+
     </div>
   );
 };
