@@ -174,7 +174,7 @@ const HeroSection = () => {
         <div className="max-w-5xl mx-auto px-2 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">
           <form
             onSubmit={handleSearch}
-            className="bg-white rounded-2xl lg:rounded-full shadow-2xl p-2 sm:p-3 mx-auto"
+            className="bg-white rounded-md lg:rounded-full shadow-2xl p-2 sm:p-3 mx-auto"
           >
             {/* Desktop Search Pill */}
             <div className="hidden lg:flex items-center w-full">
@@ -251,7 +251,7 @@ const HeroSection = () => {
 
             {/* Mobile Search */}
             <div className="lg:hidden flex flex-col space-y-2 p-1">
-              <div className="relative flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3 h-12">
+              <div className="relative flex items-center bg-gray-50 border border-gray-200 rounded-md px-3 h-12">
                 <Search className="text-gray-400 w-4 h-4 mr-2 flex-shrink-0" />
                 <input
                   type="search"
@@ -263,7 +263,7 @@ const HeroSection = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                <div className="relative flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3 h-12">
+                <div className="relative flex items-center bg-gray-50 border border-gray-200 rounded-md px-3 h-12">
                   <MapPin className="text-gray-400 w-4 h-4 mr-2 absolute left-3" />
                   <select
                     value={location}
@@ -276,7 +276,7 @@ const HeroSection = () => {
                   <ChevronDown className="text-gray-400 w-4 h-4 absolute right-2 pointer-events-none" />
                 </div>
 
-                <div className="relative flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3 h-12">
+                <div className="relative flex items-center bg-gray-50 border border-gray-200 rounded-md px-3 h-12">
                   <Home className="text-gray-400 w-4 h-4 mr-2 absolute left-3" />
                   <select
                     value={propertyType}
@@ -290,7 +290,7 @@ const HeroSection = () => {
                 </div>
               </div>
 
-              <div className="relative flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3 h-12">
+              <div className="relative flex items-center bg-gray-50 border border-gray-200 rounded-md px-3 h-12">
                 <DollarSign className="text-gray-400 w-4 h-4 mr-2 absolute left-3" />
                 <select
                   value={priceRange}
@@ -305,7 +305,7 @@ const HeroSection = () => {
 
               <Button
                 type="submit"
-                className="w-full h-12 mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold uppercase tracking-wider rounded-xl shadow-lg border-none text-sm"
+                className="w-full h-12 mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold uppercase tracking-wider rounded-md shadow-lg border-none text-sm"
               >
                 Search Properties
               </Button>

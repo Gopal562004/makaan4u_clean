@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { CircleUser, Bookmark, SlidersHorizontal } from "lucide-react";
 import Header from "../../components/ui/Header";
 import Footer from "../home-page/components/Footer";
 import FloatingChat from "../../components/ui/FloatingChat";
@@ -174,9 +175,9 @@ const ProfileLayout = () => {1
   };
 
   const tabs = [
-    { id: "profile", label: "Profile", icon: "👤" },
-    { id: "favorites", label: "Favorites", icon: "❤️" },
-    { id: "settings", label: "Settings", icon: "⚙️" },
+    { id: "profile", label: "Profile", icon: <CircleUser className="w-5 h-5" strokeWidth={1.5} /> },
+    { id: "favorites", label: "Saved", icon: <Bookmark className="w-5 h-5" strokeWidth={1.5} /> },
+    { id: "settings", label: "Preferences", icon: <SlidersHorizontal className="w-5 h-5" strokeWidth={1.5} /> },
   ];
 
   // Show loading state
@@ -236,7 +237,7 @@ const ProfileLayout = () => {1
         />
       </Helmet>
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         {/* Header */}
         <div
           className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -253,17 +254,17 @@ const ProfileLayout = () => {1
           />
         </div>
 
-        <main className="pt-14 lg:pt-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <main className="pt-16 lg:pt-20 pb-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
             {/* Mobile Header */}
-            <div className="lg:hidden mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">My Account</h1>
-              <p className="text-gray-600 mt-1">
-                Manage your profile and preferences
+            <div className="lg:hidden mb-4 border-b border-blue-600 pb-3">
+              <h1 className="text-2xl font-bold text-blue-600 uppercase tracking-wider">My Account</h1>
+              <p className="text-xs text-gray-500 mt-1 uppercase tracking-widest">
+                Manage your profile
               </p>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
               {/* Sidebar */}
               <div className="lg:w-64">
                 <ProfileSidebar

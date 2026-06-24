@@ -21,6 +21,9 @@ import { expressMiddleware } from "lognexis-node";
 
 const app = express();
 
+// Trust the AWS API Gateway proxy to get the real client IP (fixes express-rate-limit error)
+app.set("trust proxy", 1);
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -59,16 +62,16 @@ app.use(expressMiddleware({
   debug: process.env.NODE_ENV === "development"
 }));
 
-// Force HTTPS in Production (SEO Boost)
-app.use((req, res, next) => {
-  if (
-    process.env.NODE_ENV === "production" &&
-    req.headers["x-forwarded-proto"] !== "https"
-  ) {
-    return res.redirect(`https://${req.headers.host}${req.url}`);
-  }
-  next();
-});
+// Force HTTPS in Production (SEO Boost) - Disabled for AWS Lambda because API Gateway handles HTTPS
+// app.use((req, res, next) => {
+//   if (
+//     process.env.NODE_ENV === "production" &&
+//     req.headers["x-forwarded-proto"] !== "https"
+//   ) {
+//     return res.redirect(`https://${req.headers.host}${req.url}`);
+//   }
+//   next();
+// });
 
 // Enable GZIP compression
 app.use(compression());

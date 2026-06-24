@@ -306,27 +306,29 @@ const Favorites = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 border-b border-gray-200 pb-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">
-            Favorite Properties
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-black uppercase tracking-tight">
+            Saved Properties
           </h2>
-          <p className="text-gray-600 mt-1">
-            {favoriteProperties.length} saved{" "}
+          <p className="text-gray-500 mt-1 font-medium text-xs tracking-widest uppercase">
+            {favoriteProperties.length} {" "}
             {favoriteProperties.length === 1 ? "property" : "properties"}
           </p>
         </div>
 
         {/* Filter - Only show if there are properties */}
         {favoriteProperties.length > 0 && (
-          <div className="flex items-center space-x-2 mt-4 sm:mt-0">
-            <Filter className="w-4 h-4 text-gray-400" />
+          <div className="flex items-center space-x-2 mt-4 sm:mt-0 bg-white p-1 sm:p-1.5 border border-blue-600 rounded-none">
+            <div className="p-1.5 bg-blue-600 text-white rounded-none">
+              <Filter className="w-4 h-4 sm:w-4 sm:h-4" strokeWidth={1.5} />
+            </div>
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+              className="bg-transparent border-none focus:ring-0 text-blue-600 font-bold uppercase tracking-widest cursor-pointer pr-6 text-[10px] sm:text-xs"
             >
               <option value="all">All Types</option>
               <option value="apartment">Apartments</option>
@@ -350,23 +352,25 @@ const Favorites = () => {
 
       {/* Properties Grid */}
       {filteredProperties.length === 0 ? (
-        <div className="text-center py-12">
+        <div className="flex flex-col items-center justify-center py-16 sm:py-24 px-4 bg-white border border-gray-200 text-center">
           {favoriteProperties.length === 0 ? (
             <>
-              <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 border border-gray-200 flex items-center justify-center mb-6">
+                <Heart className="w-8 h-8 sm:w-8 sm:h-8 text-blue-600" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-black uppercase tracking-tight mb-2">
                 No favorites yet
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-500 text-xs tracking-widest uppercase mb-8 max-w-md">
                 Start saving properties you're interested in by clicking the
-                heart icon!
+                heart icon on any listing!
               </p>
               <Link
                 to="/property-listings"
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-bold uppercase tracking-widest text-[10px] sm:text-xs hover:bg-blue-700 transition-colors"
               >
                 Browse Properties
-                <ExternalLink className="w-4 h-4 ml-2" />
+                <ExternalLink className="w-4 h-4 ml-2" strokeWidth={1.5} />
               </Link>
             </>
           ) : (
@@ -382,18 +386,18 @@ const Favorites = () => {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredProperties.map((property) => (
             <div
               key={property.id}
-              className="bg-white rounded border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 group"
+              className="bg-white border border-gray-200 overflow-hidden group flex flex-col"
             >
               {/* Image */}
-              <div className="relative h-48">
+              <div className="relative h-48 sm:h-56 overflow-hidden flex-shrink-0 border-b border-gray-200">
                 <img
                   src={property.image}
                   alt={property.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   onError={(e) => {
                     e.target.src = "/images/property-placeholder.jpg";
                   }}
@@ -401,8 +405,8 @@ const Favorites = () => {
 
                 {/* Added Date */}
                 <div className="absolute top-3 left-3">
-                  <div className="flex items-center px-2 py-1 bg-black bg-opacity-70 rounded text-white text-xs">
-                    <Calendar className="w-3 h-3 mr-1" />
+                  <div className="flex items-center px-2 py-1 bg-blue-600 text-white text-[10px] tracking-widest uppercase">
+                    <Calendar className="w-3 h-3 mr-1.5" strokeWidth={1.5} />
                     {formatDate(property.addedDate)}
                   </div>
                 </div>
@@ -413,65 +417,60 @@ const Favorites = () => {
                     removeFromFavorites(property.id, property.wishlistId)
                   }
                   disabled={removingId === property.id}
-                  className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+                  className="absolute top-3 right-3 p-2 bg-white border border-transparent hover:border-blue-600 transition-colors disabled:opacity-50"
                 >
                   {removingId === property.id ? (
-                    <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent animate-spin" />
                   ) : (
-                    <Trash2 className="w-4 h-4 text-red-500" />
+                    <Trash2 className="w-4 h-4 text-blue-600" strokeWidth={1.5} />
                   )}
                 </button>
               </div>
 
               {/* Content */}
-              <div className="p-4">
+              <div className="p-4 sm:p-6 flex flex-col flex-grow">
                 <Link
                   to={`/property-details/${
                     property.property?.slug || property.id
                   }`}
                   className="block hover:no-underline"
                 >
-                  <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
+                  <h3 className="font-bold text-sm sm:text-base text-black uppercase tracking-tight mb-2 line-clamp-2">
                     {property.title}
                   </h3>
                 </Link>
 
-                <div className="flex items-center text-gray-600 mb-3">
-                  <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
-                  <span className="text-sm truncate">{property.location}</span>
+                <div className="flex items-center text-gray-500 mb-4">
+                  <MapPin className="w-4 h-4 mr-2 flex-shrink-0 text-blue-600" strokeWidth={1.5} />
+                  <span className="text-xs uppercase tracking-widest truncate">{property.location}</span>
                 </div>
 
                 {/* Property Features */}
-                <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                <div className="flex items-center justify-between text-xs text-gray-600 mb-6 border border-gray-100 p-3 font-bold uppercase tracking-widest mt-auto">
                   <div className="flex items-center">
-                    <Bed className="w-4 h-4 mr-1" />
-                    <span>
-                      {property.beds} {property.beds === 1 ? "bed" : "beds"}
-                    </span>
+                    <Bed className="w-4 h-4 mr-2 text-blue-600" strokeWidth={1.5} />
+                    <span>{property.beds}</span>
                   </div>
                   <div className="flex items-center">
-                    <Bath className="w-4 h-4 mr-1" />
-                    <span>
-                      {property.baths} {property.baths === 1 ? "bath" : "baths"}
-                    </span>
+                    <Bath className="w-4 h-4 mr-2 text-blue-600" strokeWidth={1.5} />
+                    <span>{property.baths}</span>
                   </div>
                   <div className="flex items-center">
-                    <Square className="w-4 h-4 mr-1" />
-                    <span>{property.area}</span>
+                    <Square className="w-4 h-4 mr-2 text-blue-600" strokeWidth={1.5} />
+                    <span className="truncate">{property.area}</span>
                   </div>
                 </div>
 
                 {/* Price & Actions */}
-                <div className="flex items-center justify-between">
-                  <div className="text-lg font-bold text-blue-600">
+                <div className="flex items-center justify-between mt-auto">
+                  <div className="text-base sm:text-lg font-extrabold text-black">
                     {property.price}
                   </div>
                   <Link
                     to={`/property/${property.property?.slug || property.id}`}
-                    className="flex items-center text-blue-600 hover:text-blue-700 transition-colors text-sm font-medium"
+                    className="flex items-center px-4 py-2 bg-blue-600 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-blue-700 transition-colors"
                   >
-                    View Details
-                    <ExternalLink className="w-4 h-4 ml-1" />
+                    View
                   </Link>
                 </div>
               </div>

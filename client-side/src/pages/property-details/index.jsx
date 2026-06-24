@@ -1654,10 +1654,9 @@ const PropertyDetails = () => {
 
   // 🔥 GET USER FROM LOCALSTORAGE
   const getUserFromStorage = useCallback(() => {
-    const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
 
-    if (token && userData) {
+    if (userData) {
       try {
         return JSON.parse(userData);
       } catch (e) {
@@ -1669,8 +1668,8 @@ const PropertyDetails = () => {
 
   // 🔥 CHECK AUTHENTICATION STATUS
   const isAuthenticated = useCallback(() => {
-    const token = localStorage.getItem("token");
-    return !!token;
+    const user = localStorage.getItem("user");
+    return !!user;
   }, []);
 
   // 🔥 ENHANCED SEO META TAGS

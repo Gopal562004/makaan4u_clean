@@ -27,6 +27,11 @@ import {
   getStoredUser,
   clearAuthData,
 } from "../../lib/mongo/services/authService";
+import {
+  fetchNotifications,
+  markAsRead,
+  markAllAsRead,
+} from "../../lib/mongo/services/notificationService";
 import { toast } from "react-toastify";
 
 const Header = ({ onSearch }) => {
@@ -36,7 +41,8 @@ const Header = ({ onSearch }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState(null);
-  const [notificationCount, setNotificationCount] = useState(3);
+  const [notifications, setNotifications] = useState([]);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -103,43 +109,52 @@ const Header = ({ onSearch }) => {
     ];
   };
 
-  // Simple notifications
-  const getNotifications = () => {
-    const baseNotifications = [
-      {
-        id: 1,
-        title: "New Property Match",
-        message: "Property matching your criteria available",
-        time: "1 hour ago",
-        type: "info",
-      },
-    ];
-
-    const customerNotifications = [
-      {
-        id: 2,
-        title: "Viewing Confirmed",
-        message: "Property viewing scheduled",
-        time: "5 min ago",
-        type: "success",
-      },
-    ];
-
-    let notifications = [...baseNotifications];
-
-    if (user?.role === "customer") {
-      notifications = [...notifications, ...customerNotifications];
+  const loadNotifications = async () => {
+    try {
+      const data = await fetchNotifications();
+      if (data.success) {
+        setNotifications(data.notifications || []);
+        setNotificationCount(data.unreadCount || 0);
+      }
+    } catch (error) {
+      console.error("Failed to load notifications", error);
     }
-
-    return notifications;
   };
 
   useEffect(() => {
     const storedUser = getStoredUser();
     if (storedUser) {
       setUser(storedUser);
+      loadNotifications();
     }
   }, []);
+
+  const handleNotificationClick = async (notification) => {
+    setIsNotificationOpen(false);
+    if (!notification.isRead) {
+      try {
+        await markAsRead(notification._id);
+        loadNotifications(); // Refresh unread count
+      } catch (error) {
+        console.error("Failed to mark as read", error);
+      }
+    }
+    
+    if (notification.type === "property") {
+      navigate(`/property-listings`);
+    } else {
+      toast.info(notification.message);
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    try {
+      await markAllAsRead();
+      loadNotifications();
+    } catch (error) {
+      console.error("Failed to mark all as read", error);
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -414,43 +429,58 @@ const Header = ({ onSearch }) => {
 
                 {isNotificationOpen && (
                   <div className="absolute top-14 right-0 w-80 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95">
-                    <div className="p-4 bg-gray-50/80 border-b border-gray-100">
+                    <div className="p-4 bg-gray-50/80 border-b border-gray-100 flex justify-between items-center">
                       <h3 className="font-bold text-gray-900 text-sm">
                         Notifications
                       </h3>
+                      {notificationCount > 0 && (
+                        <button
+                          onClick={handleMarkAllRead}
+                          className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                        >
+                          Mark all as read
+                        </button>
+                      )}
                     </div>
                     <div className="max-h-80 overflow-y-auto">
-                      {getNotifications().map((notification) => (
-                        <div
-                          key={notification.id}
-                          className="p-4 border-b border-gray-50 last:border-b-0 hover:bg-blue-50/50 transition-colors cursor-pointer group"
-                          onClick={() => {
-                            setIsNotificationOpen(false);
-                            toast.info(`Opening: ${notification.title}`);
-                          }}
-                        >
-                          <div className="flex items-start space-x-3">
-                            <div
-                              className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
-                                notification.type === "success"
-                                  ? "bg-emerald-500"
-                                  : "bg-blue-500"
-                              }`}
-                            />
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
-                                {notification.title}
-                              </p>
-                              <p className="text-xs text-gray-600 mt-0.5 line-clamp-2 leading-relaxed">
-                                {notification.message}
-                              </p>
-                              <p className="text-[10px] font-medium text-gray-400 mt-2 uppercase tracking-wide">
-                                {notification.time}
-                              </p>
+                      {notifications.length === 0 ? (
+                        <div className="p-4 text-center text-sm text-gray-500">
+                          No notifications
+                        </div>
+                      ) : (
+                        notifications.map((notification) => (
+                          <div
+                            key={notification._id}
+                            className={`p-4 border-b border-gray-50 last:border-b-0 transition-colors cursor-pointer group ${
+                              !notification.isRead ? "bg-blue-50/30 hover:bg-blue-50/50" : "hover:bg-gray-50"
+                            }`}
+                            onClick={() => handleNotificationClick(notification)}
+                          >
+                            <div className="flex items-start space-x-3">
+                              <div
+                                className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
+                                  !notification.isRead
+                                    ? "bg-blue-500"
+                                    : "bg-gray-300"
+                                }`}
+                              />
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-sm font-semibold group-hover:text-blue-600 transition-colors truncate ${
+                                  !notification.isRead ? "text-gray-900" : "text-gray-600"
+                                }`}>
+                                  {notification.title}
+                                </p>
+                                <p className="text-xs text-gray-600 mt-0.5 line-clamp-2 leading-relaxed">
+                                  {notification.message}
+                                </p>
+                                <p className="text-[10px] font-medium text-gray-400 mt-2 uppercase tracking-wide">
+                                  {new Date(notification.createdAt).toLocaleDateString()}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))
+                      )}
                     </div>
                   </div>
                 )}

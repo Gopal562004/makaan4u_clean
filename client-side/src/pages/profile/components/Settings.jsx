@@ -39,44 +39,44 @@ const Settings = () => {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 border-b border-black pb-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Account Settings</h2>
-          <p className="text-gray-600 mt-1">Customize your experience</p>
+          <h2 className="text-3xl font-extrabold text-black tracking-tight uppercase">Account Settings</h2>
+          <p className="text-gray-500 mt-1 font-medium uppercase tracking-widest text-xs">Customize your experience and preferences</p>
         </div>
         <button
           onClick={handleSave}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors mt-4 sm:mt-0"
+          className="flex items-center px-6 py-3 bg-blue-600 text-white font-bold uppercase tracking-widest text-[10px] sm:text-xs hover:bg-blue-700 transition-colors mt-6 sm:mt-0"
         >
-          <Save className="w-4 h-4 mr-2" />
+          <Save className="w-4 h-4 mr-2" strokeWidth={1.5} />
           Save Changes
         </button>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* Notifications */}
-        <div className="bg-gray-50 rounded p-6">
-          <div className="flex items-center mb-4">
-            <Bell className="w-5 h-5 text-blue-600 mr-3" />
-            <h3 className="text-lg font-semibold text-gray-900">
-              Notifications
-            </h3>
+        <div className="bg-white border border-gray-200 p-6 sm:p-8">
+          <div className="flex items-center mb-6 pb-4 border-b border-gray-200">
+            <Bell className="w-6 h-6 text-black mr-4" strokeWidth={1.5} />
+            <div>
+              <h3 className="text-xl font-extrabold text-black uppercase tracking-widest">Notifications</h3>
+            </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-6">
             {Object.entries(settings.notifications).map(([key, value]) => (
-              <div key={key} className="flex items-center justify-between">
+              <div key={key} className="flex items-center justify-between group">
                 <div>
-                  <div className="font-medium text-gray-900 capitalize">
+                  <div className="font-bold text-black uppercase tracking-widest text-xs group-hover:text-blue-600 transition-colors">
                     {key.replace(/([A-Z])/g, " $1").trim()}
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-xs font-medium text-gray-500 mt-1">
                     {key === "email" && "Receive email notifications"}
                     {key === "push" && "Browser push notifications"}
                     {key === "sms" && "SMS alerts"}
                     {key === "newsletter" && "Weekly newsletter"}
                   </div>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
+                <label className="relative inline-flex items-center cursor-pointer ml-4">
                   <input
                     type="checkbox"
                     checked={value}
@@ -91,7 +91,7 @@ const Settings = () => {
                     }
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div className="w-12 h-6 bg-gray-200 peer-focus:outline-none peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 rounded-none after:rounded-none"></div>
                 </label>
               </div>
             ))}
@@ -99,26 +99,28 @@ const Settings = () => {
         </div>
 
         {/* Privacy */}
-        <div className="bg-gray-50 rounded p-6">
-          <div className="flex items-center mb-4">
-            <Shield className="w-5 h-5 text-green-600 mr-3" />
-            <h3 className="text-lg font-semibold text-gray-900">Privacy</h3>
+        <div className="bg-white border border-gray-200 p-6 sm:p-8">
+          <div className="flex items-center mb-6 pb-4 border-b border-gray-200">
+            <Shield className="w-6 h-6 text-black mr-4" strokeWidth={1.5} />
+            <div>
+              <h3 className="text-xl font-extrabold text-black uppercase tracking-widest">Privacy & Security</h3>
+            </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-6">
             {Object.entries(settings.privacy).map(([key, value]) => (
-              <div key={key} className="flex items-center justify-between">
+              <div key={key} className="flex items-center justify-between group">
                 <div>
-                  <div className="font-medium text-gray-900 capitalize">
+                  <div className="font-bold text-black uppercase tracking-widest text-xs group-hover:text-blue-600 transition-colors">
                     {key.replace(/([A-Z])/g, " $1").trim()}
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-xs font-medium text-gray-500 mt-1">
                     {key === "profileVisible" &&
                       "Make your profile visible to others"}
                     {key === "showEmail" && "Show email address on profile"}
                     {key === "showPhone" && "Show phone number on profile"}
                   </div>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
+                <label className="relative inline-flex items-center cursor-pointer ml-4">
                   <input
                     type="checkbox"
                     checked={value}
@@ -133,7 +135,7 @@ const Settings = () => {
                     }
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                  <div className="w-12 h-6 bg-gray-200 peer-focus:outline-none peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 rounded-none after:rounded-none"></div>
                 </label>
               </div>
             ))}
@@ -141,84 +143,72 @@ const Settings = () => {
         </div>
 
         {/* Preferences */}
-        <div className="bg-gray-50 rounded p-6">
-          <div className="flex items-center mb-4">
-            <Globe className="w-5 h-5 text-purple-600 mr-3" />
-            <h3 className="text-lg font-semibold text-gray-900">Preferences</h3>
-          </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Theme */}
+        <div className="bg-white border border-gray-200 p-6 sm:p-8 mb-8">
+          <div className="flex items-center mb-6 pb-4 border-b border-gray-200">
+            <Globe className="w-6 h-6 text-black mr-4" strokeWidth={1.5} />
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Moon className="w-4 h-4 inline mr-2" />
-                Theme
-              </label>
-              <select
-                value={settings.preferences.theme}
-                onChange={(e) =>
-                  setSettings({
-                    ...settings,
-                    preferences: {
-                      ...settings.preferences,
-                      theme: e.target.value,
-                    },
-                  })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="auto">Auto</option>
-              </select>
+              <h3 className="text-xl font-extrabold text-black uppercase tracking-widest">Preferences</h3>
             </div>
-
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
             {/* Language */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Globe className="w-4 h-4 inline mr-2" />
+            <div className="group">
+              <label className="block text-xs font-bold text-black uppercase tracking-widest mb-3 group-focus-within:text-blue-600 transition-colors">
+                <Globe className="w-4 h-4 inline mr-2 text-black group-focus-within:text-blue-600 transition-colors" strokeWidth={1.5} />
                 Language
               </label>
-              <select
-                value={settings.preferences.language}
-                onChange={(e) =>
-                  setSettings({
-                    ...settings,
-                    preferences: {
-                      ...settings.preferences,
-                      language: e.target.value,
-                    },
-                  })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="en">English</option>
-                <option value="hi">Hindi</option>
-                <option value="mr">Marathi</option>
-              </select>
+              <div className="relative">
+                <select
+                  value={settings.preferences.language}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      preferences: {
+                        ...settings.preferences,
+                        language: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors appearance-none font-medium text-black cursor-pointer rounded-none text-sm"
+                >
+                  <option value="en">English</option>
+                  <option value="hi">Hindi</option>
+                  <option value="mr">Marathi</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none">
+                  <svg className="w-4 h-4 text-black group-focus-within:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
             </div>
 
             {/* Currency */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="group">
+              <label className="block text-xs font-bold text-black uppercase tracking-widest mb-3 group-focus-within:text-blue-600 transition-colors">
+                <span className="inline-block w-4 text-center mr-2 text-black font-bold group-focus-within:text-blue-600 transition-colors">₹</span>
                 Currency
               </label>
-              <select
-                value={settings.preferences.currency}
-                onChange={(e) =>
-                  setSettings({
-                    ...settings,
-                    preferences: {
-                      ...settings.preferences,
-                      currency: e.target.value,
-                    },
-                  })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="INR">Indian Rupee (₹)</option>
-                <option value="USD">US Dollar ($)</option>
-                <option value="EUR">Euro (€)</option>
-              </select>
+              <div className="relative">
+                <select
+                  value={settings.preferences.currency}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      preferences: {
+                        ...settings.preferences,
+                        currency: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full px-0 py-3 bg-transparent border-b-2 border-gray-200 focus:border-blue-600 focus:ring-0 transition-colors appearance-none font-medium text-black cursor-pointer rounded-none text-sm"
+                >
+                  <option value="INR">Indian Rupee (₹)</option>
+                  <option value="USD">US Dollar ($)</option>
+                  <option value="EUR">Euro (€)</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none">
+                  <svg className="w-4 h-4 text-black group-focus-within:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
             </div>
           </div>
         </div>
