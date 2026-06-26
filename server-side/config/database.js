@@ -16,17 +16,22 @@ import mongoose from "mongoose";
 let cachedConnection = null;
 
 const connectDB = async () => {
-  if (cachedConnection) return cachedConnection;
+  if (cachedConnection) {
+    return cachedConnection;
+  }
 
   try {
-    cachedConnection = await mongoose.connect(process.env.MONGODB_URI, {
+    // Store the promise immediately so concurrent requests wait for the same connection
+    cachedConnection = mongoose.connect(process.env.MONGODB_URI, {
       bufferCommands: false,
     });
-
+    
+    await cachedConnection;
     console.log("✅ MongoDB connected");
     return cachedConnection;
   } catch (error) {
     console.error("❌ MongoDB connection error:", error);
+    cachedConnection = null; // Reset on failure
     throw error; // NEVER process.exit() in Lambda
   }
 };

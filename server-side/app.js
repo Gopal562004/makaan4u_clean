@@ -12,7 +12,7 @@ dotenv.config();
 
 // Connect DB
 import connectDB from "./config/database.js";
-connectDB();
+// We don't call connectDB() here because it's handled (and awaited) by the Lambda handler
 
 import "./config/cloudinary.js";
 import routes from "./routes/index.js";
