@@ -108,7 +108,7 @@ const About = () => {
               
               {/* Mission/Vision Combo Column */}
               <div className="lg:col-span-1 space-y-8">
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-gray-50 border border-gray-200 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded flex items-center justify-center">
                       <Target className="w-5 h-5" />
@@ -120,7 +120,7 @@ const About = () => {
                   </p>
                 </div>
 
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-gray-50 border border-gray-200 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded flex items-center justify-center">
                       <Rocket className="w-5 h-5" />
@@ -145,7 +145,7 @@ const About = () => {
                     { icon: Zap, title: "Relentless Innovation", desc: "Constantly evolving to solve real problems with smart solutions." },
                     { icon: Globe, title: "Community First", desc: "Building trust through genuine connections and shared success." },
                   ].map((val, idx) => (
-                    <div key={idx} className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-all group flex items-start gap-4">
+                    <div key={idx} className="bg-white border border-gray-200 rounded-md p-5 shadow-sm hover:shadow-md transition-all group flex items-start gap-4">
                       <div className="w-10 h-10 bg-gray-50 border border-gray-200 rounded flex items-center justify-center flex-shrink-0 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
                         <val.icon className="w-5 h-5 text-gray-500 group-hover:text-blue-600 transition-colors" />
                       </div>
@@ -179,7 +179,7 @@ const About = () => {
                     {/* Connecting Line */}
                     {idx !== 4 && <div className="absolute top-5 left-8 w-full h-[2px] bg-gray-200 z-0 hidden sm:block"></div>}
                     
-                    <div className="relative z-10 flex flex-col items-start bg-white p-5 rounded-xl border border-gray-200 shadow-sm h-full">
+                    <div className="relative z-10 flex flex-col items-start bg-white p-5 rounded-md border border-gray-200 shadow-sm h-full">
                       <div className="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center font-bold text-sm mb-4 ring-4 ring-white">
                         {step.year}
                       </div>
@@ -206,7 +206,7 @@ const About = () => {
                     { icon: Clock, title: "Seamless Experience", desc: "End-to-end digital journey." },
                     { icon: Shield, title: "Expert Network", desc: "Verified professionals." },
                   ].map((feature, idx) => (
-                    <div key={idx} className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-start gap-3">
+                    <div key={idx} className="bg-gray-50 rounded-md p-4 border border-gray-100 flex items-start gap-3">
                       <div className="mt-0.5 text-emerald-500"><feature.icon className="w-5 h-5" /></div>
                       <div>
                         <h4 className="text-sm font-bold text-gray-900 mb-1">{feature.title}</h4>
@@ -218,7 +218,7 @@ const About = () => {
               </div>
 
               {/* Bold Immersive CTA Card */}
-              <div className="relative overflow-hidden rounded-2xl bg-gray-900 text-white shadow-2xl p-8 md:p-12 text-center lg:text-left">
+              <div className="relative overflow-hidden rounded-lg bg-gray-900 text-white shadow-2xl p-8 md:p-12 text-center lg:text-left">
                 {/* Background Accent */}
                 <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-blue-500 rounded-full blur-[80px] opacity-40"></div>
                 <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-emerald-500 rounded-full blur-[80px] opacity-40"></div>
