@@ -6,6 +6,7 @@ import FloatingChat from "../../components/ui/FloatingChat";
 import BlogHero from "./components/BlogHero";
 import FeaturedStories from "./components/FeaturedStories";
 import BlogShowcase from "./components/BlogShowcase";
+import { getApiUrl } from "../../utils/getApiUrl";
 
 const Blog = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -41,8 +42,8 @@ const Blog = () => {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        // We use our local express proxy endpoint
-        const response = await fetch("http://localhost:5000/news");
+        // Use the API base URL from environment config
+        const response = await fetch(`${getApiUrl()}/news`);
         const data = await response.json();
         
         if (data.success && data.data) {
