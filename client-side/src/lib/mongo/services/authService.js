@@ -38,7 +38,10 @@ export const register = async (userData) => {
   try {
     const response = await api.post("/auth/register", userData);
 
-    // Store user data in localStorage (Token is set securely via HttpOnly cookie by backend)
+    // Store user data and token in localStorage
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token);
+    }
     if (response.data.user) {
       localStorage.setItem("user", JSON.stringify(response.data.user));
     }
@@ -58,7 +61,10 @@ export const login = async (credentials) => {
   try {
     const response = await api.post("/auth/login", credentials);
 
-    // Store user data in localStorage (Token is set securely via HttpOnly cookie by backend)
+    // Store token and user data in localStorage
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token);
+    }
     if (response.data.user) {
       localStorage.setItem("user", JSON.stringify(response.data.user));
     }
@@ -78,11 +84,13 @@ export const logout = async () => {
     const response = await api.post("/auth/logout");
 
     // Clear localStorage
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
 
     return response.data;
   } catch (error) {
     // Clear localStorage even if API call fails
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
     throw error.response?.data || error;
   }
@@ -242,5 +250,6 @@ export const isAuthenticated = () => {
 };
 
 export const clearAuthData = () => {
+  localStorage.removeItem("token");
   localStorage.removeItem("user");
 };
